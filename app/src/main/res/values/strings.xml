@@ -14,4 +14,10 @@
     </string>
     <string name="criar_conta">criar conta</string>
     <string name="esquci_minha_senha">esquci minha senha</string>
+    <string name="login_button">Login</string>
+    <string name="hint_email">E-mail</string>
+    <string name="hint_password">Senha</string>
+    <string name="createAccountButton">Create account</string>
+    <string name="login_title">IGOR</string>
+    <string name="keep_logged_in">mantenha-me conectado</string>
 </resources>
