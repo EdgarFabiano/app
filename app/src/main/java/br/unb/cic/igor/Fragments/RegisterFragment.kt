@@ -35,10 +35,8 @@ class RegisterFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    private var listener: LoginFragment.OnFragmentInteractionListener? = null
 
     private var mAuth: FirebaseAuth? = null
-    private var mAuthListener: FirebaseAuth.AuthStateListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +64,7 @@ class RegisterFragment : Fragment() {
     private fun register(v: View) {
         if(!validateForm()){
             Toast.makeText(activity, "Form not valid.", Toast.LENGTH_SHORT).show()
+            return
         }
 
         val email = register_email.text.toString() // email address format
