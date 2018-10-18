@@ -1,11 +1,10 @@
 package br.unb.cic.igor
 
 import android.content.Context
-import android.graphics.Color
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
@@ -24,16 +23,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         // Configure action bar
-        val mainToolbar = findViewById<android.support.v7.widget.Toolbar>(R.id.main_toolbar)
-        setSupportActionBar(mainToolbar)
-
-        setSupportActionBar(toolbar)
+        setSupportActionBar(main_toolbar)
 
         // Initialize the action bar drawer toggle instance
         val drawerToggle:ActionBarDrawerToggle = object : ActionBarDrawerToggle(
                 this,
                 drawer_layout,
-                toolbar,
+                main_toolbar,
                 R.string.drawer_open,
                 R.string.drawer_close
         ){
