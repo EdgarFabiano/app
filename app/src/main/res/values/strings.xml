@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">igor</string>
+    <string name="app_name">Igor</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
@@ -14,4 +14,12 @@
     </string>
     <string name="criar_conta">criar conta</string>
     <string name="esquci_minha_senha">esquci minha senha</string>
+
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+    <string name="aventuras">Aventuras</string>
+    <string name="livros">Livros</string>
+    <string name="conta">Conta</string>
+    <string name="notificacoes">Notificações</string>
+    <string name="configuracoes">Configurações</string>
 </resources>
