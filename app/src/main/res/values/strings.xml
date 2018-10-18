@@ -22,4 +22,6 @@
     <string name="conta">Conta</string>
     <string name="notificacoes">Notificações</string>
     <string name="configuracoes">Configurações</string>
+    <string name="editar">Editar</string>
+    <string name="ordenar">Ordenar</string>
 </resources>
