@@ -12,9 +12,20 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_register.*
 import android.widget.Toast
 import android.app.Activity
+import android.app.DatePickerDialog
+import android.app.Dialog
+import android.support.v4.app.DialogFragment
 import android.text.TextUtils
 import android.util.Log
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.DatePicker
+import br.unb.cic.igor.R.id.*
 import kotlinx.android.synthetic.main.fragment_register.view.*
+import java.time.Instant
+import java.util.*
+
+
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -31,12 +42,19 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  *
  */
-class RegisterFragment : Fragment() {
+class RegisterFragment : Fragment(){
+
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
 
     private var mAuth: FirebaseAuth? = null
+    private val manager = fragmentManager
+
+    private val genderList = arrayOf("Fernando", "Masculino")
+    private var selectedGender: String? = null
+
+    private var birthdate: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +64,7 @@ class RegisterFragment : Fragment() {
         }
 
         mAuth = FirebaseAuth.getInstance();
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -59,6 +78,22 @@ class RegisterFragment : Fragment() {
 
         // Return the fragment view/layout
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        register_gender.adapter = ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, genderList)
+
+        register_gender.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                selectedGender = null
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                selectedGender = genderList[position]
+            }
+        }
     }
 
     private fun register(v: View) {
@@ -85,6 +120,13 @@ class RegisterFragment : Fragment() {
                 }
     }
 
+    fun ShowLoginFragment(){
+        manager!!.beginTransaction()
+                .replace(R.id.login_fragment_holder,  LoginFragment())
+                .addToBackStack(null)
+                .commit()
+    }
+
 
     private fun validateForm(): Boolean {
         var valid = true
@@ -106,6 +148,13 @@ class RegisterFragment : Fragment() {
         }
 
         return valid
+    }
+
+    companion object{
+
+        fun newInstance(): RegisterFragment{
+            return RegisterFragment()
+        }
     }
 
 

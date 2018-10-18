@@ -10,14 +10,9 @@
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="match_parent" />-->
 
-    <fragment
-        android:id="@+id/fragment_one"
-        android:name="br.unb.cic.igor.Fragments.LoginFragment"
+    <FrameLayout
+        android:id="@+id/login_fragment_holder"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true"
-        tools:layout="@layout/fragment_login" />
+        android:layout_height="match_parent"/>
 
 </android.support.constraint.ConstraintLayout>

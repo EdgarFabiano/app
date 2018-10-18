@@ -44,6 +44,9 @@ class LoginFragment : Fragment() {
     private var param2: String? = null
 
     private var mAuth: FirebaseAuth? = null
+    private val manager = fragmentManager
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +64,10 @@ class LoginFragment : Fragment() {
 
         view.login_button.setOnClickListener {
             emailPasswordLogin(view)
+        }
+
+        view.login_fragment_create_account_btn.setOnClickListener{
+            ShowRegisterFragment()
         }
 
         // Return the fragment view/layout
@@ -98,6 +105,13 @@ class LoginFragment : Fragment() {
                 }
     }
 
+    fun ShowRegisterFragment(){
+        val ft = fragmentManager!!.beginTransaction()
+        ft.replace(R.id.login_fragment_holder, RegisterFragment(), "RegisterFragment Transaction")
+        ft.addToBackStack(null)
+        ft.commit()
+    }
+
     private fun validateForm(): Boolean {
         var valid = true
 
@@ -118,6 +132,13 @@ class LoginFragment : Fragment() {
         }
 
         return valid
+    }
+
+    companion object{
+
+        fun newInstance(): LoginFragment{
+            return LoginFragment()
+        }
     }
 
 }
