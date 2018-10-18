@@ -24,6 +24,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         // Configure action bar
+        val mainToolbar = findViewById<android.support.v7.widget.Toolbar>(R.id.main_toolbar)
+        setSupportActionBar(mainToolbar)
+
         setSupportActionBar(toolbar)
 
         // Initialize the action bar drawer toggle instance
