@@ -16,7 +16,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity(), AdventureTabsFragment.OnTabSelectionListener {
-//    private var contentFragment : AdventureTabsFragment = AdventureTabsFragment.newInstance()
 
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
@@ -77,29 +76,12 @@ class MainActivity : AppCompatActivity(), AdventureTabsFragment.OnTabSelectionLi
         Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu, menu)
-        return true
-    }
+//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+//        menuInflater.inflate(R.menu.menu, menu)
+//        return true
+//    }
 
     override fun onFragmentInteraction(selection: String) {
-
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handles action bar item clicks here.
-        when (item.itemId) {
-            R.id.action_editar -> {
-                toast(resources.getString(R.string.editar))
-                return true
-            }
-            R.id.action_ordenar -> {
-                toast(resources.getString(R.string.ordenar))
-                return true
-            }
-        }
-
-        return super.onOptionsItemSelected(item)
 
     }
 }

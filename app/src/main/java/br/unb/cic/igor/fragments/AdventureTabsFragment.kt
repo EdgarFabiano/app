@@ -3,13 +3,13 @@ package br.unb.cic.igor.fragments
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.Toast
 
 import br.unb.cic.igor.R
 import kotlinx.android.synthetic.main.fragment_adventure_tabs.*
 import kotlinx.android.synthetic.main.fragment_adventure_tabs.view.*
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,6 +29,34 @@ class AdventureTabsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true);
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handles action bar item clicks here.
+        when (item.itemId) {
+            R.id.action_editar -> {
+                toast("${resources.getString(R.string.editar)} $selectedTab")
+                return true
+            }
+            R.id.action_ordenar -> {
+                toast("${resources.getString(R.string.ordenar)} $selectedTab")
+                return true
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
+
+    }
+
+    private fun toast(message: String) {
+        if (activity != null) {
+            Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
