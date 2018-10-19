@@ -15,6 +15,7 @@ import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.support.v4.app.DialogFragment
+import android.support.v4.app.FragmentManager
 import android.text.TextUtils
 import android.util.Log
 import android.widget.AdapterView
@@ -49,9 +50,9 @@ class RegisterFragment : Fragment(){
     private var param2: String? = null
 
     private var mAuth: FirebaseAuth? = null
-    private val manager = fragmentManager
+    private var manager: FragmentManager? = null
 
-    private val genderList = arrayOf("Fernando", "Masculino")
+    private val genderList = arrayOf("Feminino", "Masculino")
     private var selectedGender: String? = null
 
     private var birthdate: String? = null
@@ -64,6 +65,7 @@ class RegisterFragment : Fragment(){
         }
 
         mAuth = FirebaseAuth.getInstance();
+        manager = fragmentManager
 
     }
 
@@ -102,8 +104,8 @@ class RegisterFragment : Fragment(){
             return
         }
 
-        val email = register_email.text.toString() // email address format
-        val password = register_password.text.toString()
+        val email = register_email.text.toString().trim() // email address format
+        val password = register_password.text.toString().trim()
 
         mAuth!!.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(activity as Activity) { task ->
@@ -112,19 +114,20 @@ class RegisterFragment : Fragment(){
                     // If sign in fails, display a message to the user. If sign in succeeds
                     // the auth state listener will be notified and logic to handle the
                     // signed in user can be handled in the listener.
-                    if (!task.isSuccessful()) {
+                    if (!task.isSuccessful) {
                         Toast.makeText(activity, "Auth fail.", Toast.LENGTH_SHORT).show()
                     } else{
                         Toast.makeText(activity, "Auth success!.", Toast.LENGTH_SHORT).show()
+                        showLoginFragment()
                     }
                 }
     }
 
-    fun ShowLoginFragment(){
-        manager!!.beginTransaction()
-                .replace(R.id.login_fragment_holder,  LoginFragment())
-                .addToBackStack(null)
-                .commit()
+    fun showLoginFragment(){
+        val ft = fragmentManager!!.beginTransaction()
+        ft.replace(R.id.login_fragment_holder, LoginFragment(), "LoginFragment Transaction")
+        ft.addToBackStack(null)
+        ft.commit()
     }
 
 
@@ -143,7 +146,10 @@ class RegisterFragment : Fragment(){
         if (TextUtils.isEmpty(password)) {
             register_password.error = "Required."
             valid = false
-        } else {
+        } else if(password.length < 6) {
+            register_password.error = "At least 6 characters on password."
+            valid = false
+        } else{
             register_password.error = null
         }
 

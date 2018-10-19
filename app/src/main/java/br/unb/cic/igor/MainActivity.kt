@@ -11,24 +11,40 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_login.*
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+
+
+
+
 
 class MainActivity : AppCompatActivity() {
 
     private var mAuth: FirebaseAuth? = null
+    private var mGoogleSignInClient: GoogleSignInClient? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         mAuth = FirebaseAuth.getInstance()
+
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build()
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
+
         if (mAuth!!.currentUser == null){
-            startActivity(Intent(this, LoginActivity::class.java))
+            logout()
         }
 
         val user = mAuth!!.currentUser
 
-        main_email.setText(user!!.email)
-        main_id.setText(user!!.uid)
+        main_email.text = user!!.email
+        main_id.text = user.uid
 
         main_logout_button.setOnClickListener{
             logout()
@@ -36,9 +52,13 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+
+
     fun logout(){
         mAuth!!.signOut()
-        startActivity(Intent(this, LoginActivity::class.java))
+        mGoogleSignInClient!!.signOut().addOnCompleteListener(this) { _ ->
+            startActivity(Intent(this, LoginActivity::class.java))
+        }
     }
 
 
