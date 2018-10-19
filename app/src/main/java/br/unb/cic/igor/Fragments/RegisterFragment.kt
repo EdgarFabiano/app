@@ -22,6 +22,9 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.DatePicker
 import br.unb.cic.igor.R.id.*
+import br.unb.cic.igor.classes.User
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_register.view.*
 import java.time.Instant
 import java.util.*
@@ -49,11 +52,13 @@ class RegisterFragment : Fragment(){
     private var param1: String? = null
     private var param2: String? = null
 
+    lateinit var mDatabase: FirebaseFirestore
+
     private var mAuth: FirebaseAuth? = null
     private var manager: FragmentManager? = null
 
     private val genderList = arrayOf("Feminino", "Masculino")
-    private var selectedGender: String? = null
+    private var selectedGender: String? = "Feminino"
 
     private var birthdate: String? = null
 
@@ -64,7 +69,8 @@ class RegisterFragment : Fragment(){
             param2 = it.getString(ARG_PARAM2)
         }
 
-        mAuth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance()
+        mDatabase = FirebaseFirestore.getInstance()
         manager = fragmentManager
 
     }
@@ -85,7 +91,7 @@ class RegisterFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        register_gender.adapter = ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, genderList)
+        register_gender.adapter = ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, genderList)
 
         register_gender.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -106,6 +112,8 @@ class RegisterFragment : Fragment(){
 
         val email = register_email.text.toString().trim() // email address format
         val password = register_password.text.toString().trim()
+        val birthdate = register_birthdate.text.toString().trim()
+        val username = register_username.text.toString().trim()
 
         mAuth!!.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(activity as Activity) { task ->
@@ -118,7 +126,12 @@ class RegisterFragment : Fragment(){
                         Toast.makeText(activity, "Auth fail.", Toast.LENGTH_SHORT).show()
                     } else{
                         Toast.makeText(activity, "Auth success!.", Toast.LENGTH_SHORT).show()
-                        showLoginFragment()
+                        val firebaseUser = mAuth!!.currentUser
+                        if(firebaseUser != null){
+                            val user = User(firebaseUser.uid, firebaseUser.email!!, username, null, selectedGender)
+                            mDatabase.collection("users").document(firebaseUser.uid).set(User(firebaseUser.uid, firebaseUser.email!!, username, null, selectedGender))
+                            showLoginFragment()
+                        }
                     }
                 }
     }
@@ -151,6 +164,22 @@ class RegisterFragment : Fragment(){
             valid = false
         } else{
             register_password.error = null
+        }
+
+        val username = register_username.text.toString()
+        if (TextUtils.isEmpty(username)) {
+            register_username.error = "Required."
+            valid = false
+        } else {
+            register_username.error = null
+        }
+
+        val birthdate = register_birthdate.text.toString()
+        if (TextUtils.isEmpty(birthdate)) {
+            register_birthdate.error = "Required."
+            valid = false
+        } else {
+            register_birthdate.error = null
         }
 
         return valid
