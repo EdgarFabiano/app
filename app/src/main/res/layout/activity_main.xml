@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
+    android:background="@drawable/igor_login_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="br.unb.cic.igor.MainActivity">
@@ -27,6 +28,13 @@
                 android:src="@drawable/igor_barra_navegacao_logo"/>
 
         </android.support.v7.widget.Toolbar>
+
+        <fragment
+            android:id="@+id/fragment2"
+            android:name="br.unb.cic.igor.fragments.AdventureTabsFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:layout="@layout/fragment_adventure_tabs" />
 
     </LinearLayout>
 

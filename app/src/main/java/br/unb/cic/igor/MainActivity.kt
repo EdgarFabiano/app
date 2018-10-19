@@ -2,17 +2,21 @@ package br.unb.cic.igor
 
 import android.content.Context
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.TabHost
 import android.widget.Toast
+import br.unb.cic.igor.fragments.AdventureTabsFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), AdventureTabsFragment.OnTabSelectionListener {
+//    private var contentFragment : AdventureTabsFragment = AdventureTabsFragment.newInstance()
 
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
@@ -76,6 +80,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
         return true
+    }
+
+    override fun onFragmentInteraction(selection: String) {
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
