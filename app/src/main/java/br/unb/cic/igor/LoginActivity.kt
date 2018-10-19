@@ -1,10 +1,12 @@
 package br.unb.cic.igor
 
+import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.FragmentTransaction
 import android.text.TextUtils
 import android.text.TextUtils.replace
+import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -38,6 +40,12 @@ class LoginActivity : AppCompatActivity() {
         loginFragment = LoginFragment.newInstance()
 
         ShowLoginFragment()
+    }
+
+    override fun onCreateView(name: String?, context: Context?, attrs: AttributeSet?): View? {
+        return super.onCreateView(name, context, attrs)
+
+
     }
 
     // [START on_start_check_user]
