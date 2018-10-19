@@ -12,10 +12,12 @@ import android.view.View
 import android.widget.TabHost
 import android.widget.Toast
 import br.unb.cic.igor.fragments.AdventureTabsFragment
+import br.unb.cic.igor.fragments.PlayersTabFragment
+import br.unb.cic.igor.fragments.dummy.DummyContent
 import kotlinx.android.synthetic.main.activity_main.*
 
 
-class MainActivity : AppCompatActivity(), AdventureTabsFragment.OnTabSelectionListener {
+class MainActivity : AppCompatActivity(), AdventureTabsFragment.OnTabSelectionListener, PlayersTabFragment.OnListFragmentInteractionListener {
 //    private var contentFragment : AdventureTabsFragment = AdventureTabsFragment.newInstance()
 
     override fun onBackPressed() {
@@ -83,6 +85,10 @@ class MainActivity : AppCompatActivity(), AdventureTabsFragment.OnTabSelectionLi
     }
 
     override fun onFragmentInteraction(selection: String) {
+
+    }
+
+    override fun onListFragmentInteraction(item: DummyContent.DummyItem?){
 
     }
 

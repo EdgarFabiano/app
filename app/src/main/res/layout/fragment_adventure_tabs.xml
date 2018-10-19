@@ -63,5 +63,12 @@
         app:layout_constraintStart_toStartOf="@+id/playersTab"
         app:layout_constraintTop_toTopOf="@+id/playersTab" />
 
+    <fragment
+        android:id="@+id/fragment"
+        android:name="br.unb.cic.igor.fragments.PlayersTabFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:layout="@layout/fragment_players_list" />
+
 
 </android.support.constraint.ConstraintLayout>
