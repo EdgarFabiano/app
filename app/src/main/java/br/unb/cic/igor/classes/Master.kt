@@ -1,3 +1,3 @@
 package br.unb.cic.igor.classes
 
-public class Master(userId: String, name: String, description: String)
+public class Master(var userId: String, var name: String, var description: String)

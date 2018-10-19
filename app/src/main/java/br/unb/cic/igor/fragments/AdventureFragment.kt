@@ -9,9 +9,14 @@ import android.view.View
 import android.view.ViewGroup
 import br.unb.cic.igor.AdventureViewModel
 import br.unb.cic.igor.R
+import br.unb.cic.igor.classes.Adventure
+import br.unb.cic.igor.classes.Session
+import kotlinx.android.synthetic.main.adventure_fragment.*
+import kotlinx.android.synthetic.main.adventure_fragment.view.*
 
 class AdventureFragment : Fragment() {
     private var listener: OnSessionSelectedListener? = null
+    private var adventure: Adventure? = null;
 
     companion object {
         fun newInstance() = AdventureFragment()
@@ -27,16 +32,17 @@ class AdventureFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(AdventureViewModel::class.java)
-        // TODO: Use the ViewModel
-
+        adventure = viewModel.mockAdventure
+        adventureInfo.text = adventure!!.summary
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is OnSessionSelectedListener) {
-            listener = context
+        val fragment = fragmentManager?.findFragmentById(R.id.tabsFragment)
+        if (fragment is OnSessionSelectedListener) {
+            listener = fragment
         } else {
-            throw RuntimeException(context.toString() + " must implement OnTabSelectionListener")
+            throw RuntimeException(fragment.toString() + " must implement OnSessionSelectedListener")
         }
     }
 
@@ -46,8 +52,7 @@ class AdventureFragment : Fragment() {
     }
 
     interface OnSessionSelectedListener {
-        // TODO: Update argument type and name
-        fun onSessionSelected(selection: String)
+        fun onSessionSelected(session: Session)
     }
 
 }
