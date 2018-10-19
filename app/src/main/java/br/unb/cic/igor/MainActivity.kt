@@ -1,65 +1,87 @@
 package br.unb.cic.igor
 
-import android.app.Activity
-import android.content.Intent
-import android.support.v7.app.AppCompatActivity
+import android.content.Context
 import android.os.Bundle
-import android.util.Log
-import android.widget.ProgressBar
+import android.support.v4.app.Fragment
+import android.support.v4.view.GravityCompat
+import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.app.AppCompatActivity
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.widget.TabHost
 import android.widget.Toast
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.UserProfileChangeRequest
+import br.unb.cic.igor.fragments.AdventureTabsFragment
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_login.*
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 
+class MainActivity : AppCompatActivity(), AdventureTabsFragment.OnTabSelectionListener {
 
-
-
-class MainActivity : AppCompatActivity() {
-
-    private var mAuth: FirebaseAuth? = null
-    private var mGoogleSignInClient: GoogleSignInClient? = null
+    override fun onBackPressed() {
+        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
+            drawer_layout.closeDrawer(GravityCompat.START)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        mAuth = FirebaseAuth.getInstance()
+        // Configure action bar
+        setSupportActionBar(main_toolbar)
 
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build()
+        // Initialize the action bar drawer toggle instance
+        val drawerToggle: ActionBarDrawerToggle = object : ActionBarDrawerToggle(
+                this,
+                drawer_layout,
+                main_toolbar,
+                R.string.drawer_open,
+                R.string.drawer_close
+        ) {
+            override fun onDrawerClosed(view: View) {
+                super.onDrawerClosed(view)
+                //toast("Drawer closed")
+            }
 
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
-
-        if (mAuth!!.currentUser == null){
-            logout()
+            override fun onDrawerOpened(drawerView: View) {
+                super.onDrawerOpened(drawerView)
+                //toast("Drawer opened")
+            }
         }
 
-        val user = mAuth!!.currentUser
 
-        main_email.text = user!!.email
-        main_id.text = user.uid
+        // Configure the drawer layout to add listener and show icon on toolbar
+        drawerToggle.isDrawerIndicatorEnabled = true
+        drawer_layout.addDrawerListener(drawerToggle)
+        drawerToggle.syncState()
 
-        main_logout_button.setOnClickListener{
-            logout()
+
+        // Set navigation view navigation item selected listener
+        navigation_view.setNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.action_aventuras -> toast(resources.getString(R.string.aventuras))
+                R.id.action_livros -> toast(resources.getString(R.string.livros))
+                R.id.action_conta -> toast(resources.getString(R.string.conta))
+                R.id.action_notificacoes -> toast(resources.getString(R.string.notificacoes))
+                R.id.action_configuracoes -> toast(resources.getString(R.string.configuracoes))
+            }
+            // Close the drawer
+            drawer_layout.closeDrawer(GravityCompat.START)
+            true
         }
-
     }
 
-
-
-    fun logout(){
-        mAuth!!.signOut()
-        mGoogleSignInClient!!.signOut().addOnCompleteListener(this) { _ ->
-            startActivity(Intent(this, LoginActivity::class.java))
-        }
+    // Extension function to show toast message easily
+    private fun Context.toast(message: String) {
+        Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
     }
 
+//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+//        menuInflater.inflate(R.menu.menu, menu)
+//        return true
+//    }
 
+    override fun onFragmentInteraction(selection: String) {
+
+    }
 }
