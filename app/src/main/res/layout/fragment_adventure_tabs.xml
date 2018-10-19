@@ -8,39 +8,43 @@
 
     <ImageView
         android:id="@+id/contentView"
-        android:layout_width="380dp"
-        android:layout_height="581dp"
+        android:layout_width="357dp"
+        android:layout_height="509dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:src="@drawable/adventure_progress_tab"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:id="@+id/playersTab"
-        android:layout_width="176dp"
+        android:layout_width="162dp"
         android:layout_height="44dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="108dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginTop="84dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:src="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/contentView"
+        app:layout_constraintHorizontal_bias="0.285"
         app:layout_constraintStart_toEndOf="@+id/adventureTab"
         app:layout_constraintTop_toTopOf="@+id/contentView" />
 
     <ImageView
         android:id="@+id/adventureTab"
-        android:layout_width="170dp"
+        android:layout_width="164dp"
         android:layout_height="44dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="108dp"
+        android:layout_marginTop="84dp"
         android:src="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/contentView"
         app:layout_constraintTop_toTopOf="@+id/contentView" />
 
     <TextView
@@ -60,8 +64,10 @@
         android:text="@string/jogadores"
         app:layout_constraintBottom_toBottomOf="@+id/playersTab"
         app:layout_constraintEnd_toEndOf="@+id/playersTab"
+        app:layout_constraintHorizontal_bias="0.427"
         app:layout_constraintStart_toStartOf="@+id/playersTab"
-        app:layout_constraintTop_toTopOf="@+id/playersTab" />
+        app:layout_constraintTop_toTopOf="@+id/playersTab"
+        app:layout_constraintVertical_bias="0.44" />
 
 
 </android.support.constraint.ConstraintLayout>
