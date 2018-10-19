@@ -7,6 +7,7 @@
     tools:context=".fragments.AdventureFragment">
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/sessionList"
         android:layout_width="254dp"
         android:layout_height="98dp"
         android:layout_marginStart="8dp"
@@ -21,7 +22,7 @@
     <ScrollView
         android:id="@+id/scrollView3"
         android:layout_width="252dp"
-        android:layout_height="107dp"
+        android:layout_height="120dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="4dp"
@@ -54,7 +55,7 @@
         android:layout_height="7dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="116dp"
+        android:layout_marginTop="128dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:scaleType="fitCenter"
