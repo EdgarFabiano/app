@@ -23,6 +23,22 @@
           }
         },
         {
+          "client_id": "782501373292-5pqubaudhaicqva451knm1ip72bsjk62.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.unb.cic.igor",
+            "certificate_hash": "27e8084209578879bc176ae172c39f5a55adb77a"
+          }
+        },
+        {
+          "client_id": "782501373292-qfm263ngfquvoiaq8hpnm0h8lhv4cr06.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.unb.cic.igor",
+            "certificate_hash": "4de8718e45729a4516a025d02eeee6618e674b55"
+          }
+        },
+        {
           "client_id": "782501373292-saiop1ag1ons3hpkcj5ofiajoo4a9e1v.apps.googleusercontent.com",
           "client_type": 3
         }
