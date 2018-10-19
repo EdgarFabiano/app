@@ -7,7 +7,7 @@
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingTop="@dimen/image_top_padding"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".LoginActivity">
@@ -90,6 +90,7 @@
                     android:id="@+id/criarConta"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:onClick="criarConta"
                     android:text="@string/criar_conta" />
 
                 <TextView

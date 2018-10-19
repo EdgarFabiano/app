@@ -297,4 +297,9 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
          */
         private val DUMMY_CREDENTIALS = arrayOf("foo@example.com:hello", "bar@example.com:world")
     }
+
+    fun criarConta(v: View) {
+        startActivity(Intent(this, CreateAccountActivity::class.java))
+    }
+
 }

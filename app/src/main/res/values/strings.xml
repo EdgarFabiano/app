@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Igor</string>
+    <string name="facebook_app_id">1773802782836307</string> <string name="fb_login_protocol_scheme">fb1773802782836307</string>
+
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
@@ -24,4 +26,9 @@
     <string name="configuracoes">Configurações</string>
     <string name="editar">Editar</string>
     <string name="ordenar">Ordenar</string>
+    <string name="password">Senha</string>
+    <string name="user_name">Nome de Usuário</string>
+    <string name="birth_date">Data de Nascimento</string>
+    <string name="sex">Sexo</string>
+    <string name="create">Criar</string>
 </resources>
