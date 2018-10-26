@@ -149,9 +149,9 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
     }
 
     override fun onSessionSelected(session: Session) {
-        contentFragment = SessionFragment.newInstance(session)
+        adventureFragment = SessionFragment.newInstance(session)
         val ft = fragmentManager?.beginTransaction()
-        ft?.replace(R.id.contentFrame, contentFragment)
+        ft?.replace(R.id.contentFrame, adventureFragment)
         ft?.commit()
     }
 }
