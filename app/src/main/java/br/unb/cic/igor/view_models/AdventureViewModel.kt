@@ -1,4 +1,4 @@
-package br.unb.cic.igor
+package br.unb.cic.igor.view_models
 
 import android.arch.lifecycle.ViewModel;
 import br.unb.cic.igor.classes.Adventure

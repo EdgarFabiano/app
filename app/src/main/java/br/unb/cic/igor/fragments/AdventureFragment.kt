@@ -9,13 +9,12 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import br.unb.cic.igor.AdventureViewModel
+import br.unb.cic.igor.view_models.AdventureViewModel
 import br.unb.cic.igor.R
 import br.unb.cic.igor.adapters.SessionAdapter
 import br.unb.cic.igor.classes.Adventure
 import br.unb.cic.igor.classes.Session
 import kotlinx.android.synthetic.main.adventure_fragment.*
-import kotlinx.android.synthetic.main.adventure_fragment.view.*
 
 class AdventureFragment : Fragment() {
     private var listener: OnSessionSelectedListener? = null

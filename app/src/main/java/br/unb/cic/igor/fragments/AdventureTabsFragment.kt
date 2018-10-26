@@ -1,22 +1,16 @@
 package br.unb.cic.igor.fragments
 
-import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
 import android.widget.Toast
-import br.unb.cic.igor.AdventureViewModel
 
 import br.unb.cic.igor.R
-import br.unb.cic.igor.classes.Adventure
-import br.unb.cic.igor.classes.Master
-import br.unb.cic.igor.classes.Player
 import br.unb.cic.igor.classes.Session
 import kotlinx.android.synthetic.main.fragment_adventure_tabs.*
 import kotlinx.android.synthetic.main.fragment_adventure_tabs.view.*
-import java.util.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -35,7 +29,6 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
     private var listener: OnTabSelectionListener? = null
     private var selectedTab: String = "adventure"
     private var contentFragment: Fragment = AdventureFragment.newInstance()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,10 +91,11 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
     private fun onTabPressed(selection: String) {
         selectedTab = selection
         listener?.onFragmentInteraction(selection)
+
         if (selection == "adventure") {
-            val ft = fragmentManager?.beginTransaction();
-            ft?.replace(R.id.contentFrame, contentFragment);
-            ft?.commit();
+            val ft = fragmentManager?.beginTransaction()
+            ft?.replace(R.id.contentFrame, contentFragment)
+            ft?.commit()
         } else {
         }
     }
@@ -150,6 +144,9 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
     }
 
     override fun onSessionSelected(session: Session) {
-        toast(session.name)
+        contentFragment = SessionFragment.newInstance(session)
+        val ft = fragmentManager?.beginTransaction()
+        ft?.replace(R.id.contentFrame, contentFragment)
+        ft?.commit()
     }
 }

@@ -9,7 +9,7 @@
 
 
     <TextView
-        android:id="@+id/dateText"
+        android:id="@+id/sessionDateText"
         android:layout_width="42dp"
         android:layout_height="19dp"
         android:layout_marginStart="16dp"
@@ -31,7 +31,7 @@
         android:layout_marginTop="8dp"
         android:text="Name"
         app:layout_constraintBottom_toTopOf="@+id/imageView4"
-        app:layout_constraintStart_toEndOf="@+id/dateText"
+        app:layout_constraintStart_toEndOf="@+id/sessionDateText"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 

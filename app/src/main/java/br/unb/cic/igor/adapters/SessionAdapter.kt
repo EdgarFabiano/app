@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import br.unb.cic.igor.R
 import br.unb.cic.igor.classes.Session
 import br.unb.cic.igor.fragments.AdventureFragment
-import br.unb.cic.igor.fragments.dummy.DummyContent
 import kotlinx.android.synthetic.main.session_view.view.*
 import java.text.SimpleDateFormat
 
@@ -47,7 +46,7 @@ RecyclerView.Adapter<SessionAdapter.SessionViewHolder>() {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         val item = sessionDataset[position]
-        holder.layout.dateText.text = SimpleDateFormat("dd/MM").format(item.date)
+        holder.layout.sessionDateText.text = SimpleDateFormat("dd/MM").format(item.date)
         holder.layout.nameText.text = item.name
 
         with(holder.layout) {
