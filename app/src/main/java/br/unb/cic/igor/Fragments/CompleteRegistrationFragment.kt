@@ -115,10 +115,12 @@ class CompleteRegistrationFragment : Fragment() {
 
     private fun validateForm(): Boolean {
         var valid = true
+        val myIcon = resources.getDrawable(R.drawable.igor_attention)
+        myIcon.setBounds(0, 0, myIcon.getIntrinsicWidth()/2, myIcon.getIntrinsicHeight()/2)
 
         val username = complete_reg_username.text.toString()
         if (TextUtils.isEmpty(username)) {
-            complete_reg_username.error = "Required."
+            complete_reg_username.setError("Required", myIcon)
             valid = false
         } else {
             complete_reg_username.error = null
@@ -126,7 +128,7 @@ class CompleteRegistrationFragment : Fragment() {
 
         val birthdate = complete_reg_birthdate.text.toString()
         if (TextUtils.isEmpty(birthdate)) {
-            complete_reg_birthdate.error = "Required."
+            complete_reg_birthdate.setError("Required", myIcon)
             valid = false
         } else {
             complete_reg_birthdate.error = null

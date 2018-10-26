@@ -146,10 +146,13 @@ class RegisterFragment : Fragment(){
 
     private fun validateForm(): Boolean {
         var valid = true
+        val myIcon = resources.getDrawable(R.drawable.igor_attention)
+        myIcon.setBounds(0, 0, myIcon.getIntrinsicWidth()/2, myIcon.getIntrinsicHeight()/2)
 
         val email = register_email.text.toString()
         if (TextUtils.isEmpty(email)) {
-            register_email.error = "Required."
+            //register_email.error = "Required."
+            register_email.setError("Required", myIcon)
             valid = false
         } else {
             register_email.error = null
@@ -157,10 +160,10 @@ class RegisterFragment : Fragment(){
 
         val password = register_password.text.toString()
         if (TextUtils.isEmpty(password)) {
-            register_password.error = "Required."
+            register_password.setError("Required", myIcon)
             valid = false
         } else if(password.length < 6) {
-            register_password.error = "At least 6 characters on password."
+            register_password.setError("At least 6 characters on password.", myIcon)
             valid = false
         } else{
             register_password.error = null
@@ -168,7 +171,7 @@ class RegisterFragment : Fragment(){
 
         val username = register_username.text.toString()
         if (TextUtils.isEmpty(username)) {
-            register_username.error = "Required."
+            register_username.setError("Required", myIcon)
             valid = false
         } else {
             register_username.error = null
@@ -176,7 +179,7 @@ class RegisterFragment : Fragment(){
 
         val birthdate = register_birthdate.text.toString()
         if (TextUtils.isEmpty(birthdate)) {
-            register_birthdate.error = "Required."
+            register_birthdate.setError("Required", myIcon)
             valid = false
         } else {
             register_birthdate.error = null

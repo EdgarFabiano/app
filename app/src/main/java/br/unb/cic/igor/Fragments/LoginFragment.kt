@@ -226,10 +226,12 @@ class LoginFragment : Fragment() {
 
     private fun validateForm(): Boolean {
         var valid = true
+        val myIcon = resources.getDrawable(R.drawable.igor_attention)
+        myIcon.setBounds(0, 0, myIcon.getIntrinsicWidth()/2, myIcon.getIntrinsicHeight()/2)
 
         val email = login_frag_email.text.toString()
         if (TextUtils.isEmpty(email)) {
-            login_frag_email.error = "Required."
+            login_frag_email.setError("Required", myIcon)
             valid = false
         } else {
             login_frag_email.error = null
@@ -237,7 +239,7 @@ class LoginFragment : Fragment() {
 
         val password = login_frag_password.text.toString()
         if (TextUtils.isEmpty(password)) {
-            login_frag_password.error = "Required."
+            login_frag_password.setError("Required", myIcon)
             valid = false
         } else {
             login_frag_password.error = null

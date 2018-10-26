@@ -17,4 +17,9 @@
         <item name="android:textColorSecondary">@color/colorAccent</item>
     </style>
 
+    <style name="AuthFields" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/lightGreen</item>
+        <item name="colorControlActivated">@color/lightGreen</item>
+    </style>
+
 </resources>
