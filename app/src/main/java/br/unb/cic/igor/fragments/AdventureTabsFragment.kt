@@ -1,5 +1,7 @@
 package br.unb.cic.igor.fragments
 
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -7,6 +9,7 @@ import android.view.*
 import android.widget.Toast
 
 import br.unb.cic.igor.R
+import br.unb.cic.igor.classes.Session
 import kotlinx.android.synthetic.main.fragment_adventure_tabs.*
 import kotlinx.android.synthetic.main.fragment_adventure_tabs.view.*
 
@@ -23,9 +26,11 @@ import kotlinx.android.synthetic.main.fragment_adventure_tabs.view.*
  * create an instance of this fragment.
  *
  */
-class AdventureTabsFragment : Fragment() {
+class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedListener {
     private var listener: OnTabSelectionListener? = null
     private var selectedTab: String = "adventure"
+    private var adventureFragment: Fragment = AdventureFragment.newInstance()
+    private var playersFragment: Fragment = PlayersFragment.newInstance(1)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +55,6 @@ class AdventureTabsFragment : Fragment() {
         }
 
         return super.onOptionsItemSelected(item)
-
     }
 
     private fun toast(message: String) {
@@ -78,6 +82,10 @@ class AdventureTabsFragment : Fragment() {
             }
         }
 
+        val ft = fragmentManager?.beginTransaction();
+        ft?.replace(R.id.contentFrame, adventureFragment);
+        ft?.commit();
+
         return view
     }
 
@@ -85,6 +93,16 @@ class AdventureTabsFragment : Fragment() {
     private fun onTabPressed(selection: String) {
         selectedTab = selection
         listener?.onFragmentInteraction(selection)
+
+        val ft = fragmentManager?.beginTransaction();
+
+        if (selection == "adventure") {
+            ft?.replace(R.id.contentFrame, adventureFragment);
+        } else {
+            ft?.replace(R.id.contentFrame, playersFragment);
+        }
+
+        ft?.commit();
     }
 
     override fun onAttach(context: Context) {
@@ -128,5 +146,12 @@ class AdventureTabsFragment : Fragment() {
         @JvmStatic
         fun newInstance() =
                 AdventureTabsFragment()
+    }
+
+    override fun onSessionSelected(session: Session) {
+        adventureFragment = SessionFragment.newInstance(session)
+        val ft = fragmentManager?.beginTransaction()
+        ft?.replace(R.id.contentFrame, adventureFragment)
+        ft?.commit()
     }
 }

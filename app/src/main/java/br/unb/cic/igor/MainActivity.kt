@@ -2,20 +2,19 @@ package br.unb.cic.igor
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
-import android.widget.TabHost
 import android.widget.Toast
 import br.unb.cic.igor.fragments.AdventureTabsFragment
+import br.unb.cic.igor.fragments.PlayersFragment
+import br.unb.cic.igor.fragments.dummy.DummyContent
 import kotlinx.android.synthetic.main.activity_main.*
 
 
-class MainActivity : AppCompatActivity(), AdventureTabsFragment.OnTabSelectionListener {
+class MainActivity : AppCompatActivity(), AdventureTabsFragment.OnTabSelectionListener, PlayersFragment.OnPlayersFragmentInteractionListener {
+//    private var contentFragment : AdventureTabsFragment = AdventureTabsFragment.newInstance()
 
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
@@ -82,6 +81,10 @@ class MainActivity : AppCompatActivity(), AdventureTabsFragment.OnTabSelectionLi
 //    }
 
     override fun onFragmentInteraction(selection: String) {
+
+    }
+
+    override fun onPlayersFragmentInteraction(item: DummyContent.DummyItem?){
 
     }
 }

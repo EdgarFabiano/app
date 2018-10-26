@@ -30,7 +30,7 @@
         </android.support.v7.widget.Toolbar>
 
         <fragment
-            android:id="@+id/fragment2"
+            android:id="@+id/tabsFragment"
             android:name="br.unb.cic.igor.fragments.AdventureTabsFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
