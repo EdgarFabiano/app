@@ -6,22 +6,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import br.unb.cic.igor.R
+import br.unb.cic.igor.classes.Player
 
 
-import br.unb.cic.igor.fragments.PlayersTabFragment.OnListFragmentInteractionListener
+import br.unb.cic.igor.fragments.PlayersFragment.OnPlayersFragmentInteractionListener
 import br.unb.cic.igor.fragments.dummy.DummyContent.DummyItem
 
 import kotlinx.android.synthetic.main.player_item.view.*
 
 /**
  * [RecyclerView.Adapter] that can display a [DummyItem] and makes a call to the
- * specified [OnListFragmentInteractionListener].
+ * specified [OnPlayersFragmentInteractionListener].
  * TODO: Replace the implementation with code for your data type.
  */
-class PlayersRecyclerViewAdapter(
-        private val mValues: List<DummyItem>,
-        private val mListener: OnListFragmentInteractionListener?)
-    : RecyclerView.Adapter<PlayersRecyclerViewAdapter.ViewHolder>() {
+class PlayersAdapter(
+        private val mValues: List<Player>,
+        private val mListener: OnPlayersFragmentInteractionListener?)
+    : RecyclerView.Adapter<PlayersAdapter.ViewHolder>() {
 
     private val mOnClickListener: View.OnClickListener
 
@@ -30,7 +31,7 @@ class PlayersRecyclerViewAdapter(
             val item = v.tag as DummyItem
             // Notify the active callbacks interface (the activity, if the fragment is attached to
             // one) that an item has been selected.
-            mListener?.onListFragmentInteraction(item)
+            mListener?.onPlayersFragmentInteraction(item)
         }
     }
 
@@ -42,8 +43,8 @@ class PlayersRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mValues[position]
-        holder.mIdView.text = item.id
-        holder.mContentView.text = item.content
+        holder.mNameView.text = item.name
+        holder.mCharacterView.text = item.character
 
         with(holder.mView) {
             tag = item
@@ -54,11 +55,11 @@ class PlayersRecyclerViewAdapter(
     override fun getItemCount(): Int = mValues.size
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        val mIdView: TextView = mView.item_number
-        val mContentView: TextView = mView.content
+        val mNameView: TextView = mView.player_name
+        val mCharacterView: TextView = mView.player_character
 
         override fun toString(): String {
-            return super.toString() + " '" + mContentView.text + "'"
+            return super.toString() + " '" + mCharacterView.text + "'"
         }
     }
 }

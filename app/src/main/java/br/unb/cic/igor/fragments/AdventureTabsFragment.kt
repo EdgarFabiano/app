@@ -1,5 +1,6 @@
 package br.unb.cic.igor.fragments
 
+import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
@@ -28,7 +29,8 @@ import kotlinx.android.synthetic.main.fragment_adventure_tabs.view.*
 class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedListener {
     private var listener: OnTabSelectionListener? = null
     private var selectedTab: String = "adventure"
-    private var contentFragment: Fragment = AdventureFragment.newInstance()
+    private var adventureFragment: Fragment = AdventureFragment.newInstance()
+    private var playersFragment: Fragment = PlayersFragment.newInstance(1)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,7 +83,7 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
         }
 
         val ft = fragmentManager?.beginTransaction();
-        ft?.replace(R.id.contentFrame, contentFragment);
+        ft?.replace(R.id.contentFrame, adventureFragment);
         ft?.commit();
 
         return view
@@ -92,12 +94,15 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
         selectedTab = selection
         listener?.onFragmentInteraction(selection)
 
+        val ft = fragmentManager?.beginTransaction();
+
         if (selection == "adventure") {
-            val ft = fragmentManager?.beginTransaction()
-            ft?.replace(R.id.contentFrame, contentFragment)
-            ft?.commit()
+            ft?.replace(R.id.contentFrame, adventureFragment);
         } else {
+            ft?.replace(R.id.contentFrame, playersFragment);
         }
+
+        ft?.commit();
     }
 
     override fun onAttach(context: Context) {
