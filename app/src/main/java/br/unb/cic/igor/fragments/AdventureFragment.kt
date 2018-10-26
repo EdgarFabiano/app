@@ -41,8 +41,8 @@ class AdventureFragment : Fragment() {
         adventure = viewModel.mockAdventure
         adventureInfo.text = adventure!!.summary
 
-        viewManager = LinearLayoutManager(activity) as RecyclerView.LayoutManager
-        viewAdapter = SessionAdapter(adventure?.sessions!!.toTypedArray())
+        viewManager = LinearLayoutManager(activity)
+        viewAdapter = SessionAdapter(adventure?.sessions!!.toTypedArray(), listener)
 
         recyclerView = sessionList.apply {
             // use this setting to improve performance if you know that changes

@@ -150,5 +150,6 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
     }
 
     override fun onSessionSelected(session: Session) {
+        toast(session.name)
     }
 }
