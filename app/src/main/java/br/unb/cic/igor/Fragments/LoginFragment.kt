@@ -18,6 +18,7 @@ import android.widget.Toast
 import br.unb.cic.igor.MainActivity
 
 import br.unb.cic.igor.R
+import br.unb.cic.igor.classes.User
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -25,6 +26,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.*
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_login.view.*
 import kotlinx.android.synthetic.main.fragment_register.*
@@ -55,6 +59,8 @@ class LoginFragment : Fragment() {
     private var mAuth: FirebaseAuth? = null
     private val manager = fragmentManager
 
+    lateinit var mDatabase: FirebaseFirestore
+
     lateinit var mGoogleSignInClient: GoogleSignInClient
     lateinit var gso: GoogleSignInOptions
 
@@ -66,7 +72,8 @@ class LoginFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
-        mAuth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance()
+        mDatabase = FirebaseFirestore.getInstance()
 
         gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -178,8 +185,22 @@ class LoginFragment : Fragment() {
 
     private fun onLoginSuccess(){
         Toast.makeText(activity, "Auth success!", Toast.LENGTH_SHORT).show()
+        val firebaseUser = mAuth!!.currentUser
+        if(firebaseUser != null){
+           User.Get(firebaseUser!!.uid, mDatabase).addOnSuccessListener{
+                task ->
+                    var user = task.toObject(User::class.java)
+                    if(user == null){
+                        ShowCompleteRegistrationFragment()
+                    } else{
+                        User.SetInstance(user)
+                        startActivity(Intent(activity, MainActivity::class.java))
+                    }
+            }
+
+        }
         //finish()
-        startActivity(Intent(activity, MainActivity::class.java))
+
     }
 
     private fun onLoginFail(show: Boolean = true){
@@ -187,6 +208,13 @@ class LoginFragment : Fragment() {
             Toast.makeText(activity, "Auth fail.", Toast.LENGTH_SHORT).show()
         }
 
+    }
+
+    fun ShowCompleteRegistrationFragment(){
+        val ft = fragmentManager!!.beginTransaction()
+        ft.replace(R.id.login_fragment_holder, CompleteRegistrationFragment(), "CompleteRegistrationFragment Transaction")
+        ft.addToBackStack(null)
+        ft.commit()
     }
 
     fun ShowRegisterFragment(){
