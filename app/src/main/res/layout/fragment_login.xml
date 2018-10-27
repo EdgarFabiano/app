@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/login_frag_title"
-        android:layout_width="235dp"
-        android:layout_height="72dp"
+        android:layout_width="206dp"
+        android:layout_height="54dp"
         android:src="@drawable/igor_login_igor_icon"
         app:layout_constraintBottom_toTopOf="@+id/login_frag_email"
         app:layout_constraintEnd_toEndOf="parent"

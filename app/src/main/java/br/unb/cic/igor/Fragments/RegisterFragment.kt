@@ -1,35 +1,24 @@
 package br.unb.cic.igor.Fragments
 
-import android.net.Uri
+import android.app.Activity
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-
-import br.unb.cic.igor.R
-import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.fragment_register.*
-import android.widget.Toast
-import android.app.Activity
-import android.app.DatePickerDialog
-import android.app.Dialog
-import android.support.v4.app.DialogFragment
 import android.support.v4.app.FragmentManager
 import android.text.TextUtils
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.DatePicker
-import br.unb.cic.igor.R.id.*
+import android.widget.Toast
+import br.unb.cic.igor.R
 import br.unb.cic.igor.classes.User
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.android.synthetic.main.form_register.view.*
+import kotlinx.android.synthetic.main.fragment_register.*
 import kotlinx.android.synthetic.main.fragment_register.view.*
-import java.time.Instant
-import java.util.*
-
-
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -80,8 +69,12 @@ class RegisterFragment : Fragment(){
         // Inflate the layout for this fragment
         val view: View = inflater.inflate(R.layout.fragment_register, container, false)
 
-        view.register_button.setOnClickListener {
+        view.form_register.register_button.setOnClickListener {
             register(view)
+        }
+
+        view.form_register.cancel_register_button.setOnClickListener {
+            activity?.onBackPressed()
         }
 
         // Return the fragment view/layout
@@ -91,9 +84,9 @@ class RegisterFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        register_gender.adapter = ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, genderList)
+        form_register.register_gender.adapter = ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, genderList)
 
-        register_gender.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        form_register.register_gender.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 selectedGender = null
             }
@@ -110,10 +103,10 @@ class RegisterFragment : Fragment(){
             return
         }
 
-        val email = register_email.text.toString().trim() // email address format
-        val password = register_password.text.toString().trim()
-        val birthdate = register_birthdate.text.toString().trim()
-        val username = register_username.text.toString().trim()
+        val email = form_register.register_email.text.toString().trim() // email address format
+        val password = form_register.register_password.text.toString().trim()
+        val birthdate = form_register.register_birthdate.text.toString().trim()
+        val username = form_register.register_username.text.toString().trim()
 
         mAuth!!.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(activity as Activity) { task ->
@@ -149,40 +142,40 @@ class RegisterFragment : Fragment(){
         val myIcon = resources.getDrawable(R.drawable.igor_attention)
         myIcon.setBounds(0, 0, myIcon.getIntrinsicWidth()/2, myIcon.getIntrinsicHeight()/2)
 
-        val email = register_email.text.toString()
+        val email = form_register.register_email.text.toString()
         if (TextUtils.isEmpty(email)) {
             //register_email.error = "Required."
-            register_email.setError("Required", myIcon)
+            form_register.register_email.setError("Required", myIcon)
             valid = false
         } else {
-            register_email.error = null
+            form_register.register_email.error = null
         }
 
-        val password = register_password.text.toString()
+        val password = form_register.register_password.text.toString()
         if (TextUtils.isEmpty(password)) {
-            register_password.setError("Required", myIcon)
+            form_register.register_password.setError("Required", myIcon)
             valid = false
         } else if(password.length < 6) {
-            register_password.setError("At least 6 characters on password.", myIcon)
+            form_register.register_password.setError("At least 6 characters on password.", myIcon)
             valid = false
         } else{
-            register_password.error = null
+            form_register.register_password.error = null
         }
 
-        val username = register_username.text.toString()
+        val username = form_register.register_username.text.toString()
         if (TextUtils.isEmpty(username)) {
-            register_username.setError("Required", myIcon)
+            form_register.register_username.setError("Required", myIcon)
             valid = false
         } else {
-            register_username.error = null
+            form_register.register_username.error = null
         }
 
-        val birthdate = register_birthdate.text.toString()
+        val birthdate = form_register.register_birthdate.text.toString()
         if (TextUtils.isEmpty(birthdate)) {
-            register_birthdate.setError("Required", myIcon)
+            form_register.register_birthdate.setError("Required", myIcon)
             valid = false
         } else {
-            register_birthdate.error = null
+            form_register.register_birthdate.error = null
         }
 
         return valid
