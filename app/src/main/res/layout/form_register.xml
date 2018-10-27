@@ -65,6 +65,7 @@
                 android:id="@+id/register_birthdate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="date"
                 android:hint="@string/birth_date"
                 android:maxLines="1"
                 android:paddingTop="@dimen/activity_vertical_margin"
