@@ -22,4 +22,14 @@
         <item name="colorControlActivated">@color/lightGreen</item>
     </style>
 
+    <style name="AppDarkTheme" parent="AppTheme">
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+
+    </style>
+
+    <style name="GreenButtonTheme" parent="AppTheme">
+        <item name="colorButtonNormal">@color/lightGreen</item>
+    </style>
+
 </resources>

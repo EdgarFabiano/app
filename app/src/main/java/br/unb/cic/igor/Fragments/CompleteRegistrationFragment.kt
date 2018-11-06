@@ -1,14 +1,9 @@
 package br.unb.cic.igor.Fragments
 
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +11,6 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import br.unb.cic.igor.MainActivity
-
 import br.unb.cic.igor.R
 import br.unb.cic.igor.classes.User
 import com.google.firebase.auth.FirebaseAuth
@@ -24,8 +18,6 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_complete_registration.*
 import kotlinx.android.synthetic.main.fragment_complete_registration.view.*
-import kotlinx.android.synthetic.main.fragment_register.*
-import kotlinx.android.synthetic.main.fragment_register.view.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

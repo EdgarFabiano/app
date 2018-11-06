@@ -1,12 +1,8 @@
 package br.unb.cic.igor.Fragments
 
 import android.app.Activity
-import android.app.ProgressDialog
-import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.support.annotation.NonNull
 import android.support.v4.app.Fragment
 import android.text.TextUtils
 import android.util.Log
@@ -16,7 +12,6 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
 import br.unb.cic.igor.MainActivity
-
 import br.unb.cic.igor.R
 import br.unb.cic.igor.classes.User
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -25,14 +20,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.*
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_login.view.*
-import kotlinx.android.synthetic.main.fragment_register.*
-import kotlinx.android.synthetic.main.fragment_register.view.*
 
 
 // TODO: Rename parameter arguments, choose names that match
