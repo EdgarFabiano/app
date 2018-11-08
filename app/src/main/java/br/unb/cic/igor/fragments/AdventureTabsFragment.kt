@@ -1,7 +1,5 @@
 package br.unb.cic.igor.fragments
 
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -27,10 +25,11 @@ import kotlinx.android.synthetic.main.fragment_adventure_tabs.view.*
  *
  */
 class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedListener {
-    private var listener: OnTabSelectionListener? = null
-    private var selectedTab: String = "adventure"
+    private var state: State = State.ADVENTURE
     private var adventureFragment: Fragment = AdventureFragment.newInstance()
     private var playersFragment: Fragment = PlayersFragment.newInstance(1)
+    private var currentFragment: Fragment = adventureFragment
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,11 +44,11 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
         // Handles action bar item clicks here.
         when (item.itemId) {
             R.id.action_editar -> {
-                toast("${resources.getString(R.string.editar)} $selectedTab")
+                toast("${resources.getString(R.string.editar)} $state")
                 return true
             }
             R.id.action_ordenar -> {
-                toast("${resources.getString(R.string.ordenar)} $selectedTab")
+                toast("${resources.getString(R.string.ordenar)} $state")
                 return true
             }
         }
@@ -69,54 +68,80 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
         // Inflate the layout for this fragment
 
         view.playersTab.setOnClickListener {
-            if (selectedTab != "players") {
-                onTabPressed("players")
+            if (state != State.PLAYERS) {
+                onTabPressed(State.PLAYERS)
                 contentView.setImageResource(R.drawable.players_tab)
             }
         }
 
         view.adventureTab.setOnClickListener {
-            if (selectedTab != "adventure") {
-                onTabPressed("adventure")
+            if (state != State.ADVENTURE) {
+                onTabPressed(State.ADVENTURE)
                 contentView.setImageResource(R.drawable.adventure_progress_tab)
             }
         }
 
+        view.addButton.setOnClickListener {
+            onAddButtonPressed()
+        }
+
         val ft = fragmentManager?.beginTransaction();
         ft?.replace(R.id.contentFrame, adventureFragment);
-        ft?.commit();
+        ft?.commit()
 
         return view
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    private fun onTabPressed(selection: String) {
-        selectedTab = selection
-        listener?.onFragmentInteraction(selection)
+    private fun onTabPressed(selection: State) {
+        state = selection
 
-        val ft = fragmentManager?.beginTransaction();
-
-        if (selection == "adventure") {
-            ft?.replace(R.id.contentFrame, adventureFragment);
-        } else {
-            ft?.replace(R.id.contentFrame, playersFragment);
+        val fragment: Fragment = when (selection) {
+            State.ADVENTURE -> adventureFragment
+            else -> playersFragment
         }
 
-        ft?.commit();
+        switchContent(fragment)
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is OnTabSelectionListener) {
-            listener = context
-        } else {
-            throw RuntimeException(context.toString() + " must implement OnTabSelectionListener")
+    private fun onAddButtonPressed() {
+        when (state) {
+            State.ADVENTURE -> {
+                state = State.SESSION_CREATE
+                switchContent(AddSessionFragment())
+            }
+            else -> toast("wrong state")
         }
     }
+
+    private fun switchContent(contentFragment: Fragment) {
+        currentFragment = contentFragment
+
+        val ft = fragmentManager?.beginTransaction()
+
+        ft?.replace(R.id.contentFrame, contentFragment)
+
+        ft?.commit()
+    }
+
+
+    public fun onBackPressed() {
+        val frag : Fragment? = when (state) {
+            State.SESSION, State.SESSION_CREATE -> {
+                state = State.ADVENTURE
+                adventureFragment
+            }
+            else -> null
+        }
+
+        if (frag != null) {
+            switchContent(frag)
+        }
+    }
+
 
     override fun onDetach() {
         super.onDetach()
-        listener = null
     }
 
     /**
@@ -130,10 +155,6 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
      * (http://developer.android.com/training/basics/fragments/communicating.html)
      * for more information.
      */
-    interface OnTabSelectionListener {
-        // TODO: Update argument type and name
-        fun onFragmentInteraction(selection: String)
-    }
 
     companion object {
         /**
@@ -149,9 +170,15 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
     }
 
     override fun onSessionSelected(session: Session) {
-        adventureFragment = SessionFragment.newInstance(session)
-        val ft = fragmentManager?.beginTransaction()
-        ft?.replace(R.id.contentFrame, adventureFragment)
-        ft?.commit()
+        state = State.SESSION
+        switchContent(SessionFragment.newInstance(session))
+    }
+
+    private enum class State {
+        ADVENTURE,
+        PLAYERS,
+        SESSION,
+        SESSION_CREATE,
+        SESSION_EDIT
     }
 }

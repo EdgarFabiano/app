@@ -13,13 +13,15 @@ import br.unb.cic.igor.fragments.dummy.DummyContent
 import kotlinx.android.synthetic.main.activity_main.*
 
 
-class MainActivity : AppCompatActivity(), AdventureTabsFragment.OnTabSelectionListener, PlayersFragment.OnPlayersFragmentInteractionListener {
+class MainActivity : AppCompatActivity(), PlayersFragment.OnPlayersFragmentInteractionListener {
 //    private var contentFragment : AdventureTabsFragment = AdventureTabsFragment.newInstance()
 
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
         }
+
+        (tabsFragment as AdventureTabsFragment).onBackPressed()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,7 +56,6 @@ class MainActivity : AppCompatActivity(), AdventureTabsFragment.OnTabSelectionLi
         drawer_layout.addDrawerListener(drawerToggle)
         drawerToggle.syncState()
 
-
         // Set navigation view navigation item selected listener
         navigation_view.setNavigationItemSelectedListener {
             when (it.itemId) {
@@ -79,10 +80,6 @@ class MainActivity : AppCompatActivity(), AdventureTabsFragment.OnTabSelectionLi
 //        menuInflater.inflate(R.menu.menu, menu)
 //        return true
 //    }
-
-    override fun onFragmentInteraction(selection: String) {
-
-    }
 
     override fun onPlayersFragmentInteraction(item: DummyContent.DummyItem?){
 
