@@ -1,10 +1,7 @@
 package br.unb.cic.igor.fragments
 
-import android.content.Context
-import android.net.NetworkInfo
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.media.session.PlaybackStateCompat
 import android.view.*
 import android.widget.Toast
 
@@ -108,7 +105,7 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
                 stateTransition(State.SESSION_CREATE, AddSessionFragment())
             }
             State.PLAYERS -> {
-                toast("Players state")
+                stateTransition(State.PLAYER_ADD, AddPlayerFragment.newInstance())
             }
             else -> toast("wrong state")
         }
@@ -116,7 +113,7 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
 
     fun stateTransition(nextState : State, fragment : Fragment) {
         when (nextState) {
-            State.SESSION_CREATE, State.SESSION_EDIT, State.PLAYER_DETAILS -> {
+            State.SESSION_CREATE, State.SESSION_EDIT, State.PLAYER_DETAILS, State.PLAYER_ADD -> {
                 addButton.visibility = View.INVISIBLE
                 setHasOptionsMenu(false)
             }
@@ -161,7 +158,7 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
             State.SESSION, State.SESSION_CREATE, State.SESSION_EDIT -> {
                 stateTransition(State.ADVENTURE, adventureFragment)
             }
-            State.PLAYER_DETAILS -> {
+            State.PLAYER_DETAILS, State.PLAYER_ADD -> {
                 stateTransition(State.PLAYERS, playersFragment)
             }
             else -> {
@@ -214,6 +211,7 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
         ADV_EDIT,
         PLAYERS,
         PLAYER_DETAILS,
+        PLAYER_ADD,
         SESSION,
         SESSION_CREATE,
         SESSION_EDIT
