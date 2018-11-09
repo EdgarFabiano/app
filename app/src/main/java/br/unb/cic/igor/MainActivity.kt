@@ -6,7 +6,11 @@ import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
+import br.unb.cic.igor.adapters.MenuAdapter
 import br.unb.cic.igor.fragments.AdventureTabsFragment
 import br.unb.cic.igor.fragments.PlayersFragment
 import br.unb.cic.igor.fragments.dummy.DummyContent
@@ -38,37 +42,45 @@ class MainActivity : AppCompatActivity(), PlayersFragment.OnPlayersFragmentInter
                 main_toolbar,
                 R.string.drawer_open,
                 R.string.drawer_close
-        ) {
-            override fun onDrawerClosed(view: View) {
-                super.onDrawerClosed(view)
-                //toast("Drawer closed")
-            }
-
-            override fun onDrawerOpened(drawerView: View) {
-                super.onDrawerOpened(drawerView)
-                //toast("Drawer opened")
-            }
-        }
-
+        ) { }
 
         // Configure the drawer layout to add listener and show icon on toolbar
         drawerToggle.isDrawerIndicatorEnabled = true
         drawer_layout.addDrawerListener(drawerToggle)
         drawerToggle.syncState()
 
+        menu_list_view.adapter = MenuAdapter(this)
+
         // Set navigation view navigation item selected listener
-        navigation_view.setNavigationItemSelectedListener {
-            when (it.itemId) {
-                R.id.action_aventuras -> toast(resources.getString(R.string.aventuras))
-                R.id.action_livros -> toast(resources.getString(R.string.livros))
-                R.id.action_conta -> toast(resources.getString(R.string.conta))
-                R.id.action_notificacoes -> toast(resources.getString(R.string.notificacoes))
-                R.id.action_configuracoes -> toast(resources.getString(R.string.configuracoes))
-            }
-            // Close the drawer
+        menu_list_view.setOnItemClickListener {parent, view, position, id ->
+            val adapter = parent.adapter as MenuAdapter
+            changeColor(adapter, parent, view, position)
+
             drawer_layout.closeDrawer(GravityCompat.START)
-            true
+
+            when(adapter.menuOptions[id.toInt()]){
+                "Aventuras" -> toast("Aventuras")
+                "Livros" -> toast("Livros")
+                "Conta" -> toast("Conta")
+                "Notificações" -> toast("Notificações")
+                "Configurações" -> toast("Configurações")
+                "Logout" -> toast("Logout")
+            }
         }
+
+    }
+
+    private fun changeColor(adapter: MenuAdapter, parent: AdapterView<*>, view: View, position: Int) {
+
+        for (i in 0.until(adapter.count)) {
+            val menuView = menu_list_view.getChildAt(i)
+            menuView.findViewById<TextView>(R.id.title_menu).setTextColor(resources.getColor(R.color.colorRed))
+            menuView.findViewById<ImageView>(R.id.image_menu).setImageResource(adapter.images[i])
+
+        }
+
+        view.findViewById<TextView>(R.id.title_menu).setTextColor(resources.getColor(R.color.colorAccent))
+        view.findViewById<ImageView>(R.id.image_menu).setImageResource(adapter.images[position + adapter.images.size / 2])
     }
 
     // Extension function to show toast message easily
