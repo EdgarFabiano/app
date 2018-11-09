@@ -22,11 +22,6 @@
     <string name="keep_logged_in">mantenha-me conectado</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
-    <string name="aventuras">Aventuras</string>
-    <string name="livros">Livros</string>
-    <string name="conta">Conta</string>
-    <string name="notificacoes">Notificações</string>
-    <string name="configuracoes">Configurações</string>
     <string name="editar">Editar</string>
     <string name="ordenar">Ordenar</string>
     <string name="jogadores">Jogadores</string>

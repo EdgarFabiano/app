@@ -12,7 +12,7 @@ import br.unb.cic.igor.R
 
 class MenuAdapter(private val context: Context) : BaseAdapter() {
 
-    private val menuOptions: Array<String> = context.resources.getStringArray(R.array.menu_options)
+    val menuOptions: Array<String> = context.resources.getStringArray(R.array.menu_options)
 
     val images = intArrayOf(
             R.drawable.aventuras_icone,

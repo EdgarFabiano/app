@@ -42,17 +42,7 @@ class MainActivity : AppCompatActivity(), PlayersFragment.OnPlayersFragmentInter
                 main_toolbar,
                 R.string.drawer_open,
                 R.string.drawer_close
-        ) {
-            override fun onDrawerClosed(view: View) {
-                super.onDrawerClosed(view)
-                //toast("Drawer closed")
-            }
-
-            override fun onDrawerOpened(drawerView: View) {
-                super.onDrawerOpened(drawerView)
-                //toast("Drawer opened")
-            }
-        }
+        ) { }
 
         // Configure the drawer layout to add listener and show icon on toolbar
         drawerToggle.isDrawerIndicatorEnabled = true
@@ -63,17 +53,24 @@ class MainActivity : AppCompatActivity(), PlayersFragment.OnPlayersFragmentInter
 
         // Set navigation view navigation item selected listener
         menu_list_view.setOnItemClickListener {parent, view, position, id ->
-            changeColor(parent, view, position)
+            val adapter = parent.adapter as MenuAdapter
+            changeColor(adapter, parent, view, position)
 
-            when(id){
-                
+            drawer_layout.closeDrawer(GravityCompat.START)
+
+            when(adapter.menuOptions[id.toInt()]){
+                "Aventuras" -> toast("Aventuras")
+                "Livros" -> toast("Livros")
+                "Conta" -> toast("Conta")
+                "Notificações" -> toast("Notificações")
+                "Configurações" -> toast("Configurações")
+                "Logout" -> toast("Logout")
             }
         }
 
     }
 
-    private fun changeColor(parent: AdapterView<*>, view: View, position: Int) {
-        val adapter = parent.adapter as MenuAdapter
+    private fun changeColor(adapter: MenuAdapter, parent: AdapterView<*>, view: View, position: Int) {
 
         for (i in 0.until(adapter.count)) {
             val menuView = menu_list_view.getChildAt(i)
