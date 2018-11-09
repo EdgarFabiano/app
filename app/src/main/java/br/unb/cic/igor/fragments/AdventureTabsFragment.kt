@@ -9,6 +9,7 @@ import android.view.*
 import android.widget.Toast
 
 import br.unb.cic.igor.R
+import br.unb.cic.igor.classes.Player
 import br.unb.cic.igor.classes.Session
 import kotlinx.android.synthetic.main.fragment_adventure_tabs.*
 import kotlinx.android.synthetic.main.fragment_adventure_tabs.view.*
@@ -26,7 +27,7 @@ import kotlinx.android.synthetic.main.fragment_adventure_tabs.view.*
  * create an instance of this fragment.
  *
  */
-class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedListener {
+class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedListener, PlayersFragment.OnPlayersFragmentInteractionListener {
     private var state: State = State.ADVENTURE
     private var adventureFragment: Fragment = AdventureFragment.newInstance()
     private var playersFragment: Fragment = PlayersFragment.newInstance(1)
@@ -106,13 +107,16 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
             State.ADVENTURE -> {
                 stateTransition(State.SESSION_CREATE, AddSessionFragment())
             }
+            State.PLAYERS -> {
+                toast("Players state")
+            }
             else -> toast("wrong state")
         }
     }
 
     fun stateTransition(nextState : State, fragment : Fragment) {
         when (nextState) {
-            State.SESSION_CREATE, State.SESSION_EDIT -> {
+            State.SESSION_CREATE, State.SESSION_EDIT, State.PLAYER_DETAILS -> {
                 addButton.visibility = View.INVISIBLE
                 setHasOptionsMenu(false)
             }
@@ -120,11 +124,13 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
                 contentView.setImageResource(R.drawable.adventure_progress_tab)
                 addButton.visibility = View.VISIBLE
                 setHasOptionsMenu(true)
+                addButton.setImageResource(R.drawable.add_sesssion)
             }
             State.PLAYERS -> {
                 contentView.setImageResource(R.drawable.players_tab)
                 addButton.visibility = View.VISIBLE
                 setHasOptionsMenu(true)
+                addButton.setImageResource(R.drawable.add_player)
             }
             State.SESSION -> {
                 addButton.visibility = View.INVISIBLE
@@ -154,6 +160,9 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
         when (state) {
             State.SESSION, State.SESSION_CREATE, State.SESSION_EDIT -> {
                 stateTransition(State.ADVENTURE, adventureFragment)
+            }
+            State.PLAYER_DETAILS -> {
+                stateTransition(State.PLAYERS, playersFragment)
             }
             else -> {
                 stateTransition(State.ADVENTURE, adventureFragment)
@@ -196,10 +205,15 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
         stateTransition(State.SESSION, SessionFragment.newInstance(session))
     }
 
+    override fun onPlayersFragmentInteraction(item: Player?){
+        stateTransition(State.PLAYER_DETAILS, PlayerDetailsFragment.newInstance(item))
+    }
+
     enum class State {
         ADVENTURE,
         ADV_EDIT,
         PLAYERS,
+        PLAYER_DETAILS,
         SESSION,
         SESSION_CREATE,
         SESSION_EDIT

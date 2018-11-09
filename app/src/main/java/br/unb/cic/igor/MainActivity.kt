@@ -13,7 +13,7 @@ import br.unb.cic.igor.fragments.dummy.DummyContent
 import kotlinx.android.synthetic.main.activity_main.*
 
 
-class MainActivity : AppCompatActivity(), PlayersFragment.OnPlayersFragmentInteractionListener {
+class MainActivity : AppCompatActivity() {
 //    private var contentFragment : AdventureTabsFragment = AdventureTabsFragment.newInstance()
 
     override fun onBackPressed() {
@@ -80,8 +80,4 @@ class MainActivity : AppCompatActivity(), PlayersFragment.OnPlayersFragmentInter
 //        menuInflater.inflate(R.menu.menu, menu)
 //        return true
 //    }
-
-    override fun onPlayersFragmentInteraction(item: DummyContent.DummyItem?){
-
-    }
 }

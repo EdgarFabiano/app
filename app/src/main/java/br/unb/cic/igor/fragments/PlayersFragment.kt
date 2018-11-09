@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import br.unb.cic.igor.R
+import br.unb.cic.igor.classes.Player
 import br.unb.cic.igor.classes.PlayerContent
 
 import br.unb.cic.igor.fragments.dummy.DummyContent
@@ -55,10 +56,12 @@ class PlayersFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is OnPlayersFragmentInteractionListener) {
-            listener = context
+
+        val fragment = fragmentManager?.findFragmentById(R.id.tabsFragment)
+        if (fragment is OnPlayersFragmentInteractionListener) {
+            listener = fragment
         } else {
-            throw RuntimeException(context.toString() + " must implement OnPlayersFragmentInteractionListener")
+            throw RuntimeException(fragment.toString() + " must implement OnPlayersFragmentInteractionListener")
         }
     }
 
@@ -80,7 +83,7 @@ class PlayersFragment : Fragment() {
      */
     interface OnPlayersFragmentInteractionListener {
         // TODO: Update argument type and name
-        fun onPlayersFragmentInteraction(item: DummyItem?)
+        fun onPlayersFragmentInteraction(item: Player?)
     }
 
     companion object {
