@@ -136,4 +136,11 @@ class CompleteRegistrationFragment : Fragment() {
         ft.commit()
     }
 
+    companion object{
+
+        fun newInstance(): CompleteRegistrationFragment{
+            return CompleteRegistrationFragment()
+        }
+    }
+
 }
