@@ -30,7 +30,7 @@ data class User(var userId: String = "id", var email: String = "email", var user
         }
 
         fun Get(id: String, mDatabase: FirebaseFirestore): Task<DocumentSnapshot> {
-            var docRef = mDatabase.collection("users").document(id);
+            var docRef = mDatabase.collection("users").document(id)
             return docRef.get()
         }
     }
