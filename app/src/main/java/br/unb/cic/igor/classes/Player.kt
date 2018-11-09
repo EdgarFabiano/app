@@ -1,6 +1,8 @@
 package br.unb.cic.igor.classes
 
-public class Player(var userId: String, var name: String, var character: String, var description: String, var attrs: String, var info: String) {
+import java.io.Serializable
+
+public class Player(var userId: String, var name: String, var character: String, var description: String, var attrs: String, var info: String) : Serializable {
     var messages: ArrayList<String> = ArrayList()
 }
 
