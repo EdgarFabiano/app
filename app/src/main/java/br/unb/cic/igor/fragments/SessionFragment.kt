@@ -38,7 +38,7 @@ class SessionFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         sessionInfoText.text = session!!.summary
-        sessionNameText.text = session!!.name
+        sessionNameEdit.text = session!!.name
         sessionDateText.text = SimpleDateFormat("dd/MM").format(session!!.date)
     }
 

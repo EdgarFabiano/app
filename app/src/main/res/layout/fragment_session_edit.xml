@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.AddSessionFragment">
-
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.SessionEditFragment">
 
     <ImageView
         android:id="@+id/readyEditBtn"
@@ -15,13 +14,13 @@
         android:layout_marginLeft="24dp"
         android:scaleType="fitCenter"
         android:src="@drawable/btn_bg"
-        app:layout_constraintBottom_toBottomOf="@+id/dateEditBtn"
-        app:layout_constraintStart_toEndOf="@+id/dateEditBtn"
-        app:layout_constraintTop_toTopOf="@+id/dateEditBtn"
+        app:layout_constraintBottom_toBottomOf="@+id/dateEdit"
+        app:layout_constraintStart_toEndOf="@+id/dateEdit"
+        app:layout_constraintTop_toTopOf="@+id/dateEdit"
         app:layout_constraintVertical_bias="0.0" />
 
     <EditText
-        android:id="@+id/sessionNameCreate"
+        android:id="@+id/sessionNameEdit"
         android:layout_width="296dp"
         android:layout_height="49dp"
         android:layout_marginStart="8dp"
@@ -31,7 +30,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:ems="10"
-        android:hint="Dê um nome a sua próxima sessão"
+        android:hint="Dê um nome a sua sessão"
         android:inputType="textMultiLine"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -47,19 +46,21 @@
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginBottom="16dp"
-        android:text="Criar Sessão"
-        app:layout_constraintBottom_toTopOf="@+id/sessionNameCreate"
-        app:layout_constraintStart_toStartOf="@+id/sessionNameCreate" />
+        android:text="Editar Sessão"
+        app:layout_constraintBottom_toTopOf="@+id/sessionNameEdit"
+        app:layout_constraintStart_toStartOf="@+id/sessionNameEdit" />
 
     <ImageView
-        android:id="@+id/dateEditBtn"
+        android:id="@+id/dateEdit"
         android:layout_width="131dp"
         android:layout_height="37dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="12dp"
         android:scaleType="fitCenter"
         android:src="@drawable/btn_bg"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sessionNameCreate" />
+        app:layout_constraintTop_toBottomOf="@+id/sesssionSummary" />
 
     <TextView
         android:id="@+id/textView6"
@@ -73,15 +74,33 @@
         app:layout_constraintTop_toTopOf="@+id/readyEditBtn" />
 
     <TextView
-        android:id="@+id/dateText"
+        android:id="@+id/dateEditText"
         android:layout_width="58dp"
         android:layout_height="17dp"
-        android:text="17/10"
         android:gravity="center"
+        android:text="17/10"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="@+id/dateEditBtn"
-        app:layout_constraintEnd_toEndOf="@+id/dateEditBtn"
-        app:layout_constraintStart_toStartOf="@+id/dateEditBtn"
-        app:layout_constraintTop_toTopOf="@+id/dateEditBtn" />
+        app:layout_constraintBottom_toBottomOf="@+id/dateEdit"
+        app:layout_constraintEnd_toEndOf="@+id/dateEdit"
+        app:layout_constraintStart_toStartOf="@+id/dateEdit"
+        app:layout_constraintTop_toTopOf="@+id/dateEdit" />
+
+    <EditText
+        android:id="@+id/sesssionSummary"
+        android:layout_width="296dp"
+        android:layout_height="91dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:ems="10"
+        android:hint="Resumo da sua sessão"
+        android:inputType="textMultiLine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.111"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sessionNameEdit" />
+
 
 </android.support.constraint.ConstraintLayout>

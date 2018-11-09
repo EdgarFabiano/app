@@ -49,14 +49,14 @@ class AddSessionFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_add_session, container, false)
 
-        view.dateBtn.setOnClickListener {
+        view.dateEditBtn.setOnClickListener {
             DatePickerDialog(context, dateListener, calendar
                     .get(Calendar.YEAR), calendar.get(Calendar.MONTH),
                     calendar.get(Calendar.DAY_OF_MONTH)).show()
         }
 
-        view.readyBtn.setOnClickListener {
-            val session = Session(sessionNameText.text.toString(), calendar.time, "")
+        view.readyEditBtn.setOnClickListener {
+            val session = Session(sessionNameCreate.text.toString(), calendar.time, "")
             toast(session.name)
         }
 

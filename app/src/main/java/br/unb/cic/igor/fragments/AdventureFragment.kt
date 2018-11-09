@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.adventure_fragment.*
 
 class AdventureFragment : Fragment() {
     private var listener: OnSessionSelectedListener? = null
-    private var adventure: Adventure? = null;
+    private var adventure: Adventure? = null
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager: RecyclerView.LayoutManager

@@ -31,6 +31,7 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
     private var adventureFragment: Fragment = AdventureFragment.newInstance()
     private var playersFragment: Fragment = PlayersFragment.newInstance(1)
     private var currentFragment: Fragment = adventureFragment
+    private var selectedSession: Session? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +49,9 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
             R.id.action_editar -> {
                 when (state) {
                     State.SESSION ->
-                        stateTransition(State.SESSION_EDIT, AddSessionFragment())
+                        stateTransition(State.SESSION_EDIT, SessionEditFragment.newInstance(selectedSession!!))
+                    State.ADVENTURE ->
+                        stateTransition(State.ADV_EDIT, AdventureEditFragment.newInstance())
                     else ->
                         toast("invalid state")
                 }
@@ -127,6 +130,10 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
                 addButton.visibility = View.INVISIBLE
                 setHasOptionsMenu(true)
             }
+            State.ADV_EDIT -> {
+                addButton.visibility = View.INVISIBLE
+                setHasOptionsMenu(false)
+            }
         }
 
         switchContent(fragment)
@@ -142,7 +149,6 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
 
         ft?.commit()
     }
-
 
     fun onBackPressed() {
         when (state) {
@@ -186,11 +192,13 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
     }
 
     override fun onSessionSelected(session: Session) {
+        selectedSession = session
         stateTransition(State.SESSION, SessionFragment.newInstance(session))
     }
 
     enum class State {
         ADVENTURE,
+        ADV_EDIT,
         PLAYERS,
         SESSION,
         SESSION_CREATE,
