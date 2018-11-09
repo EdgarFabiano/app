@@ -1,6 +1,7 @@
 package br.unb.cic.igor
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
@@ -11,14 +12,18 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import br.unb.cic.igor.adapters.MenuAdapter
+import br.unb.cic.igor.classes.User
 import br.unb.cic.igor.fragments.AdventureTabsFragment
 import br.unb.cic.igor.fragments.PlayersFragment
 import br.unb.cic.igor.fragments.dummy.DummyContent
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity(), PlayersFragment.OnPlayersFragmentInteractionListener {
 //    private var contentFragment : AdventureTabsFragment = AdventureTabsFragment.newInstance()
+
+    private lateinit var mAuth: FirebaseAuth
 
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
@@ -34,6 +39,8 @@ class MainActivity : AppCompatActivity(), PlayersFragment.OnPlayersFragmentInter
 
         // Configure action bar
         setSupportActionBar(main_toolbar)
+
+        mAuth = FirebaseAuth.getInstance()
 
         // Initialize the action bar drawer toggle instance
         val drawerToggle: ActionBarDrawerToggle = object : ActionBarDrawerToggle(
@@ -64,10 +71,17 @@ class MainActivity : AppCompatActivity(), PlayersFragment.OnPlayersFragmentInter
                 "Conta" -> toast("Conta")
                 "Notificações" -> toast("Notificações")
                 "Configurações" -> toast("Configurações")
-                "Logout" -> toast("Logout")
+                "Logout" -> Logout()
             }
         }
 
+    }
+
+    private fun Logout(){
+        toast("Logout")
+        mAuth.signOut()
+        User.SetInstance(null)
+        startActivity(Intent(this, LoginActivity::class.java))
     }
 
     private fun changeColor(adapter: MenuAdapter, parent: AdapterView<*>, view: View, position: Int) {
