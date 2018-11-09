@@ -31,7 +31,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
-        android:src="@color/white"
+        android:src="@color/transparent"
         app:layout_constraintBottom_toBottomOf="@+id/adventureTab"
         app:layout_constraintEnd_toEndOf="@+id/contentView"
         app:layout_constraintHorizontal_bias="0.0"
@@ -46,7 +46,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="84dp"
-        android:src="@color/white"
+        android:src="@color/transparent"
         app:layout_constraintStart_toStartOf="@+id/contentView"
         app:layout_constraintTop_toTopOf="@+id/contentView" />
 

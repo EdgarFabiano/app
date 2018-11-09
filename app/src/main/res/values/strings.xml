@@ -41,4 +41,13 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="complete_registration">Complete seu cadastro!</string>
     <string name="cancel">cancelar</string>
+
+    <string-array name="menu_options">
+        <item>Aventuras</item>
+        <item>Livros</item>
+        <item>Conta</item>
+        <item>Notificações</item>
+        <item>Configurações</item>
+        <item>Logout</item>
+    </string-array>
 </resources>
