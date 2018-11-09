@@ -77,13 +77,13 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
 
         view.playersTab.setOnClickListener {
             if (state != State.PLAYERS) {
-                onTabPressed(State.PLAYERS)
+                stateTransition(State.PLAYERS, playersFragment)
             }
         }
 
         view.adventureTab.setOnClickListener {
             if (state != State.ADVENTURE) {
-                onTabPressed(State.ADVENTURE)
+                stateTransition(State.ADVENTURE, adventureFragment)
             }
         }
 
@@ -96,20 +96,6 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
         ft?.commit()
 
         return view
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    private fun onTabPressed(selection: State) {
-        state = selection
-
-        when (selection) {
-            State.ADVENTURE -> {
-                stateTransition(State.ADVENTURE, adventureFragment)
-            }
-            else -> {
-                stateTransition(State.PLAYERS, playersFragment)
-            }
-        }
     }
 
     private fun onAddButtonPressed() {
@@ -158,9 +144,9 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
     }
 
 
-    public fun onBackPressed() {
+    fun onBackPressed() {
         when (state) {
-            State.SESSION, State.SESSION_CREATE -> {
+            State.SESSION, State.SESSION_CREATE, State.SESSION_EDIT -> {
                 stateTransition(State.ADVENTURE, adventureFragment)
             }
             else -> {
@@ -203,7 +189,7 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
         stateTransition(State.SESSION, SessionFragment.newInstance(session))
     }
 
-    public enum class State {
+    enum class State {
         ADVENTURE,
         PLAYERS,
         SESSION,
