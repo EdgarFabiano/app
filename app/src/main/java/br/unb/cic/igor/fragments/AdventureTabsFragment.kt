@@ -1,8 +1,10 @@
 package br.unb.cic.igor.fragments
 
 import android.content.Context
+import android.net.NetworkInfo
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.media.session.PlaybackStateCompat
 import android.view.*
 import android.widget.Toast
 
@@ -44,7 +46,13 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
         // Handles action bar item clicks here.
         when (item.itemId) {
             R.id.action_editar -> {
-                toast("${resources.getString(R.string.editar)} $state")
+                when (state) {
+                    State.SESSION ->
+                        stateTransition(State.SESSION_EDIT, AddSessionFragment())
+                    else ->
+                        toast("invalid state")
+                }
+
                 return true
             }
             R.id.action_ordenar -> {
@@ -70,14 +78,12 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
         view.playersTab.setOnClickListener {
             if (state != State.PLAYERS) {
                 onTabPressed(State.PLAYERS)
-                contentView.setImageResource(R.drawable.players_tab)
             }
         }
 
         view.adventureTab.setOnClickListener {
             if (state != State.ADVENTURE) {
                 onTabPressed(State.ADVENTURE)
-                contentView.setImageResource(R.drawable.adventure_progress_tab)
             }
         }
 
@@ -96,22 +102,49 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
     private fun onTabPressed(selection: State) {
         state = selection
 
-        val fragment: Fragment = when (selection) {
-            State.ADVENTURE -> adventureFragment
-            else -> playersFragment
+        when (selection) {
+            State.ADVENTURE -> {
+                stateTransition(State.ADVENTURE, adventureFragment)
+            }
+            else -> {
+                stateTransition(State.PLAYERS, playersFragment)
+            }
         }
-
-        switchContent(fragment)
     }
 
     private fun onAddButtonPressed() {
         when (state) {
             State.ADVENTURE -> {
-                state = State.SESSION_CREATE
-                switchContent(AddSessionFragment())
+                stateTransition(State.SESSION_CREATE, AddSessionFragment())
             }
             else -> toast("wrong state")
         }
+    }
+
+    fun stateTransition(nextState : State, fragment : Fragment) {
+        when (nextState) {
+            State.SESSION_CREATE, State.SESSION_EDIT -> {
+                addButton.visibility = View.INVISIBLE
+                setHasOptionsMenu(false)
+            }
+            State.ADVENTURE -> {
+                contentView.setImageResource(R.drawable.adventure_progress_tab)
+                addButton.visibility = View.VISIBLE
+                setHasOptionsMenu(true)
+            }
+            State.PLAYERS -> {
+                contentView.setImageResource(R.drawable.players_tab)
+                addButton.visibility = View.VISIBLE
+                setHasOptionsMenu(true)
+            }
+            State.SESSION -> {
+                addButton.visibility = View.INVISIBLE
+                setHasOptionsMenu(true)
+            }
+        }
+
+        switchContent(fragment)
+        state = nextState
     }
 
     private fun switchContent(contentFragment: Fragment) {
@@ -126,16 +159,13 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
 
 
     public fun onBackPressed() {
-        val frag : Fragment? = when (state) {
+        when (state) {
             State.SESSION, State.SESSION_CREATE -> {
-                state = State.ADVENTURE
-                adventureFragment
+                stateTransition(State.ADVENTURE, adventureFragment)
             }
-            else -> null
-        }
-
-        if (frag != null) {
-            switchContent(frag)
+            else -> {
+                stateTransition(State.ADVENTURE, adventureFragment)
+            }
         }
     }
 
@@ -170,11 +200,10 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
     }
 
     override fun onSessionSelected(session: Session) {
-        state = State.SESSION
-        switchContent(SessionFragment.newInstance(session))
+        stateTransition(State.SESSION, SessionFragment.newInstance(session))
     }
 
-    private enum class State {
+    public enum class State {
         ADVENTURE,
         PLAYERS,
         SESSION,
