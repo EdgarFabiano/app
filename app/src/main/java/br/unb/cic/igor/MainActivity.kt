@@ -1,6 +1,7 @@
 package br.unb.cic.igor
 
 import android.content.Context
+import android.opengl.Visibility
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.view.GravityCompat
@@ -90,11 +91,13 @@ class MainActivity : AppCompatActivity(), PlayersFragment.OnPlayersFragmentInter
             val menuView = menu_list_view.getChildAt(i)
             menuView.findViewById<TextView>(R.id.title_menu).setTextColor(resources.getColor(R.color.colorRed))
             menuView.findViewById<ImageView>(R.id.image_menu).setImageResource(adapter.images[i])
+            menuView.findViewById<View>(R.id.indicator).visibility = View.GONE
 
         }
 
         view.findViewById<TextView>(R.id.title_menu).setTextColor(resources.getColor(R.color.colorAccent))
         view.findViewById<ImageView>(R.id.image_menu).setImageResource(adapter.images[position + adapter.images.size / 2])
+        view.findViewById<View>(R.id.indicator).visibility = View.VISIBLE
     }
 
     // Extension function to show toast message easily
