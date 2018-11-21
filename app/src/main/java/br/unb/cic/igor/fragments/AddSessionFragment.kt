@@ -56,7 +56,7 @@ class AddSessionFragment : Fragment() {
         }
 
         view.readyEditBtn.setOnClickListener {
-            val session = Session(sessionNameCreate.text.toString(), calendar.time, "")
+            val session = Session(sessionNameCreate.text.toString(), calendar.time.toString(), "")
             toast(session.name)
         }
 
