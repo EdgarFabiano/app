@@ -40,11 +40,11 @@ class AdventureFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(AdventureViewModel::class.java)
-        adventure = viewModel.mockAdventure
-        adventureInfo.text = adventure!!.summary
+        //adventure = viewModel.mockAdventure
+        //adventureInfo.text = adventure!!.summary
 
         viewManager = LinearLayoutManager(activity)
-        viewAdapter = SessionAdapter(adventure?.sessions!!.toTypedArray(), listener)
+        viewAdapter = SessionAdapter(/*adventure?.sessions!!.toTypedArray()*/ArrayList<Session>().toTypedArray(), listener)
 
         recyclerView = sessionList.apply {
             // use this setting to improve performance if you know that changes

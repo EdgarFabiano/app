@@ -1,14 +1,62 @@
 package br.unb.cic.igor.classes
 
+import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import java.io.Serializable
 
-public class Player(var userId: String, var name: String, var character: String, var description: String, var attrs: String, var info: String) : Serializable {
-    var messages: ArrayList<String> = ArrayList()
+data class Player(var id: String = "", var userId: String = "", var name: String = "", var character: String = "", var description: String = "", var attrs: String = "", var info: String = "", var messages: ArrayList<String> = ArrayList()) : Serializable {
+
+
+    companion object {
+        fun Insert(player: Player, adventureId: String, db: FirebaseFirestore): Player{
+            var ref = db.collection("adventure").document(adventureId)
+                    .collection("players").document()
+            player.id = ref.id
+            ref.set(player)
+
+            return player
+        }
+
+        fun Update(player: Player, adventureId: String, db: FirebaseFirestore){
+            db.collection("adventure").document(adventureId)
+                    .collection("players").document(player.id).update(
+                            "name", player.name,
+                            "character", player.character,
+                            "description", player.description,
+                            "attrs", player.attrs,
+                            "info", player.info
+                    )
+        }
+
+        fun AddMessage(message: String, player: Player, adventureId: String, db: FirebaseFirestore): Player{
+            player.messages.add(message)
+            var ref = db.collection("adventure").document(adventureId)
+                    .collection("players").document(player.id).update(
+                            "messages", player.messages
+                    )
+            return player
+        }
+
+        fun Get(id: String, adventureId: String, db: FirebaseFirestore): Task<DocumentSnapshot> {
+            var docRef = db.collection("adventure").document(adventureId)
+                    .collection("players").document(id)
+            return docRef.get()
+        }
+
+        fun ListByAdventure(adventureId: String, db: FirebaseFirestore): Task<QuerySnapshot>{
+            var colRef = db.collection("adventure").document(adventureId)
+                    .collection("sessions")
+
+            return colRef.get()
+        }
+    }
 }
 
 object PlayerContent{
     val PLAYERS: List<Player> = listOf(
-            Player("brunin","Bruno","D4Rk 4vEnGeR", "Destruidor de lares", "High testosterone", ""),
-            Player("avent","","OuTroAvenT", "Destruidor de joaninhas", "High strengh", "")
+            Player("a","brunin","Bruno","D4Rk 4vEnGeR", "Destruidor de lares", "High testosterone", ""),
+            Player("b","avent","","OuTroAvenT", "Destruidor de joaninhas", "High strengh", "")
     )
 }
