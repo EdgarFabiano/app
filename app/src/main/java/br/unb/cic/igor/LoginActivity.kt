@@ -49,7 +49,7 @@ class LoginActivity : AppCompatActivity() {
         var firebaseUser = mAuth.currentUser
 
         if (firebaseUser != null) {
-            User.Get(firebaseUser!!.uid, mDatabase).addOnSuccessListener{
+            User.Get(firebaseUser!!.uid).addOnSuccessListener{
                 task ->
                 var user = task.toObject(User::class.java)
                 if(user == null){

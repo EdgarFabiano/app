@@ -6,8 +6,11 @@ import android.view.*
 import android.widget.Toast
 
 import br.unb.cic.igor.R
+import br.unb.cic.igor.classes.Adventure
 import br.unb.cic.igor.classes.Player
 import br.unb.cic.igor.classes.Session
+import br.unb.cic.igor.extensions.toList
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_adventure_tabs.*
 import kotlinx.android.synthetic.main.fragment_adventure_tabs.view.*
 
@@ -25,16 +28,42 @@ import kotlinx.android.synthetic.main.fragment_adventure_tabs.view.*
  *
  */
 class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedListener, PlayersFragment.OnPlayersFragmentInteractionListener {
+    private val ADVENTURE_ID_ARG : String = "session_arg_key"
+
     private var state: State = State.ADVENTURE
     private var adventureFragment: Fragment = AdventureFragment.newInstance()
     private var playersFragment: Fragment = PlayersFragment.newInstance(1)
     private var currentFragment: Fragment = adventureFragment
     private var selectedSession: Session? = null
-
+    private lateinit var adventureId: String
+    private var adventure : Adventure? = null
+    private var sessions: List<Session> = ArrayList()
+    private var players: List<Player> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(true)
+        adventureId = arguments!!.getString(ADVENTURE_ID_ARG)!!
+
+        Adventure.Get(adventureId).addOnSuccessListener {adv ->
+            if (adv != null) {
+                adventure = adv.toObject(Adventure::class.java)
+                (adventureFragment as AdventureFragment).updateAdventure(adventure!!)
+            }
+        }
+
+        Session.ListByAdventure(adventureId).addOnSuccessListener {
+            if (it != null) {
+                sessions = it.toList(Session::class.java)
+                (adventureFragment as AdventureFragment).updateSessions(sessions)
+            }
+        }
+
+        Player.ListByAdventure(adventureId).addOnSuccessListener {
+            if (it != null) {
+                players = it.toList(Player::class.java)
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -193,8 +222,12 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance() =
-                AdventureTabsFragment()
+        fun newInstance(adventureId: String) =
+                AdventureTabsFragment().apply {
+                    val bundle = Bundle()
+                    bundle.putString(ADVENTURE_ID_ARG, adventureId)
+                    arguments = bundle
+                }
     }
 
     override fun onSessionSelected(session: Session) {

@@ -10,17 +10,17 @@ import java.util.*
 data class Session(var id: String = "", var adventureId: String = "", var name: String = "", var date: Date = Date(), var summary: String = "") : Serializable {
 
     companion object {
-        fun Insert(session: Session, adventureId: String, db: FirebaseFirestore): Session{
+        fun Insert(session: Session, adventureId: String): Session{
             session.adventureId = adventureId
-            var ref = db.collection("adventure").document(adventureId)
+            var ref = FirebaseFirestore.getInstance().collection("adventure").document(adventureId)
                     .collection("sessions").document()
             session.id = ref.id
             ref.set(session)
             return session
         }
 
-        fun Update(session: Session, adventureId: String, db: FirebaseFirestore){
-            var ref = db.collection("adventure").document(adventureId)
+        fun Update(session: Session, adventureId: String){
+            var ref = FirebaseFirestore.getInstance().collection("adventure").document(adventureId)
                     .collection("sessions").document(session.id).update(
                      "name", session.name,
                      "date", session.date,
@@ -28,14 +28,14 @@ data class Session(var id: String = "", var adventureId: String = "", var name: 
                     )
         }
 
-        fun Get(id: String, adventureId: String, db: FirebaseFirestore): Task<DocumentSnapshot> {
-            var docRef = db.collection("adventure").document(adventureId)
+        fun Get(id: String, adventureId: String): Task<DocumentSnapshot> {
+            var docRef = FirebaseFirestore.getInstance().collection("adventure").document(adventureId)
                     .collection("sessions").document(id)
             return docRef.get()
         }
 
-        fun ListByAdventure(adventureId: String, db: FirebaseFirestore): Task<QuerySnapshot>{
-            var colRef = db.collection("adventure").document(adventureId)
+        fun ListByAdventure(adventureId: String): Task<QuerySnapshot>{
+            var colRef = FirebaseFirestore.getInstance().collection("adventure").document(adventureId)
                     .collection("sessions")
 
             return colRef.get()

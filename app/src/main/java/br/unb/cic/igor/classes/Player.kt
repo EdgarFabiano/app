@@ -10,8 +10,8 @@ data class Player(var id: String = "", var userId: String = "", var name: String
 
 
     companion object {
-        fun Insert(player: Player, adventureId: String, db: FirebaseFirestore): Player{
-            var ref = db.collection("adventure").document(adventureId)
+        fun Insert(player: Player, adventureId: String): Player{
+            var ref = FirebaseFirestore.getInstance().collection("adventure").document(adventureId)
                     .collection("players").document()
             player.id = ref.id
             ref.set(player)
@@ -19,8 +19,8 @@ data class Player(var id: String = "", var userId: String = "", var name: String
             return player
         }
 
-        fun Update(player: Player, adventureId: String, db: FirebaseFirestore){
-            db.collection("adventure").document(adventureId)
+        fun Update(player: Player, adventureId: String){
+            FirebaseFirestore.getInstance().collection("adventure").document(adventureId)
                     .collection("players").document(player.id).update(
                             "name", player.name,
                             "character", player.character,
@@ -30,23 +30,23 @@ data class Player(var id: String = "", var userId: String = "", var name: String
                     )
         }
 
-        fun AddMessage(message: String, player: Player, adventureId: String, db: FirebaseFirestore): Player{
+        fun AddMessage(message: String, player: Player, adventureId: String): Player{
             player.messages.add(message)
-            var ref = db.collection("adventure").document(adventureId)
+            var ref = FirebaseFirestore.getInstance().collection("adventure").document(adventureId)
                     .collection("players").document(player.id).update(
                             "messages", player.messages
                     )
             return player
         }
 
-        fun Get(id: String, adventureId: String, db: FirebaseFirestore): Task<DocumentSnapshot> {
-            var docRef = db.collection("adventure").document(adventureId)
+        fun Get(id: String, adventureId: String): Task<DocumentSnapshot> {
+            var docRef = FirebaseFirestore.getInstance().collection("adventure").document(adventureId)
                     .collection("players").document(id)
             return docRef.get()
         }
 
-        fun ListByAdventure(adventureId: String, db: FirebaseFirestore): Task<QuerySnapshot>{
-            var colRef = db.collection("adventure").document(adventureId)
+        fun ListByAdventure(adventureId: String): Task<QuerySnapshot>{
+            var colRef = FirebaseFirestore.getInstance().collection("adventure").document(adventureId)
                     .collection("sessions")
 
             return colRef.get()

@@ -122,7 +122,7 @@ class RegisterFragment : Fragment(){
                         val firebaseUser = mAuth!!.currentUser
                         if(firebaseUser != null){
                             val user = User(firebaseUser.uid, firebaseUser.email!!, username, null, selectedGender)
-                            User.Insert(user, mDatabase)
+                            User.Insert(user)
                             showLoginFragment()
                         }
                     }

@@ -179,7 +179,7 @@ class LoginFragment : Fragment() {
         Toast.makeText(activity, "Auth success!", Toast.LENGTH_SHORT).show()
         val firebaseUser = mAuth!!.currentUser
         if(firebaseUser != null){
-           User.Get(firebaseUser!!.uid, mDatabase).addOnSuccessListener{
+           User.Get(firebaseUser!!.uid).addOnSuccessListener{
                 task ->
                     var user = task.toObject(User::class.java)
                     if(user == null){

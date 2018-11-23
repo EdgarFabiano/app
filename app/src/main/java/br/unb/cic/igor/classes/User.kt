@@ -6,6 +6,7 @@ import android.support.v4.content.ContextCompat.startActivity
 import android.widget.Toast
 import br.unb.cic.igor.MainActivity
 import com.google.android.gms.tasks.Task
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
@@ -27,24 +28,24 @@ data class User(var id: String = "id", var email: String = "email", var username
             return instance
         }
 
-        fun Insert(user: User, mDatabase: FirebaseFirestore){
-            mDatabase.collection("users").document(user.id).set(user)
+        fun Insert(user: User){
+            FirebaseFirestore.getInstance().collection("users").document(user.id).set(user)
         }
 
-        fun Get(id: String, mDatabase: FirebaseFirestore): Task<DocumentSnapshot> {
-            var docRef = mDatabase.collection("users").document(id)
+        fun Get(id: String): Task<DocumentSnapshot> {
+            var docRef = FirebaseFirestore.getInstance().collection("users").document(id)
             return docRef.get()
         }
 
-        fun Adventures(mDb: FirebaseFirestore): Task<QuerySnapshot>{
+        fun Adventures(): Task<QuerySnapshot>{
             var adRefs = this.GetInstance()!!.adventureRefs
-            var docRef = mDb.collection("adventure").takeIf {
+            var docRef = FirebaseFirestore.getInstance().collection("adventure").takeIf {
                 adRefs.contains(it.id)
             }
             return docRef?.get()!!
         }
 
-        fun ManageAdventures(operation: String, adventureId: String, db: FirebaseFirestore){
+        fun ManageAdventures(operation: String, adventureId: String){
             val user = GetInstance()!!
 
             if(operation == "add"){
@@ -53,7 +54,7 @@ data class User(var id: String = "id", var email: String = "email", var username
                 user.adventureRefs.remove(adventureId)
             }
 
-            db.collection("users").document(user.id).update(
+            FirebaseFirestore.getInstance().collection("users").document(user.id).update(
                     "adventureRefs", user.adventureRefs
             )
             SetInstance(user)

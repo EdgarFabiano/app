@@ -4,9 +4,11 @@ import android.content.Context
 import android.opengl.Visibility
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.util.AttributeSet
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ImageView
@@ -29,13 +31,14 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDb: FirebaseFirestore
+    lateinit var currentFragment: Fragment
 
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
         }
 
-        (tabsFragment as AdventureTabsFragment).onBackPressed()
+        (currentFragment as AdventureTabsFragment).onBackPressed()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -101,7 +104,7 @@ class MainActivity : AppCompatActivity() {
 //            }
 //        }
 
-//        var list = Adventure.List(mDb).addOnSuccessListener{ task ->
+//        var list = Adventure.List().addOnSuccessListener{ task ->
 //            val list = task.documents
 //            if(list == null){
 //                Toast.makeText(this, "No documents", Toast.LENGTH_SHORT).show()
@@ -125,6 +128,16 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun onCreateView(name: String?, context: Context?, attrs: AttributeSet?): View? {
+        val view = super.onCreateView(name, context, attrs)
+        currentFragment = AdventureTabsFragment.newInstance("tSthabRpUZcXgdryAiqM")
+        val ft = supportFragmentManager.beginTransaction()
+        ft.replace(R.id.mainContent, currentFragment)
+        ft.commit()
+
+        return view
+    }
+
     private fun Logout(){
         toast("Logout")
         mAuth.signOut()
@@ -139,7 +152,6 @@ class MainActivity : AppCompatActivity() {
             menuView.findViewById<TextView>(R.id.title_menu).setTextColor(resources.getColor(R.color.colorRed))
             menuView.findViewById<ImageView>(R.id.image_menu).setImageResource(adapter.images[i])
             menuView.findViewById<View>(R.id.indicator).visibility = View.GONE
-
         }
 
         view.findViewById<TextView>(R.id.title_menu).setTextColor(resources.getColor(R.color.colorAccent))

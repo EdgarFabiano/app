@@ -29,16 +29,11 @@
 
         </android.support.v7.widget.Toolbar>
 
-        <fragment
-            android:id="@+id/tabsFragment"
-            android:name="br.unb.cic.igor.fragments.AdventureTabsFragment"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="0dp"
-            android:layout_marginLeft="0dp"
-            tools:layout="@layout/fragment_adventure_tabs" >
-
-        </fragment>
+            android:layout_height="match_parent"
+            android:id="@+id/mainContent">
+        </FrameLayout>
 
     </LinearLayout>
 

@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import br.unb.cic.igor.MainActivity
 import br.unb.cic.igor.R
 import br.unb.cic.igor.classes.Player
 import br.unb.cic.igor.classes.PlayerContent
@@ -57,7 +58,7 @@ class PlayersFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        val fragment = fragmentManager?.findFragmentById(R.id.tabsFragment)
+        val fragment = (activity as MainActivity).currentFragment
         if (fragment is OnPlayersFragmentInteractionListener) {
             listener = fragment
         } else {
