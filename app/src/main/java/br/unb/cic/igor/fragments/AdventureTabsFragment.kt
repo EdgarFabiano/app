@@ -27,7 +27,7 @@ import kotlinx.android.synthetic.main.fragment_adventure_tabs.view.*
  * create an instance of this fragment.
  *
  */
-class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedListener, PlayersFragment.OnPlayersFragmentInteractionListener {
+class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedListener, PlayersFragment.OnPlayersFragmentInteractionListener, PlayerDetailsFragment.OnShowMessagesListener {
     private val ADVENTURE_ID_ARG : String = "session_arg_key"
 
     private var state: State = State.ADVENTURE
@@ -142,7 +142,7 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
 
     fun stateTransition(nextState : State, fragment : Fragment) {
         when (nextState) {
-            State.SESSION_CREATE, State.SESSION_EDIT, State.PLAYER_DETAILS, State.PLAYER_ADD -> {
+            State.SESSION_CREATE, State.SESSION_EDIT, State.PLAYER_DETAILS, State.PLAYER_ADD, State.MESSAGES_LIST -> {
                 addButton.visibility = View.INVISIBLE
                 setHasOptionsMenu(false)
             }
@@ -187,7 +187,7 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
             State.SESSION, State.SESSION_CREATE, State.SESSION_EDIT -> {
                 stateTransition(State.ADVENTURE, adventureFragment)
             }
-            State.PLAYER_DETAILS, State.PLAYER_ADD -> {
+            State.PLAYER_DETAILS, State.PLAYER_ADD, State.MESSAGES_LIST -> {
                 stateTransition(State.PLAYERS, playersFragment)
             }
             else -> {
@@ -195,7 +195,6 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
             }
         }
     }
-
 
     override fun onDetach() {
         super.onDetach()
@@ -239,9 +238,14 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
         stateTransition(State.PLAYER_DETAILS, PlayerDetailsFragment.newInstance(item))
     }
 
+    override fun onShowMessagesClick() {
+        stateTransition(State.MESSAGES_LIST, MessagesFragment.newInstance(1))
+    }
+
     enum class State {
         ADVENTURE,
         ADV_EDIT,
+        MESSAGES_LIST,
         PLAYERS,
         PLAYER_DETAILS,
         PLAYER_ADD,

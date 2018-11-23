@@ -11,11 +11,14 @@ import br.unb.cic.igor.R
 import kotlinx.android.synthetic.main.fragment_add_session.view.*
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
+import android.content.Context
 import android.widget.Toast
+import br.unb.cic.igor.MainActivity
 import br.unb.cic.igor.classes.Player
 import br.unb.cic.igor.classes.Session
 import java.util.*
 import kotlinx.android.synthetic.main.fragment_add_session.*
+import kotlinx.android.synthetic.main.fragment_player_details.*
 import kotlinx.android.synthetic.main.fragment_player_details.view.*
 import java.text.SimpleDateFormat
 
@@ -29,6 +32,7 @@ import java.text.SimpleDateFormat
 class PlayerDetailsFragment : Fragment() {
     private val PLAYER_ARG_KEY = "player_arg_key"
     private var player: Player? = null
+    private var listener: OnShowMessagesListener? = null
 
     init {
     }
@@ -49,6 +53,29 @@ class PlayerDetailsFragment : Fragment() {
         view.description.text = player!!.description
 
         return view
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        val fragment = (activity as MainActivity).currentFragment
+        if (fragment is OnShowMessagesListener) {
+            listener = fragment
+        } else {
+            throw RuntimeException(fragment.toString() + " must implement OnShowMessagesListener")
+        }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        messages_button.setOnClickListener {
+            listener?.onShowMessagesClick()
+        }
+    }
+
+    interface OnShowMessagesListener {
+        fun onShowMessagesClick()
     }
 
     companion object {
