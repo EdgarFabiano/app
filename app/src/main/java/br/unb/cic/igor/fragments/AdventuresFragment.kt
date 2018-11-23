@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import android.view.animation.LayoutAnimationController
 import br.unb.cic.igor.R
 import br.unb.cic.igor.adapters.AdventuresAdapter
 import br.unb.cic.igor.classes.Adventure
@@ -31,10 +33,22 @@ class AdventuresFragment : Fragment() {
         adventures = adventures.plus(adventureViewModel.mockAdventure4)
         adventures = adventures.plus(adventureViewModel.mockAdventure5)
         recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.adapter = AdventuresAdapter(adventures, context)
+
+        runAnimation(recyclerView, adventures)
+
 
         return view
     }
 
+    private fun runAnimation(recyclerView: RecyclerView, adventures: List<Adventure>) {
+        var animationController : LayoutAnimationController = AnimationUtils.loadLayoutAnimation(recyclerView.context, R.anim.layout_fall)
+
+        recyclerView.adapter = AdventuresAdapter(adventures, context)
+
+        recyclerView.layoutAnimation = animationController
+        (recyclerView.adapter as AdventuresAdapter).notifyDataSetChanged()
+        recyclerView.scheduleLayoutAnimation()
+
+    }
 
 }
