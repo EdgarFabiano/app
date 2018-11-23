@@ -94,7 +94,7 @@ class CompleteRegistrationFragment : Fragment() {
         val user = User(fBaseUser!!.uid,  fBaseUser!!.email!!, complete_reg_username.text.toString().trim(), null, selectedGender)
         User.Insert(user, mDatabase)
 
-        val u = User.Get(user.userId, mDatabase).addOnSuccessListener{
+        val u = User.Get(user.id, mDatabase).addOnSuccessListener{
             task ->
             val u = task.toObject(User::class.java)
             if(u == null){
