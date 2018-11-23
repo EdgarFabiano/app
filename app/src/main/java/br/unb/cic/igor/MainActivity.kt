@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.view.Menu
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -60,13 +61,12 @@ class MainActivity : AppCompatActivity() {
         menu_list_view.adapter = MenuAdapter(this)
 
         // Set navigation view navigation item selected listener
-        menu_list_view.setOnItemClickListener {parent, view, position, id ->
+        menu_list_view.setOnItemClickListener {parent, _, position, id ->
             val adapter = parent.adapter as MenuAdapter
-            changeColor(adapter, view, position)
 
             drawer_layout.closeDrawer(GravityCompat.START)
 
-            when(adapter.menuOptions[id.toInt()]){
+            when(adapter.menuOptions[id.toInt()]) {
                 State.ADVENTURES.description -> toast("Aventuras")
                 State.BOOKS.description -> toast("Livros")
                 State.ACCOUNT.description -> toast("Conta")
@@ -75,6 +75,8 @@ class MainActivity : AppCompatActivity() {
                 State.LOGOUT.description -> Logout()
             }
             state = state.from(adapter.menuOptions[id.toInt()])
+            changeColor(adapter, position)
+
         }
 
     }
@@ -86,19 +88,21 @@ class MainActivity : AppCompatActivity() {
         startActivity(Intent(this, LoginActivity::class.java))
     }
 
-    private fun changeColor(adapter: MenuAdapter, view: View, position: Int) {
+    private fun changeColor(adapter: MenuAdapter, position: Int) {
 
         for (i in 0.until(adapter.count)) {
             val menuView = menu_list_view.getChildAt(i)
-            menuView.findViewById<TextView>(R.id.title_menu).setTextColor(resources.getColor(R.color.colorRed))
-            menuView.findViewById<ImageView>(R.id.image_menu).setImageResource(adapter.images[i])
-            menuView.findViewById<View>(R.id.indicator).visibility = View.GONE
-
+            var textView = menuView.findViewById<TextView>(R.id.title_menu)
+            if (textView.text != state.description) {
+                textView.setTextColor(resources.getColor(R.color.colorRed))
+                menuView.findViewById<ImageView>(R.id.image_menu).setImageResource(adapter.images[i])
+                menuView.findViewById<View>(R.id.indicator).visibility = View.GONE
+            } else {
+                menuView.findViewById<TextView>(R.id.title_menu).setTextColor(resources.getColor(R.color.colorAccent))
+                menuView.findViewById<ImageView>(R.id.image_menu).setImageResource(adapter.images[position + adapter.images.size / 2])
+                menuView.findViewById<View>(R.id.indicator).visibility = View.VISIBLE
+            }
         }
-
-        view.findViewById<TextView>(R.id.title_menu).setTextColor(resources.getColor(R.color.colorAccent))
-        view.findViewById<ImageView>(R.id.image_menu).setImageResource(adapter.images[position + adapter.images.size / 2])
-        view.findViewById<View>(R.id.indicator).visibility = View.VISIBLE
     }
 
     // Extension function to show toast message easily
@@ -106,10 +110,10 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
     }
 
-//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//        menuInflater.inflate(R.menu.menu, menu)
-//        return true
-//    }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu, menu)
+        return true
+    }
 
     enum class State(val description: String) {
         ADVENTURES("Aventuras"),
