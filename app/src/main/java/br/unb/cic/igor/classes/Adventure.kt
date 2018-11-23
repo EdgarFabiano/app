@@ -4,8 +4,9 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
+import java.io.Serializable
 
-data class Adventure(var id: String = "", var name: String = "", var summary : String = "", var master: Master = Master()) {
+data class Adventure(var id: String = "", var name: String = "", var summary : String = "", var master: Master = Master()) : Serializable {
 
     companion object {
         fun Insert(adventure: Adventure): String{
@@ -21,11 +22,12 @@ data class Adventure(var id: String = "", var name: String = "", var summary : S
             return docRef.get()
         }
 
-        fun Update(summary: String, adventure: Adventure): Adventure{
+        fun Update(adventure: Adventure): Adventure{
             FirebaseFirestore.getInstance().collection("adventure").document(adventure.id).update(
-                            "summary", adventure.summary
+                            "summary", adventure.summary,
+                    "name", adventure.name
                     )
-            adventure.summary = summary
+
             return adventure
         }
 

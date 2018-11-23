@@ -10,7 +10,6 @@ import br.unb.cic.igor.classes.Adventure
 import br.unb.cic.igor.classes.Player
 import br.unb.cic.igor.classes.Session
 import br.unb.cic.igor.extensions.toList
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_adventure_tabs.*
 import kotlinx.android.synthetic.main.fragment_adventure_tabs.view.*
 
@@ -27,7 +26,13 @@ import kotlinx.android.synthetic.main.fragment_adventure_tabs.view.*
  * create an instance of this fragment.
  *
  */
-class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedListener, PlayersFragment.OnPlayersFragmentInteractionListener, PlayerDetailsFragment.OnShowMessagesListener {
+class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedListener,
+        PlayersFragment.OnPlayersFragmentInteractionListener,
+        PlayerDetailsFragment.OnShowMessagesListener,
+        AddSessionFragment.AddSessionListener,
+        AdventureEditFragment.EditAdventureListener,
+        SessionEditFragment.SessionEditListener {
+
     private val ADVENTURE_ID_ARG : String = "session_arg_key"
 
     private var state: State = State.ADVENTURE
@@ -45,23 +50,31 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
         setHasOptionsMenu(true)
         adventureId = arguments!!.getString(ADVENTURE_ID_ARG)!!
 
+        loadAdventure()
+
+        loadSessions()
+
+        Player.ListByAdventure(adventureId).addOnSuccessListener {
+            if (it != null) {
+                players = it.toList(Player::class.java)
+            }
+        }
+    }
+
+    fun loadAdventure() {
         Adventure.Get(adventureId).addOnSuccessListener {adv ->
             if (adv != null) {
                 adventure = adv.toObject(Adventure::class.java)
                 (adventureFragment as AdventureFragment).updateAdventure(adventure!!)
             }
         }
+    }
 
+    fun loadSessions() {
         Session.ListByAdventure(adventureId).addOnSuccessListener {
             if (it != null) {
                 sessions = it.toList(Session::class.java)
                 (adventureFragment as AdventureFragment).updateSessions(sessions)
-            }
-        }
-
-        Player.ListByAdventure(adventureId).addOnSuccessListener {
-            if (it != null) {
-                players = it.toList(Player::class.java)
             }
         }
     }
@@ -78,7 +91,7 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
                     State.SESSION ->
                         stateTransition(State.SESSION_EDIT, SessionEditFragment.newInstance(selectedSession!!))
                     State.ADVENTURE ->
-                        stateTransition(State.ADV_EDIT, AdventureEditFragment.newInstance())
+                        stateTransition(State.ADV_EDIT, AdventureEditFragment.newInstance(adventure!!))
                     else ->
                         toast("invalid state")
                 }
@@ -131,7 +144,7 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
     private fun onAddButtonPressed() {
         when (state) {
             State.ADVENTURE -> {
-                stateTransition(State.SESSION_CREATE, AddSessionFragment())
+                stateTransition(State.SESSION_CREATE, AddSessionFragment.newInstance(adventureId))
             }
             State.PLAYERS -> {
                 stateTransition(State.PLAYER_ADD, AddPlayerFragment.newInstance())
@@ -141,6 +154,7 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
     }
 
     fun stateTransition(nextState : State, fragment : Fragment) {
+        switchContent(fragment)
         when (nextState) {
             State.SESSION_CREATE, State.SESSION_EDIT, State.PLAYER_DETAILS, State.PLAYER_ADD, State.MESSAGES_LIST -> {
                 addButton.visibility = View.INVISIBLE
@@ -151,6 +165,9 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
                 addButton.visibility = View.VISIBLE
                 setHasOptionsMenu(true)
                 addButton.setImageResource(R.drawable.add_sesssion)
+                val cast = fragment as AdventureFragment
+                cast.updateAdventure(adventure!!)
+                cast.updateSessions(sessions)
             }
             State.PLAYERS -> {
                 contentView.setImageResource(R.drawable.players_tab)
@@ -168,7 +185,6 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
             }
         }
 
-        switchContent(fragment)
         state = nextState
     }
 
@@ -240,6 +256,21 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
 
     override fun onShowMessagesClick() {
         stateTransition(State.MESSAGES_LIST, MessagesFragment.newInstance(1))
+    }
+
+    override fun sessionCreated() {
+        loadSessions()
+        stateTransition(State.ADVENTURE, adventureFragment)
+    }
+
+    override fun adventureChanged() {
+        loadAdventure()
+        stateTransition(State.ADVENTURE, adventureFragment)
+    }
+
+    override fun sessionChanged(session: Session) {
+        loadSessions()
+        stateTransition(State.SESSION, SessionFragment.newInstance(session))
     }
 
     enum class State {

@@ -37,7 +37,8 @@ class SessionFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        sessionInfoText.text = session!!.summary
+        val summary = session!!.summary
+        sessionInfoText.text = if (summary != "") summary else "Sua sessão ainda não posssui um resumo!"
         sessionNameEdit.text = session!!.name
         sessionDateText.text = SimpleDateFormat("dd/MM").format(session!!.date)
     }

@@ -8,7 +8,7 @@
 
 
     <ImageView
-        android:id="@+id/readyEditBtn2"
+        android:id="@+id/advReadyEditBtn"
         android:layout_width="131dp"
         android:layout_height="37dp"
         android:layout_marginTop="20dp"
@@ -69,9 +69,9 @@
         android:layout_height="wrap_content"
         android:text="PRONTO"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="@+id/readyEditBtn2"
-        app:layout_constraintEnd_toEndOf="@+id/readyEditBtn2"
-        app:layout_constraintStart_toStartOf="@+id/readyEditBtn2"
-        app:layout_constraintTop_toTopOf="@+id/readyEditBtn2" />
+        app:layout_constraintBottom_toBottomOf="@+id/advReadyEditBtn"
+        app:layout_constraintEnd_toEndOf="@+id/advReadyEditBtn"
+        app:layout_constraintStart_toStartOf="@+id/advReadyEditBtn"
+        app:layout_constraintTop_toTopOf="@+id/advReadyEditBtn" />
 
 </android.support.constraint.ConstraintLayout>

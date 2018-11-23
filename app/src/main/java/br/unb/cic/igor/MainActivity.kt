@@ -23,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
 import com.google.firebase.firestore.QueryDocumentSnapshot
+import kotlinx.android.synthetic.main.activity_main.view.*
 import java.util.*
 
 
@@ -117,9 +118,9 @@ class MainActivity : AppCompatActivity() {
 //            }
 //        }
 
-//        var adId = "X1qYRauOUTDTj5k9ChOs"
-//        var session = Session(adventureId = adId,name = "session1", date = Date(), summary = "session summary")
-//        session = Session.Insert(session, adId, mDb)
+//        var adId = "tSthabRpUZcXgdryAiqM"
+//        var session = Session(adventureId = adId, name = "session1", date = Date(), summary = "session summary")
+//        Session.Insert(session, adId)
 //
 //        session.summary = "ODEIO ISSO AQUI TUDO"
 //
@@ -128,15 +129,22 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    override fun onCreateView(name: String?, context: Context?, attrs: AttributeSet?): View? {
-        val view = super.onCreateView(name, context, attrs)
+
+    override fun onStart() {
+        super.onStart()
+
         currentFragment = AdventureTabsFragment.newInstance("tSthabRpUZcXgdryAiqM")
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.mainContent, currentFragment)
         ft.commit()
-
-        return view
     }
+
+//    override fun onCreateView(name: String?, context: Context?, attrs: AttributeSet?): View? {
+//        val view = super.onCreateView(name, context, attrs)
+//
+//
+//        return view
+//    }
 
     private fun Logout(){
         toast("Logout")

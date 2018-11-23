@@ -43,10 +43,17 @@ class AdventureFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         //viewModel = ViewModelProviders.of(this).get(AdventureViewModel::class.java)
         //adventure = viewModel.mockAdventure
-        //adventureInfo.text = adventure!!.summary
+
+        val summary = adventure?.summary ?: ""
+        val sorted = sessions.sortedBy {
+            it.date
+        }
+
+        adventureInfo.text = summary
 
         viewManager = LinearLayoutManager(activity)
-        viewAdapter = SessionAdapter(ArrayList<Session>().toTypedArray(), listener)
+
+        viewAdapter = SessionAdapter(sorted.toTypedArray(), listener)
 
         recyclerView = sessionList.apply {
             // use this setting to improve performance if you know that changes
@@ -71,22 +78,30 @@ class AdventureFragment : Fragment() {
 
     fun updateAdventure(adventure: Adventure) {
         this.adventure = adventure
-        adventureInfo.text = adventure.summary
+        if (adventureInfo != null) {
+            adventureInfo.text = adventure.summary
+        }
     }
 
     fun updateSessions(sessions: List<Session>) {
         this.sessions = sessions
-        viewManager = LinearLayoutManager(activity)
-        viewAdapter = SessionAdapter(ArrayList(sessions).toTypedArray(), listener)
+        if (sessionList != null) {
+            val sorted = sessions.sortedBy {
+                it.date
+            }
 
-        recyclerView = sessionList.apply {
-            // use this setting to improve performance if you know that changes
-            // in content do not change the layout size of the RecyclerView
-            setHasFixedSize(true)
-            // use a linear layout manager
-            layoutManager = viewManager
-            // specify an viewAdapter (see also next example)
-            adapter = viewAdapter
+            viewManager = LinearLayoutManager(activity)
+            viewAdapter = SessionAdapter(sorted.toTypedArray(), listener)
+
+            recyclerView = sessionList.apply {
+                // use this setting to improve performance if you know that changes
+                // in content do not change the layout size of the RecyclerView
+                setHasFixedSize(true)
+                // use a linear layout manager
+                layoutManager = viewManager
+                // specify an viewAdapter (see also next example)
+                adapter = viewAdapter
+            }
         }
     }
 

@@ -11,7 +11,9 @@ import br.unb.cic.igor.R
 import kotlinx.android.synthetic.main.fragment_add_session.view.*
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
+import android.content.Context
 import android.widget.Toast
+import br.unb.cic.igor.MainActivity
 import br.unb.cic.igor.classes.Session
 import java.util.*
 import kotlinx.android.synthetic.main.fragment_add_session.*
@@ -25,8 +27,12 @@ import java.text.SimpleDateFormat
  *
  */
 class AddSessionFragment : Fragment() {
+    private val ADV_ID_ARG_KEY = "adv_id_arg_key"
+    private var listener: AddSessionFragment.AddSessionListener? = null
     var calendar = Calendar.getInstance()
     val dateListener : OnDateSetListener
+    var adventureId : String? = null
+    var saving : Boolean = false
 
     init {
         dateListener = OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
@@ -44,6 +50,11 @@ class AddSessionFragment : Fragment() {
         dateText.text = sdf.format(calendar.time)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        adventureId = arguments?.getString(ADV_ID_ARG_KEY) as String?
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -55,16 +66,35 @@ class AddSessionFragment : Fragment() {
                     calendar.get(Calendar.DAY_OF_MONTH)).show()
         }
 
-        view.readyEditBtn.setOnClickListener {
-            val session = Session(sessionNameCreate.text.toString(), calendar.time.toString(), "")
-            toast(session.name)
+        view.readySessionEditBtn.setOnClickListener {
+            if (!saving) {
+                saving = true
+                val name = sessionNameCreate.text.toString()
+                if (name == "") {
+                    toast("Por favor digite um nome para a sessão")
+                } else {
+                    var session = Session(name = sessionNameCreate.text.toString(), date = calendar.time)
+                    Session.Insert(session, adventureId!!)
+                    listener!!.sessionCreated()
+                }
+            }
         }
 
         return view
     }
 
-    public interface AddSessionListener {
-        fun addSession(session: Session)
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        val fragment = (activity as MainActivity).currentFragment
+        if (fragment is AddSessionListener) {
+            listener = fragment
+        } else {
+            throw RuntimeException(fragment.toString() + " must implement OnSessionSelectedListener")
+        }
+    }
+
+    interface AddSessionListener {
+        fun sessionCreated()
     }
 
     private fun toast(message: String) {
@@ -82,7 +112,11 @@ class AddSessionFragment : Fragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance() =
-                AddSessionFragment()
+        fun newInstance(adventureId: String) =
+                AddSessionFragment().apply {
+                    val bundle = Bundle()
+                    bundle.putString(ADV_ID_ARG_KEY, adventureId)
+                    arguments = bundle
+                }
     }
 }
