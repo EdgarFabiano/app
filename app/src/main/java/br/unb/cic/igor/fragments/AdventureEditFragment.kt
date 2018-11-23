@@ -38,7 +38,7 @@ class AdventureEditFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(AdventureViewModel::class.java)
-        adventure = viewModel.mockAdventure
+        adventure = viewModel.mockAdventure1
 
         advNameEdit.setText(adventure!!.name)
         advInfoEdit.setText(adventure!!.summary)

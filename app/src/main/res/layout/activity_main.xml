@@ -31,12 +31,12 @@
 
         <fragment
             android:id="@+id/tabsFragment"
-            android:name="br.unb.cic.igor.fragments.AdventureTabsFragment"
+            android:name="br.unb.cic.igor.fragments.AdventuresFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="0dp"
             android:layout_marginLeft="0dp"
-            tools:layout="@layout/fragment_adventure_tabs" >
+            tools:layout="@layout/fragment_adventures" >
 
         </fragment>
 

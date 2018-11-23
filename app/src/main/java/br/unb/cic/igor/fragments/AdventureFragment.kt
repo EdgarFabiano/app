@@ -40,7 +40,7 @@ class AdventureFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(AdventureViewModel::class.java)
-        adventure = viewModel.mockAdventure
+        adventure = viewModel.mockAdventure1
         adventureInfo.text = adventure!!.summary
 
         viewManager = LinearLayoutManager(activity)

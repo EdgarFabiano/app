@@ -1,13 +1,9 @@
 package br.unb.cic.igor.fragments
 
-import android.content.Context
-import android.net.NetworkInfo
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.media.session.PlaybackStateCompat
 import android.view.*
 import android.widget.Toast
-
 import br.unb.cic.igor.R
 import br.unb.cic.igor.classes.Player
 import br.unb.cic.igor.classes.Session

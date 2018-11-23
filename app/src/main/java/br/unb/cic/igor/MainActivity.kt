@@ -1,28 +1,28 @@
 package br.unb.cic.igor
 
+import android.support.v4.app.Fragment
 import android.content.Context
-import android.opengl.Visibility
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import android.widget.AdapterView
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import br.unb.cic.igor.adapters.MenuAdapter
 import br.unb.cic.igor.classes.User
 import br.unb.cic.igor.fragments.AdventureTabsFragment
-import br.unb.cic.igor.fragments.PlayersFragment
-import br.unb.cic.igor.fragments.dummy.DummyContent
+import br.unb.cic.igor.fragments.AdventuresFragment
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
-//    private var contentFragment : AdventureTabsFragment = AdventureTabsFragment.newInstance()
+    private var state: State = State.ADVENTURES
+
+    private var currentFragment: Fragment = AdventuresFragment.newInstance()
 
     private lateinit var mAuth: FirebaseAuth
 
@@ -62,18 +62,19 @@ class MainActivity : AppCompatActivity() {
         // Set navigation view navigation item selected listener
         menu_list_view.setOnItemClickListener {parent, view, position, id ->
             val adapter = parent.adapter as MenuAdapter
-            changeColor(adapter, parent, view, position)
+            changeColor(adapter, view, position)
 
             drawer_layout.closeDrawer(GravityCompat.START)
 
             when(adapter.menuOptions[id.toInt()]){
-                "Aventuras" -> toast("Aventuras")
-                "Livros" -> toast("Livros")
-                "Conta" -> toast("Conta")
-                "Notificações" -> toast("Notificações")
-                "Configurações" -> toast("Configurações")
-                "Logout" -> Logout()
+                State.ADVENTURES.description -> toast("Aventuras")
+                State.BOOKS.description -> toast("Livros")
+                State.ACCOUNT.description -> toast("Conta")
+                State.NOTIFICATIONS.description -> toast("Notificações")
+                State.SETTINGS.description -> toast("Configurações")
+                State.LOGOUT.description -> Logout()
             }
+            state = state.from(adapter.menuOptions[id.toInt()])
         }
 
     }
@@ -85,7 +86,7 @@ class MainActivity : AppCompatActivity() {
         startActivity(Intent(this, LoginActivity::class.java))
     }
 
-    private fun changeColor(adapter: MenuAdapter, parent: AdapterView<*>, view: View, position: Int) {
+    private fun changeColor(adapter: MenuAdapter, view: View, position: Int) {
 
         for (i in 0.until(adapter.count)) {
             val menuView = menu_list_view.getChildAt(i)
@@ -109,4 +110,25 @@ class MainActivity : AppCompatActivity() {
 //        menuInflater.inflate(R.menu.menu, menu)
 //        return true
 //    }
+
+    enum class State(val description: String) {
+        ADVENTURES("Aventuras"),
+        BOOKS("Livros"),
+        ACCOUNT("Conta"),
+        NOTIFICATIONS("Notificações"),
+        SETTINGS("Configurações"),
+        LOGOUT("Logout");
+
+        fun from(description: String): State {
+            for (value in values()) {
+                if (value.description == description) {
+                    return value
+                }
+            }
+
+            return ADVENTURES
+        }
+
+
+    }
 }
