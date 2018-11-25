@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
@@ -34,9 +35,22 @@ class MainActivity : AppCompatActivity(), AdventuresFragment.OnAdventureSelected
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDb: FirebaseFirestore
 
+
+    private var doubleBackToExitPressedOnce: Boolean = false;
+
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
+        } else {
+            if (doubleBackToExitPressedOnce) {
+                super.onBackPressed()
+                return
+            }
+
+            this.doubleBackToExitPressedOnce = true
+            toast("Pressione VOLTAR novamente para sair")
+
+            Handler().postDelayed({ doubleBackToExitPressedOnce = false }, 2000)
         }
 
         if (currentFragment is AdventureTabsFragment) {
