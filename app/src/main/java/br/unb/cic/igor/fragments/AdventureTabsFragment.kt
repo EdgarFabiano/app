@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
 import android.widget.Toast
-
 import br.unb.cic.igor.R
 import br.unb.cic.igor.classes.Adventure
 import br.unb.cic.igor.classes.Player

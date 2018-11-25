@@ -40,8 +40,6 @@ class AdventureFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        //viewModel = ViewModelProviders.of(this).get(AdventureViewModel::class.java)
-        //adventure = viewModel.mockAdventure
 
         val summary = adventure?.summary ?: ""
         val sorted = sessions.sortedBy {

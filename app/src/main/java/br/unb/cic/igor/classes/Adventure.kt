@@ -6,7 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import java.io.Serializable
 
-data class Adventure(var id: String = "", var name: String = "", var summary : String = "", var master: Master = Master(), var inCombat: Boolean = false) : Serializable {
+data class Adventure (var id: String = "", var name: String = "", var summary : String = "", var master: Master = Master(), var inCombat: Boolean = false, var bg : Int = 0) : Serializable {
 
     companion object {
         fun Insert(adventure: Adventure): String{
@@ -25,7 +25,8 @@ data class Adventure(var id: String = "", var name: String = "", var summary : S
         fun Update(adventure: Adventure): Adventure{
             FirebaseFirestore.getInstance().collection("adventure").document(adventure.id).update(
                             "summary", adventure.summary,
-                    "name", adventure.name
+                    "name", adventure.name,
+                                        "inCombat", adventure.inCombat
                     )
 
             return adventure
