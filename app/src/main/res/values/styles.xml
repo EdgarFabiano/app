@@ -10,12 +10,6 @@
         <item name="colorButtonNormal">@color/colorAccentSecondary</item>
     </style>
 
-    <style name="AppDarkTheme" parent="AppTheme">
-        <!-- Customize your theme here. -->
-        <item name="colorAccent">@color/colorPrimary</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
-    </style>
-
     <style name="MyDrawerArrowToggle" parent="Widget.AppCompat.DrawerArrowToggle">
         <item name="color">@color/colorAccent</item>
     </style>
