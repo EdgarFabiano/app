@@ -38,7 +38,6 @@ class AdventureFragment : Fragment() {
         return inflater.inflate(R.layout.adventure_fragment, container, false)
     }
 
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         //viewModel = ViewModelProviders.of(this).get(AdventureViewModel::class.java)

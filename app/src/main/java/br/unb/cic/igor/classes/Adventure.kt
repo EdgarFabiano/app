@@ -6,7 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import java.io.Serializable
 
-data class Adventure(var id: String = "", var name: String = "", var summary : String = "", var master: Master = Master()) : Serializable {
+data class Adventure(var id: String = "", var name: String = "", var summary : String = "", var master: Master = Master(), var inCombat: Boolean = false) : Serializable {
 
     companion object {
         fun Insert(adventure: Adventure): String{
