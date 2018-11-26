@@ -102,18 +102,23 @@ class MainActivity : AppCompatActivity(), AdventuresFragment.OnAdventureSelected
 
         }
 
-//        var master = Master("0W98WyWPqOZCGCzHvMQ487lQxSH3", "Fabio", "Dazor", "Um maluco no pedaço")
+//        var master = Master("8v08uGYQYEbeor5IqUhq4fWAfxi2", "Fernando", "FUFINUSTES", "Description")
 //
-//        var adventure = Adventure("", "Nova1", "Resumo!", master)
+//        var adventure = Adventure("", "Aventura", "Eh hora da Aventura!", master)
 //        var players = PlayerContent.PLAYERS
 //
-//        var adId = Adventure.Insert(adventure, mDb)
+//        var adId = Adventure.Insert(adventure)
 //
 //        var combat = Combat().apply {
 //            this.currentTurn = Turn(0)
-//        }
+//        }z
 //
-//        Combat.Insert("1BW2AYlaDCBKy4z2w1eN", "tSthabRpUZcXgdryAiqM", combat)
+//        Combat.Insert("RN3XRKtJVRHzpe5zF9n2", "QJhEO7yg5ON9ThL7PE5y", combat)
+
+//        val playerAction = PlayerAction("", 0, "EeEuM4KTyYa3crUbxTnQ69OTsNC2", "Vou te atirar")
+//
+//        PlayerAction.Insert("QJhEO7yg5ON9ThL7PE5y", "RN3XRKtJVRHzpe5zF9n2", "inbVwVE4S3O7F0RvK0Jm", playerAction)
+
 //        Adventure.Get(adId, mDb).addOnSuccessListener{
 //            task ->
 //            val u = task.toObject(Adventure::class.java)
@@ -214,7 +219,7 @@ class MainActivity : AppCompatActivity(), AdventuresFragment.OnAdventureSelected
     }
 
     override fun onAdventureSelected(adventureId: String) {
-        switchContent(AdventureTabsFragment.newInstance("tSthabRpUZcXgdryAiqM"))
+        switchContent(AdventureTabsFragment.newInstance("QJhEO7yg5ON9ThL7PE5y"))
     }
 
     override fun onCombatStarted(adventure: Adventure) {

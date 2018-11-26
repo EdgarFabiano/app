@@ -34,20 +34,19 @@
 
     </FrameLayout>
 
-    <TextView
-        android:id="@+id/textView8"
-        android:layout_width="wrap_content"
-        android:layout_height="16dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Waiting..."
-        android:visibility="@{waiting ? View.VISIBLE : View.GONE}"
-        app:layout_constraintBottom_toBottomOf="@+id/combat_inner_fragment"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/combat_inner_fragment"
-        app:layout_constraintTop_toTopOf="@+id/combat_inner_fragment" />
+    <!--<TextView-->
+        <!--android:id="@+id/textView8"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="16dp"-->
+        <!--android:layout_marginStart="8dp"-->
+        <!--android:layout_marginLeft="8dp"-->
+        <!--android:layout_marginEnd="8dp"-->
+        <!--android:layout_marginRight="8dp"-->
+        <!--android:layout_marginBottom="8dp"-->
+        <!--android:text="Waiting..."-->
+        <!--app:layout_constraintBottom_toBottomOf="@+id/combat_inner_fragment"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="@+id/combat_inner_fragment"-->
+        <!--app:layout_constraintTop_toTopOf="@+id/combat_inner_fragment" />-->
 
 </android.support.constraint.ConstraintLayout>

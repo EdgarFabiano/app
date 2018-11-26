@@ -10,11 +10,13 @@ import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import br.unb.cic.igor.MainActivity
 
 import br.unb.cic.igor.R
 import br.unb.cic.igor.classes.Adventure
 import br.unb.cic.igor.classes.Combat
 import br.unb.cic.igor.classes.PlayerAction
+import br.unb.cic.igor.classes.User
 import br.unb.cic.igor.extensions.toList
 import kotlinx.android.synthetic.main.fragment_action_rate.*
 
@@ -54,12 +56,17 @@ class ActionRateFragment : Fragment() {
             playerActions = it.toList(PlayerAction::class.java).filter { pa ->
                 pa.turnId == combat!!.currentTurn.id
             }
-            uploadUI()
+            updateUI()
         }
     }
 
-    fun uploadUI() {
+    fun updateUI() {
+        val mock = ArrayList<PlayerAction>()
+        mock.add(PlayerAction("1", 0, User.GetInstance()!!.id, "Vou atirar com meu raio de calor congelante", 0))
+        mock.add(PlayerAction("2", 0, User.GetInstance()!!.id, "Vou atirar com meu raio de calor congelante 2", 0))
 
+        val pagerAdapter = ScreenSlidePagerAdapter(fragmentManager!!, ArrayList(playerActions))
+        actionsPager.adapter = pagerAdapter
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -71,17 +78,21 @@ class ActionRateFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // The pager adapter, which provides the pages to the view pager widget.
-        val pagerAdapter = ScreenSlidePagerAdapter(fragmentManager!!, 3)
-        actionsPager.adapter = pagerAdapter
+        ratesReady.setOnClickListener {
+
+            listener!!.onActionRatesDone((actionsPager.adapter as ScreenSlidePagerAdapter).actions)
+        }
+
+        updateUI()
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is OnActionRatesDoneListener) {
-            listener = context
+        val currentFragment = (context as MainActivity).currentFragment
+        if (currentFragment is OnActionRatesDoneListener) {
+            listener = currentFragment
         } else {
-            throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
+            throw RuntimeException(context.toString() + " must implement OnActionRatesDoneListener")
         }
     }
 
@@ -109,10 +120,10 @@ class ActionRateFragment : Fragment() {
      * A simple pager adapter that represents 5 ScreenSlidePageFragment objects, in
      * sequence.
      */
-    private inner class ScreenSlidePagerAdapter(fm: FragmentManager, val playerCount: Int) : FragmentStatePagerAdapter(fm) {
-        override fun getCount(): Int = playerCount
+    private inner class ScreenSlidePagerAdapter(fm: FragmentManager, val actions: ArrayList<PlayerAction>) : FragmentStatePagerAdapter(fm) {
+        override fun getCount(): Int = actions.size
 
-        override fun getItem(position: Int): Fragment = ActionRatePageFragment()
+        override fun getItem(position: Int): Fragment = ActionRatePageFragment.newInstance(actions[position])
     }
 
     companion object {

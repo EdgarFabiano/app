@@ -48,4 +48,4 @@ data class Adventure (var id: String = "", var name: String = "", var summary : 
     }
 }
 
-data class CombatInfo(var inCombat: Boolean = false, var sessionId: String = "", var combatId: String = "")
+data class CombatInfo(var inCombat: Boolean = false, var sessionId: String = "", var combatId: String = "") : Serializable

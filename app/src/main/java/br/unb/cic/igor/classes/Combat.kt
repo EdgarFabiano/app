@@ -21,7 +21,9 @@ data class Combat(var id: String = "", var currentTurn: Turn = Turn(), var turns
         fun Update(sessionId: String, adventureId: String, combat: Combat){
             FirebaseFirestore.getInstance().collection("adventure").document(adventureId)
                     .collection("sessions").document(sessionId).collection("combats").document(combat.id).update(
-                            "currentTurn", combat.currentTurn,
+                            "currentTurn.availablePlayers", combat.currentTurn.availablePlayers,
+                            "currentTurn.status", combat.currentTurn.status.toString(),
+                            "currentTurn.description", combat.currentTurn.description,
                             "turns", combat.turns
                     )
         }
@@ -59,6 +61,26 @@ data class PlayerAction(var id: String = "", var turnId: Int = 0, var userId: St
             action.id = ref.id
             ref.set(action)
             return action
+        }
+
+        fun BatchUpdate(adventureId: String, sessionId: String, combatId: String, actions: ArrayList<PlayerAction>) {
+            val db = FirebaseFirestore.getInstance()
+            val batch = db.batch()
+            actions.forEach {
+                val ref = db.collection("adventure").document(adventureId)
+                        .collection("sessions").document(sessionId).collection("combats").
+                                document(combatId).collection("playerActions").document(it.id)
+                batch.update(ref,
+                                "successRate", it.successRate
+                )
+            }
+
+            val ref = db.collection("adventure").document(adventureId)
+                    .collection("sessions").document(sessionId).collection("combats").
+                            document(combatId)
+            batch.update(ref, "currentTurn.status", TurnState.WAITING_ROLLS.toString())
+
+            batch.commit()
         }
 
         // We should pass the already updated combat object to this function
