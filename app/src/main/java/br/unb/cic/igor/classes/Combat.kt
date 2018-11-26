@@ -49,9 +49,9 @@ enum class TurnState {
     ENDING_COMBAT
 }
 
-data class Turn(var id: Int = 0, var status: TurnState = TurnState.STARTING, var description: String = "", var availablePlayers: ArrayList<String> = ArrayList())
+data class Turn(var id: Int = 0, var status: TurnState = TurnState.STARTING, var description: String = "", var availablePlayers: ArrayList<String> = ArrayList()) : Serializable
 
-data class PlayerAction(var id: String = "", var turnId: Int = 0, var userId: String = "", var description: String = "", var successRate: Int? = null, var actionResult: Int? = null) {
+data class PlayerAction(var id: String = "", var turnId: Int = 0, var userId: String = "", var description: String = "", var successRate: Int? = null, var actionResult: Int? = null) : Serializable {
     companion object {
         fun Insert(adventureId: String, sessionId: String, combatId: String, action: PlayerAction): PlayerAction{
             val ref = FirebaseFirestore.getInstance().collection("adventure").document(adventureId)
