@@ -1,4 +1,4 @@
-package br.unb.cic.igor.Fragments
+package br.unb.cic.igor.fragments
 
 import android.app.Activity
 import android.os.Bundle
@@ -183,7 +183,7 @@ class RegisterFragment : Fragment(){
 
     companion object{
 
-        fun newInstance(): RegisterFragment{
+        fun newInstance(): RegisterFragment {
             return RegisterFragment()
         }
     }

@@ -1,4 +1,4 @@
-package br.unb.cic.igor.Fragments
+package br.unb.cic.igor.fragments
 
 import android.content.Intent
 import android.os.Bundle
@@ -138,7 +138,7 @@ class CompleteRegistrationFragment : Fragment() {
 
     companion object{
 
-        fun newInstance(): CompleteRegistrationFragment{
+        fun newInstance(): CompleteRegistrationFragment {
             return CompleteRegistrationFragment()
         }
     }

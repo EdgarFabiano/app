@@ -32,6 +32,8 @@ class CombatFragment : Fragment() {
     private var combat: Combat? = null
     private var currentFragment: Fragment? = null
     private var isMaster: Boolean? = null
+    private var waiting: Boolean = true
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,7 +72,12 @@ class CombatFragment : Fragment() {
     fun updateState() {
         when (combat!!.currentTurn.status) {
             TurnState.STARTING ->
-                toast("Turn init")
+                if(isMaster!!){
+                    waiting = false
+                    loadStartTurn()
+                } else{
+                    waiting = true
+                }
             TurnState.WAITING_ACTIONS ->
                 toast("WAITING ACTIONS!")
             TurnState.REVIEWING_ACTIONS ->
@@ -80,6 +87,13 @@ class CombatFragment : Fragment() {
             TurnState.ENDING_COMBAT ->
                 toast("FINISHING COMBAT!")
         }
+    }
+
+    private fun loadStartTurn(){
+        val ft = fragmentManager!!.beginTransaction()
+        ft.replace(R.id.combat_inner_fragment, StartTurnFragment(), "StartTurnFragment Transaction")
+        ft.addToBackStack(null)
+        ft.commit()
     }
 
     override fun onAttach(context: Context) {
