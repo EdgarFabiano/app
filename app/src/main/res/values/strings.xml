@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">igor</string>
-    <string name="facebook_app_id">1773802782836307</string> <string name="fb_login_protocol_scheme">fb1773802782836307</string>
+    <string name="facebook_app_id">1773802782836307</string>
+    <string name="fb_login_protocol_scheme">fb1773802782836307</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>

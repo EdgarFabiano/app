@@ -8,4 +8,5 @@
     <color name="transparent">#00ffffff</color>
     <color name="lightGreen">#00ffd9</color>
     <color name="colorAccentSecondary">#4abe8d</color>
+    <color name="GrayBG">#e2e2e1</color>
 </resources>

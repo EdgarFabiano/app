@@ -1,9 +1,11 @@
 package br.unb.cic.igor.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
 import android.widget.Toast
+import br.unb.cic.igor.MainActivity
 import br.unb.cic.igor.R
 import br.unb.cic.igor.classes.Adventure
 import br.unb.cic.igor.classes.Player
@@ -43,6 +45,8 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
     private var adventure : Adventure? = null
     private var sessions: List<Session> = ArrayList()
     private var players: List<Player> = ArrayList()
+    private var combatListener: OnCombatStarted? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +68,12 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
         Adventure.Get(adventureId).addOnSuccessListener {adv ->
             if (adv != null) {
                 adventure = adv.toObject(Adventure::class.java)
-                (adventureFragment as AdventureFragment).updateAdventure(adventure!!)
+                toast(adventure!!.combatInfo.inCombat.toString())
+                if (adventure!!.combatInfo.inCombat) {
+                    combatListener!!.onCombatStarted(adventure!!)
+                } else {
+                    (adventureFragment as AdventureFragment).updateAdventure(adventure!!)
+                }
             }
         }
     }
@@ -80,6 +89,20 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu, menu)
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        if (context is OnCombatStarted) {
+            combatListener = context
+        } else {
+            throw RuntimeException(context.toString() + " must implement OnCombatStarted")
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        combatListener = null
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -211,10 +234,6 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
         }
     }
 
-    override fun onDetach() {
-        super.onDetach()
-    }
-
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -270,6 +289,10 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
     override fun sessionChanged(session: Session) {
         loadSessions()
         stateTransition(State.SESSION, SessionFragment.newInstance(session))
+    }
+
+    interface OnCombatStarted {
+        fun onCombatStarted(adventure: Adventure)
     }
 
     enum class State {
