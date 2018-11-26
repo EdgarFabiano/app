@@ -207,7 +207,7 @@ class MainActivity : AppCompatActivity(), AdventuresFragment.OnAdventureSelected
     }
 
     override fun onAdventureSelected(adventureId: String) {
-        switchContent(AdventureTabsFragment.newInstance("tSthabRpUZcXgdryAiqM"))
+        switchContent(AdventureTabsFragment.newInstance(adventureId))
     }
 
     enum class State(val description: String) {

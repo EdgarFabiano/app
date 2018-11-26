@@ -2,6 +2,7 @@ package br.unb.cic.igor.fragments
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -13,10 +14,28 @@ import br.unb.cic.igor.MainActivity
 import br.unb.cic.igor.R
 import br.unb.cic.igor.adapters.AdventuresAdapter
 import br.unb.cic.igor.classes.Adventure
-import br.unb.cic.igor.view_models.AdventureViewModel
-import java.util.*
+import br.unb.cic.igor.extensions.toList
 
-class AdventuresFragment : Fragment() {
+
+class AdventuresFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
+
+    lateinit var rv : RecyclerView
+    lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
+
+    override fun onRefresh() {
+        var adventures : List<Adventure> = ArrayList()
+        Adventure.List().addOnSuccessListener {
+            if (it != null) {
+                adventures = it.toList(Adventure::class.java)
+                runAnimation(rv, adventures)
+            }
+        }
+        runAnimation(rv, adventures)
+        mSwipeRefreshLayout.setRefreshing(false)
+
+
+    }
+
 
     companion object {
         fun newInstance() = AdventuresFragment()
@@ -25,13 +44,34 @@ class AdventuresFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var view = inflater.inflate(R.layout.fragment_adventures, container, false)
 
-        var recyclerView = view.findViewById<RecyclerView>(R.id.adventures_recycler_view)
-        var adventures : List<Adventure> = ArrayList()
-        var adventureViewModel = AdventureViewModel()
-        adventures = adventures.plus(adventureViewModel.mockAdventure1)
+        var recyclerView: RecyclerView?
+        recyclerView = view.findViewById(R.id.adventures_recycler_view)
+        rv = recyclerView
         recyclerView.layoutManager = LinearLayoutManager(activity)
+        var adventures : List<Adventure>
+        Adventure.List().addOnSuccessListener {
+            if (it != null) {
+                adventures = it.toList(Adventure::class.java)
+                runAnimation(recyclerView, adventures)
+            }
+        }
 
-        runAnimation(recyclerView, adventures)
+        // SwipeRefreshLayout
+        mSwipeRefreshLayout = view.findViewById(R.id.swipe_container)
+        mSwipeRefreshLayout.setOnRefreshListener(this)
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,
+                android.R.color.holo_green_dark,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_blue_dark)
+
+        /**
+         * Showing Swipe Refresh animation on activity create
+         * As animation won't start on onCreate, post runnable is used
+         */
+//        mSwipeRefreshLayout.post(Runnable {
+//            mSwipeRefreshLayout.setRefreshing(true)
+//
+//        })
 
 
         return view
