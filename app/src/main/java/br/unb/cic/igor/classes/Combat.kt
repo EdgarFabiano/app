@@ -4,9 +4,10 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
+import java.io.Serializable
 
 // Current turns are not included in the turns array
-data class Combat(var id: String = "", var currentTurn: Turn = Turn(), var turns: ArrayList<Turn> = ArrayList()) {
+data class Combat(var id: String = "", var currentTurn: Turn = Turn(), var turns: ArrayList<Turn> = ArrayList()) : Serializable {
     companion object {
         fun Insert(sessionId: String, adventureId: String, combat: Combat): Combat{
             val ref = FirebaseFirestore.getInstance().collection("adventure").document(adventureId)
@@ -52,7 +53,7 @@ data class Turn(var id: Int = 0, var status: TurnState = TurnState.STARTING, var
 
 data class PlayerAction(var id: String = "", var turnId: Int = 0, var userId: String = "", var description: String = "", var successRate: Int? = null, var actionResult: Int? = null) {
     companion object {
-        fun Insert(sessionId: String, adventureId: String, combatId: String, action: PlayerAction): PlayerAction{
+        fun Insert(adventureId: String, sessionId: String, combatId: String, action: PlayerAction): PlayerAction{
             val ref = FirebaseFirestore.getInstance().collection("adventure").document(adventureId)
                     .collection("sessions").document(sessionId).collection("combats").document(combatId).collection("playerActions").document()
             action.id = ref.id
@@ -61,7 +62,7 @@ data class PlayerAction(var id: String = "", var turnId: Int = 0, var userId: St
         }
 
         // We should pass the already updated combat object to this function
-        fun Update(sessionId: String, adventureId: String, combatId: String, action: PlayerAction){
+        fun Update(adventureId: String, sessionId: String, combatId: String, action: PlayerAction){
             FirebaseFirestore.getInstance().collection("adventure").document(adventureId)
                     .collection("sessions").document(sessionId).collection("combats").
                             document(combatId).collection("playerActions").document(action.id).update(
@@ -71,14 +72,14 @@ data class PlayerAction(var id: String = "", var turnId: Int = 0, var userId: St
                     )
         }
 
-        fun Get(sessionId: String, adventureId: String, combatId: String, actionId: String): Task<DocumentSnapshot> {
+        fun Get(adventureId: String, sessionId: String, combatId: String, actionId: String): Task<DocumentSnapshot> {
             val docRef = FirebaseFirestore.getInstance().collection("adventure").document(adventureId)
                     .collection("sessions").document(sessionId).collection("combats").document(combatId).
                             collection("playerActions").document(actionId)
             return docRef.get()
         }
 
-        fun List(sessionId: String, adventureId: String, combatId: String): Task<QuerySnapshot> {
+        fun List(adventureId: String, sessionId: String, combatId: String): Task<QuerySnapshot> {
             val colRef = FirebaseFirestore.getInstance().collection("adventure").document(adventureId)
                     .collection("sessions").document(sessionId).collection("combats").document(combatId).collection("playerActions")
             return colRef.get()
