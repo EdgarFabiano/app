@@ -4,14 +4,16 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 
 import br.unb.cic.igor.R
-import br.unb.cic.igor.classes.Adventure
-import br.unb.cic.igor.classes.Combat
+import br.unb.cic.igor.adapters.PlayerSelectionAdapter
+import br.unb.cic.igor.classes.*
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_start_turn.*
 
@@ -35,7 +37,11 @@ class StartTurnFragment : Fragment() {
     private lateinit var adventure: Adventure
     private lateinit var combat: Combat
     private var isMaster: Boolean = false
-    private var listener: OnFragmentInteractionListener? = null
+    private var listener: OnTurnStarted? = null
+    private var players: ArrayList<Player> = ArrayList()
+    private lateinit var linearLayoutManager: LinearLayoutManager
+    private lateinit var adapter: PlayerSelectionAdapter
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,18 +50,80 @@ class StartTurnFragment : Fragment() {
             combat = it.getSerializable(ARG_CBT) as Combat
             isMaster = it.getBoolean(ARG_MASTER)
         }
+
+        Adventure.ListPlayers(adventure.id).addOnSuccessListener{ task ->
+            val list = task.documents
+
+            players = ArrayList<Player>()
+            for(doc in list){
+                Toast.makeText(activity, "Success!", Toast.LENGTH_SHORT).show()
+                players.add(doc.toObject(Player::class.java) as Player)
+            }
+
+            linearLayoutManager = LinearLayoutManager(activity)
+            recyclerView.layoutManager = linearLayoutManager
+
+            adapter = PlayerSelectionAdapter(players)
+            recyclerView.adapter = adapter
+
+        }
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_start_turn, container, false)
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    fun onButtonPressed(uri: Uri) {
-        listener?.onFragmentInteraction(uri)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        start_turn_btn.setOnClickListener {
+            startTurn()
+        }
     }
+
+    private fun startTurn(){
+        if(!validateForm()){
+            return
+        }
+
+        val desc = turn_description.text.toString()
+
+        val turnUsers = ArrayList<String>()
+
+        for ( i in 0..(adapter.itemCount-1)){
+            val vh = recyclerView.findViewHolderForAdapterPosition(i) as PlayerSelectionAdapter.PlayerSelectionHolder
+            if(vh.checked){
+                turnUsers.add(vh.player!!.userId)
+            }
+        }
+
+        val turn = Turn().apply {
+            id = combat.turns.size
+            description = desc
+            availablePlayers = turnUsers
+            status = TurnState.WAITING_ACTIONS
+        }
+
+        if(combat.currentTurn.status != TurnState.NOT_STARTED){
+            combat.turns.add(combat.currentTurn)
+        }
+
+        combat.currentTurn = turn
+
+        Combat.Update(adventure.combatInfo.sessionId, adventure.id, combat)
+
+        listener!!.OnTurnStarted(adventure, combat)
+
+        //Remove itself
+
+        fragmentManager!!.beginTransaction().remove(this).commit()
+    }
+
 
     private fun validateForm(): Boolean {
         var valid = true
@@ -75,10 +143,10 @@ class StartTurnFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is OnFragmentInteractionListener) {
+        if (context is OnTurnStarted) {
             listener = context
         } else {
-            throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
+            throw RuntimeException(context.toString() + " must implement OnTurnStarted")
         }
     }
 
@@ -98,9 +166,9 @@ class StartTurnFragment : Fragment() {
      * (http://developer.android.com/training/basics/fragments/communicating.html)
      * for more information.
      */
-    interface OnFragmentInteractionListener {
+    interface OnTurnStarted {
         // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
+        fun OnTurnStarted(adventure: Adventure, combat: Combat)
     }
 
     companion object {

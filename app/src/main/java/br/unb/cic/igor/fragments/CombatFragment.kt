@@ -2,6 +2,7 @@ package br.unb.cic.igor.fragments
 
 import android.content.Context
 import android.net.Uri
+import android.opengl.Visibility
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import br.unb.cic.igor.MainActivity
 
 import br.unb.cic.igor.R
 import br.unb.cic.igor.classes.*
+import kotlinx.android.synthetic.main.fragment_combat.*
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_SUB_PARAM = "COMBAT_SUB_PARAM"
@@ -55,6 +57,29 @@ class CombatFragment : Fragment() {
         }
     }
 
+    fun updateAdventure(adventure: Adventure? = null, combat: Combat? = null){
+        if(adventure == null){
+            Adventure.Get(adventure!!.id).addOnSuccessListener {
+                if (it != null) {
+                    this.adventure = it.toObject(Adventure::class.java)
+                    if(combat == null){
+                        loadCombat()
+                    } else{
+                        this.combat = combat
+                    }
+                }
+            }
+        } else{
+            this.adventure = adventure
+            if(combat == null){
+                loadCombat()
+            } else{
+                this.combat = combat
+            }
+        }
+
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -71,13 +96,10 @@ class CombatFragment : Fragment() {
 
     fun updateState() {
         when (combat!!.currentTurn.status) {
+            TurnState.NOT_STARTED->
+                startingTurn()
             TurnState.STARTING ->
-                if(isMaster!!){
-                    waiting = false
-                    loadStartTurn()
-                } else{
-                    waiting = true
-                }
+                startingTurn()
             TurnState.WAITING_ACTIONS ->
                 toast("WAITING ACTIONS!")
             TurnState.REVIEWING_ACTIONS ->
@@ -87,11 +109,21 @@ class CombatFragment : Fragment() {
             TurnState.ENDING_COMBAT ->
                 toast("FINISHING COMBAT!")
         }
+
+    }
+
+    private fun startingTurn(){
+        if(isMaster!!){
+            waiting_text.visibility = View.GONE
+            loadStartTurn()
+        } else{
+            waiting_text.visibility = View.VISIBLE
+        }
     }
 
     private fun loadStartTurn(){
         val ft = fragmentManager!!.beginTransaction()
-        ft.replace(R.id.combat_inner_fragment, StartTurnFragment(), "StartTurnFragment Transaction")
+        ft.replace(R.id.combat_inner_fragment, StartTurnFragment.newInstance(adventure!!, combat!!, isMaster!!), "StartTurnFragment Transaction")
         ft.addToBackStack(null)
         ft.commit()
     }

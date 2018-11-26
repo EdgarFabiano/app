@@ -41,6 +41,12 @@ data class Adventure (var id: String = "", var name: String = "", var summary : 
             return player.id
         }
 
+        fun ListPlayers(adventureId: String): Task<QuerySnapshot> {
+            val docRef = FirebaseFirestore.getInstance().collection("adventure").document(adventureId)
+                    .collection("players")
+            return docRef.get()
+        }
+
         fun List(): Task<QuerySnapshot> {
             val docRef = FirebaseFirestore.getInstance().collection("adventure")
             return docRef.get()
