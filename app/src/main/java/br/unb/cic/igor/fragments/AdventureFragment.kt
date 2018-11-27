@@ -1,6 +1,5 @@
 package br.unb.cic.igor.fragments
 
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -8,7 +7,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.*
 import br.unb.cic.igor.MainActivity
-import br.unb.cic.igor.view_models.AdventureViewModel
 import br.unb.cic.igor.R
 import br.unb.cic.igor.adapters.SessionAdapter
 import br.unb.cic.igor.classes.Adventure
@@ -26,8 +24,6 @@ class AdventureFragment : Fragment() {
     companion object {
         fun newInstance() = AdventureFragment()
     }
-
-    private lateinit var viewModel: AdventureViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

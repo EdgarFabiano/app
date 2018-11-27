@@ -216,7 +216,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onAdventureSelected(adventureId: String) {
-        switchContent(AdventureTabsFragment.newInstance("tSthabRpUZcXgdryAiqM"))
+        switchContent(AdventureTabsFragment.newInstance(adventureId))
     }
 
     override fun onCombatStarted(adventure: Adventure) {
