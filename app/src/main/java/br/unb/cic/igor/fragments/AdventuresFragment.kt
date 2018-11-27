@@ -1,6 +1,7 @@
 package br.unb.cic.igor.fragments
 
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
@@ -33,7 +34,6 @@ class AdventuresFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         runAnimation(rv, adventures)
         mSwipeRefreshLayout.setRefreshing(false)
 
-
     }
 
 
@@ -64,15 +64,12 @@ class AdventuresFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 android.R.color.holo_orange_dark,
                 android.R.color.holo_blue_dark)
 
-        /**
-         * Showing Swipe Refresh animation on activity create
-         * As animation won't start on onCreate, post runnable is used
-         */
-//        mSwipeRefreshLayout.post(Runnable {
-//            mSwipeRefreshLayout.setRefreshing(true)
-//
-//        })
-
+        val fab: View = view.findViewById(R.id.fab)
+        fab.setOnClickListener { view ->
+            Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null)
+                    .show()
+        }
 
         return view
     }

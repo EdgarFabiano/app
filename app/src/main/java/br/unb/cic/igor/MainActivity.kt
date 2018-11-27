@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.support.design.widget.Snackbar
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
@@ -102,47 +103,6 @@ class MainActivity : AppCompatActivity(), AdventuresFragment.OnAdventureSelected
             changeColor(adapter, position)
 
         }
-
-//        var master = Master("0W98WyWPqOZCGCzHvMQ487lQxSH3", "Fabio", "Dazor", "Um maluco no pedaço")
-//
-//        var adventure = Adventure("", "Nova1", "Resumo!", master)
-//        var players = PlayerContent.PLAYERS
-//
-//        var adId = Adventure.Insert(adventure, mDb)
-//
-//        Adventure.Get(adId, mDb).addOnSuccessListener{
-//            task ->
-//            val u = task.toObject(Adventure::class.java)
-//            if(u == null){
-//                Toast.makeText(this, "Error on registration.", Toast.LENGTH_SHORT).show()
-//            } else{
-//                Toast.makeText(this, "Success!", Toast.LENGTH_SHORT).show()
-//
-//                var pId0 = Adventure.AddPlayer(adId, players[0], mDb)
-//                var pId1 = Adventure.AddPlayer(adId, players[1], mDb)
-//            }
-//        }
-
-//        var list = Adventure.List().addOnSuccessListener{ task ->
-//            val list = task.documents
-//            if(list == null){
-//                Toast.makeText(this, "No documents", Toast.LENGTH_SHORT).show()
-//            } else{
-//                for(doc in list){
-//                    Toast.makeText(this, "Success!", Toast.LENGTH_SHORT).show()
-//                    var realDoc = doc.toObject(Adventure::class.java)
-//                    val a = 1;
-//                }
-//            }
-//        }
-
-//        var adId = "tSthabRpUZcXgdryAiqM"
-//        var session = Session(adventureId = adId, name = "session1", date = Date(), summary = "session summary")
-//        Session.Insert(session, adId)
-//
-//        session.summary = "ODEIO ISSO AQUI TUDO"
-//
-//        Session.Update(session, adId, mDb)
 
 
     }
