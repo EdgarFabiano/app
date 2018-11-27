@@ -79,13 +79,12 @@ data class PlayerAction(var id: String = "", var turnId: Int = 0, var userId: St
                     .collection("sessions").document(sessionId).collection("combats").
                             document(combatId)
             batch.update(ref, "currentTurn.status", TurnState.WAITING_ROLLS.toString())
-
             batch.commit()
         }
 
         // We should pass the already updated combat object to this function
-        fun Update(adventureId: String, sessionId: String, combatId: String, action: PlayerAction){
-            FirebaseFirestore.getInstance().collection("adventure").document(adventureId)
+        fun Update(adventureId: String, sessionId: String, combatId: String, action: PlayerAction): Task<Void> {
+            return FirebaseFirestore.getInstance().collection("adventure").document(adventureId)
                     .collection("sessions").document(sessionId).collection("combats").
                             document(combatId).collection("playerActions").document(action.id).update(
                             "description", action.description,

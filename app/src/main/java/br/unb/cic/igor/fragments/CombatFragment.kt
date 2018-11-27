@@ -13,6 +13,7 @@ import br.unb.cic.igor.MainActivity
 import br.unb.cic.igor.R
 import br.unb.cic.igor.classes.*
 import br.unb.cic.igor.extensions.toList
+import com.google.android.gms.dynamic.IFragmentWrapper
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_SUB_PARAM = "COMBAT_SUB_PARAM"
@@ -26,8 +27,8 @@ private const val ARG_SUB_PARAM = "COMBAT_SUB_PARAM"
  * create an instance of this fragment.
  *
  */
-class CombatFragment : Fragment(), ActionRateFragment.OnActionRatesDoneListener {
-    // TODO: Rename and change types of parameters
+class CombatFragment : Fragment(), ActionRateFragment.OnActionRatesDoneListener, ActionResultFragment.OnActionResultListener {
+
     private var adventure: Adventure? = null
     private var listener: OnCombatFinished? = null
     private var combat: Combat? = null
@@ -92,19 +93,37 @@ class CombatFragment : Fragment(), ActionRateFragment.OnActionRatesDoneListener 
 //                    waiting = true
 //                }
             TurnState.WAITING_ACTIONS ->
-                if (isMaster!! && playerActions.size >= combat!!.currentTurn.availablePlayers.size) {
+                if (isMaster!! && playerActions.size >= combat!!.currentTurn.availablePlayers.size && combat!!.currentTurn.availablePlayers.all { playerActions.any {a -> a.userId == it} }) {
                     combat!!.currentTurn.status = TurnState.REVIEWING_ACTIONS
                     Combat.Update(adventure!!.combatInfo.sessionId, adventure!!.id, combat!!)
                     loadCombat()
                 } else if (isMaster!!) {
-                    toast("Waiting Actionss")
+                    toast("Waiting Actions")
                 }
             TurnState.REVIEWING_ACTIONS ->
                 if (isMaster!!) {
                     switchContent(ActionRateFragment.newInstance(adventure!!, combat!!))
                 }
-            TurnState.WAITING_ROLLS ->
-                toast("WAITING ROLLS!")
+            TurnState.WAITING_ROLLS -> {
+                if (!isMaster!! ) {
+                    val thisPlayerAction = playerActions.firstOrNull { it.userId == User.GetInstance()!!.id }
+                    if (thisPlayerAction != null) {
+                        switchContent(ActionResultFragment.newInstance(adventure!!, combat!!, thisPlayerAction))
+                    } else {
+                        toast("Waiting other players")
+                    }
+                } else if (isMaster!!) {
+                    val completedActions = playerActions.filter { a -> a.actionResult != null }
+                    if (completedActions.size >= combat!!.currentTurn.availablePlayers.size && combat!!.currentTurn.availablePlayers.all { completedActions.any {a -> a.userId == it} }) {
+                        val finishedTurn = combat!!.currentTurn
+                        finishedTurn.status = TurnState.FINISHED
+                        combat!!.turns.plus(finishedTurn)
+                        combat!!.currentTurn = Turn()
+                        Combat.Update(adventure!!.combatInfo.sessionId, adventure!!.id, combat!!)
+                        loadCombat()
+                    }
+                }
+            }
             TurnState.ENDING_COMBAT ->
                 toast("FINISHING COMBAT!")
         }
@@ -162,6 +181,12 @@ class CombatFragment : Fragment(), ActionRateFragment.OnActionRatesDoneListener 
     override fun onActionRatesDone(ratedActions: ArrayList<PlayerAction>) {
         PlayerAction.BatchUpdate(adventure!!.id, adventure!!.combatInfo.sessionId, adventure!!.combatInfo.combatId, ratedActions)
         loadCombat()
+    }
+
+    override fun onActionResult(playerAction: PlayerAction) {
+        PlayerAction.Update(adventure!!.id, adventure!!.combatInfo.sessionId, adventure!!.combatInfo.combatId, playerAction).addOnSuccessListener {
+            (currentFragment as ActionResultFragment).updatePlayerAction(playerAction)
+        }
     }
 
     companion object {
