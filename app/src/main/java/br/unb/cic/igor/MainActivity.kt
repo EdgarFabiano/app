@@ -16,9 +16,7 @@ import android.widget.TextView
 import android.widget.Toast
 import br.unb.cic.igor.adapters.MenuAdapter
 import br.unb.cic.igor.classes.*
-import br.unb.cic.igor.fragments.AdventureTabsFragment
-import br.unb.cic.igor.fragments.AdventuresFragment
-import br.unb.cic.igor.fragments.CombatFragment
+import br.unb.cic.igor.fragments.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
@@ -27,7 +25,12 @@ import kotlinx.android.synthetic.main.activity_main.view.*
 import java.util.*
 
 
-class MainActivity : AppCompatActivity(), AdventuresFragment.OnAdventureSelected, AdventureTabsFragment.OnCombatStarted, CombatFragment.OnCombatFinished {
+class MainActivity : AppCompatActivity(),
+        AdventuresFragment.OnAdventureSelected,
+        AdventureTabsFragment.OnCombatStarted,
+        CombatFragment.OnCombatFinished,
+        StartTurnFragment.OnTurnStarted {
+
     private var state: State = State.ADVENTURES
 
     var currentFragment: Fragment = AdventuresFragment.newInstance()
@@ -109,6 +112,7 @@ class MainActivity : AppCompatActivity(), AdventuresFragment.OnAdventureSelected
 //
 //        var adId = Adventure.Insert(adventure)
 //
+
 //        var combat = Combat().apply {
 //            this.currentTurn = Turn(0)
 //        }z
@@ -118,6 +122,11 @@ class MainActivity : AppCompatActivity(), AdventuresFragment.OnAdventureSelected
 //        val playerAction = PlayerAction("", 0, "EeEuM4KTyYa3crUbxTnQ69OTsNC2", "Vou te atirar")
 //
 //        PlayerAction.Insert("QJhEO7yg5ON9ThL7PE5y", "RN3XRKtJVRHzpe5zF9n2", "inbVwVE4S3O7F0RvK0Jm", playerAction)
+
+
+//        val combat = Combat()
+//
+//       Combat.Insert("1BW2AYlaDCBKy4z2w1eN", "tSthabRpUZcXgdryAiqM", combat)
 
 //        Adventure.Get(adId, mDb).addOnSuccessListener{
 //            task ->
@@ -219,11 +228,15 @@ class MainActivity : AppCompatActivity(), AdventuresFragment.OnAdventureSelected
     }
 
     override fun onAdventureSelected(adventureId: String) {
-        switchContent(AdventureTabsFragment.newInstance("QJhEO7yg5ON9ThL7PE5y"))
+        switchContent(AdventureTabsFragment.newInstance(adventureId))
     }
 
     override fun onCombatStarted(adventure: Adventure) {
         switchContent(CombatFragment.newInstance(adventure))
+    }
+
+    override fun OnTurnStarted(adventure: Adventure, combat: Combat) {
+        (currentFragment as CombatFragment).updateAdventure(adventure, combat)
     }
 
     enum class State(val description: String) {

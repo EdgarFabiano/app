@@ -1,7 +1,6 @@
 package br.unb.cic.igor.fragments
 
 
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -13,9 +12,6 @@ import br.unb.cic.igor.MainActivity
 
 import br.unb.cic.igor.R
 import br.unb.cic.igor.classes.Adventure
-import br.unb.cic.igor.classes.Session
-import br.unb.cic.igor.view_models.AdventureViewModel
-import kotlinx.android.synthetic.main.fragment_add_session.*
 import kotlinx.android.synthetic.main.fragment_adventure_edit.*
 import kotlinx.android.synthetic.main.fragment_adventure_edit.view.*
 

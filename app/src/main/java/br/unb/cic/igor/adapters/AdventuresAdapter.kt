@@ -3,6 +3,7 @@ package br.unb.cic.igor.adapters
 import android.content.Context
 import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
+import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +11,10 @@ import br.unb.cic.igor.R
 import br.unb.cic.igor.adapters.view.holder.AdventuresRecyclerViewHolder
 
 import br.unb.cic.igor.classes.Adventure
+import br.unb.cic.igor.classes.Session
+import br.unb.cic.igor.extensions.toList
 import br.unb.cic.igor.fragments.AdventuresFragment
+import br.unb.cic.igor.util.FormatterUtil
 import java.util.*
 
 class AdventuresAdapter(private val adventures: List<Adventure>, private val context: Context?, private val mListener: AdventuresFragment.OnAdventureSelected?) : RecyclerView.Adapter<AdventuresRecyclerViewHolder>() {
@@ -45,9 +49,18 @@ class AdventuresAdapter(private val adventures: List<Adventure>, private val con
 
     override fun onBindViewHolder(holder: AdventuresRecyclerViewHolder, position: Int) {
         var adventure = adventures[position]
+
+        var lastSession = Session()
+        Session.ListByAdventure(adventure.id).addOnSuccessListener {
+            if (!it.isEmpty) {
+                lastSession = it.toList(Session::class.java).last()
+            }
+        }
+
         holder.mTitle.text = adventure.name
-        holder.mNextSession.text = "Próxima sessão " + "03/10"
+        holder.mNextSession.text = "Próxima sessão " + FormatterUtil.formatDate(lastSession.date)
         holder.mSeekbar.progress = 1 + Random().nextInt(100)
+        holder.mSeekbar.isEnabled = false
         holder.mlayout.background = context!!.resources.getDrawable(images[adventure.bg])
 
         with(holder.view) {
