@@ -49,7 +49,7 @@ class CombatFragment : Fragment() {
     }
 
     fun loadCombat() {
-        Combat.Get(adventure!!.combatInfo.combatId, adventure!!.combatInfo.sessionId, adventure!!.id).addOnSuccessListener {
+        Combat.Get(adventure!!.id, adventure!!.combatInfo.sessionId, adventure!!.combatInfo.combatId).addOnSuccessListener {
             if (it != null) {
                 combat = it.toObject(Combat::class.java)
                 updateState()
@@ -66,6 +66,7 @@ class CombatFragment : Fragment() {
                         loadCombat()
                     } else{
                         this.combat = combat
+                        updateState()
                     }
                 }
             }
@@ -75,6 +76,7 @@ class CombatFragment : Fragment() {
                 loadCombat()
             } else{
                 this.combat = combat
+                updateState()
             }
         }
 
@@ -101,7 +103,7 @@ class CombatFragment : Fragment() {
             TurnState.STARTING ->
                 startingTurn()
             TurnState.WAITING_ACTIONS ->
-                toast("WAITING ACTIONS!")
+                waitingActions()
             TurnState.REVIEWING_ACTIONS ->
                 toast("REVIEWING ACTIONS!")
             TurnState.WAITING_ROLLS ->
@@ -121,9 +123,51 @@ class CombatFragment : Fragment() {
         }
     }
 
+    private fun waitingActions(){
+        if(isMaster!!){
+            waiting_text.visibility = View.VISIBLE
+        } else{
+            waiting_text.visibility = View.GONE
+            loadPlayerActionCreation()
+        }
+    }
+
+    fun checkAllPlayerActions(){
+        PlayerAction.List(adventure!!.id, adventure!!.combatInfo.sessionId, combat!!.id).addOnSuccessListener {
+            val docs = it.documents
+            val actionList = ArrayList<PlayerAction>()
+            for (doc in docs){
+                val value = doc.toObject(PlayerAction::class.java)
+                if(value != null){
+                    actionList.add(value)
+                }
+            }
+
+            if(actionList.size == combat!!.currentTurn.availablePlayers.size){
+                for(userId in combat!!.currentTurn.availablePlayers){
+                    if(actionList.filter {it.userId == userId}.size != 1){
+                        return@addOnSuccessListener
+                    }
+                }
+
+                combat!!.currentTurn.status = TurnState.REVIEWING_ACTIONS
+                Combat.Update(adventure!!.id, adventure!!.combatInfo.sessionId, combat!!)
+
+                updateState()
+            }
+        }
+    }
+
     private fun loadStartTurn(){
         val ft = fragmentManager!!.beginTransaction()
         ft.replace(R.id.combat_inner_fragment, StartTurnFragment.newInstance(adventure!!, combat!!, isMaster!!), "StartTurnFragment Transaction")
+        ft.addToBackStack(null)
+        ft.commit()
+    }
+
+    private fun loadPlayerActionCreation(){
+        val ft = fragmentManager!!.beginTransaction()
+        ft.replace(R.id.combat_inner_fragment, PlayerActionCreateFragment.newInstance(adventure!!, combat!!), "PlayerActionCreateFragment Transaction")
         ft.addToBackStack(null)
         ft.commit()
     }

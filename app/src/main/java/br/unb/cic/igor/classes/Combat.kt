@@ -9,7 +9,7 @@ import java.io.Serializable
 // Current turns are not included in the turns array
 data class Combat(var id: String = "", var currentTurn: Turn = Turn(), var turns: ArrayList<Turn> = ArrayList()) : Serializable {
     companion object {
-        fun Insert(sessionId: String, adventureId: String, combat: Combat): Combat{
+        fun Insert(adventureId: String, sessionId: String, combat: Combat): Combat{
             val ref = FirebaseFirestore.getInstance().collection("adventure").document(adventureId)
                     .collection("sessions").document(sessionId).collection("combats").document()
             combat.id = ref.id
@@ -20,7 +20,7 @@ data class Combat(var id: String = "", var currentTurn: Turn = Turn(), var turns
         private fun turnToMap(turn: Turn): Map<String, Any>{
             val turnMap = HashMap<String, Any>()
             turnMap["id"] = turn.id
-            turnMap["status"] = turn.status
+            turnMap["status"] = turn.status.toString()
             turnMap["description"] = turn.description
             turnMap["availablePlayers"] = turn.availablePlayers
 
@@ -29,7 +29,7 @@ data class Combat(var id: String = "", var currentTurn: Turn = Turn(), var turns
         }
 
         // We should pass the already updated combat object to this function
-        fun Update(sessionId: String, adventureId: String, combat: Combat){
+        fun Update(adventureId: String, sessionId: String, combat: Combat){
             val turnMap = turnToMap(combat.currentTurn)
             val turnMapList = ArrayList<Map<String, Any>>()
             for (t in combat.turns){
@@ -45,13 +45,13 @@ data class Combat(var id: String = "", var currentTurn: Turn = Turn(), var turns
                     .update(combatMap)
         }
 
-        fun Get(id: String, sessionId: String, adventureId: String): Task<DocumentSnapshot> {
+        fun Get(adventureId: String, sessionId: String, id: String): Task<DocumentSnapshot> {
             val docRef = FirebaseFirestore.getInstance().collection("adventure").document(adventureId)
                     .collection("sessions").document(sessionId).collection("combats").document(id)
             return docRef.get()
         }
 
-        fun List(sessionId: String, adventureId: String): Task<QuerySnapshot> {
+        fun List(adventureId: String, sessionId: String): Task<QuerySnapshot> {
             val colRef = FirebaseFirestore.getInstance().collection("adventure").document(adventureId)
                     .collection("sessions").document(sessionId).collection("combats")
             return colRef.get()
@@ -103,6 +103,13 @@ data class PlayerAction(var id: String = "", var turnId: Int = 0, var userId: St
             val colRef = FirebaseFirestore.getInstance().collection("adventure").document(adventureId)
                     .collection("sessions").document(sessionId).collection("combats").document(combatId).collection("playerActions")
             return colRef.get()
+        }
+
+        fun GetByTurn(adventureId: String, sessionId: String, combatId: String, turnId: Int, userId: String): Task<QuerySnapshot>{
+            val colRef = FirebaseFirestore.getInstance().collection("adventure").document(adventureId)
+                    .collection("sessions").document(sessionId).collection("combats").document(combatId).
+                            collection("playerActions")
+            return colRef.whereEqualTo("turnId", turnId).whereEqualTo("userId", userId).get()
         }
     }
 }

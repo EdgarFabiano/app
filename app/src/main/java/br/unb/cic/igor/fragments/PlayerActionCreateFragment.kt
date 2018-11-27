@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -12,130 +11,115 @@ import android.view.ViewGroup
 import android.widget.Toast
 
 import br.unb.cic.igor.R
-import br.unb.cic.igor.adapters.PlayerSelectionAdapter
-import br.unb.cic.igor.classes.*
-import kotlinx.android.synthetic.main.fragment_login.*
+import br.unb.cic.igor.classes.Adventure
+import br.unb.cic.igor.classes.Combat
+import br.unb.cic.igor.classes.PlayerAction
+import br.unb.cic.igor.classes.User
+import kotlinx.android.synthetic.main.fragment_player_action_create.*
 import kotlinx.android.synthetic.main.fragment_start_turn.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_ADV = "ARG_ADV"
 private const val ARG_CBT = "ARG_CBT"
-private const val ARG_MASTER = "ARG_MASTER"
 
 /**
  * A simple [Fragment] subclass.
  * Activities that contain this fragment must implement the
- * [StartTurnFragment.OnFragmentInteractionListener] interface
+ * [PlayerActionCreateFragment.OnFragmentInteractionListener] interface
  * to handle interaction events.
- * Use the [StartTurnFragment.newInstance] factory method to
+ * Use the [PlayerActionCreateFragment.newInstance] factory method to
  * create an instance of this fragment.
  *
  */
-class StartTurnFragment : Fragment() {
+class PlayerActionCreateFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private lateinit var adventure: Adventure
     private lateinit var combat: Combat
-    private var isMaster: Boolean = false
-    private var listener: OnTurnStarted? = null
-    private var players: ArrayList<Player> = ArrayList()
-    private lateinit var linearLayoutManager: LinearLayoutManager
-    private lateinit var adapter: PlayerSelectionAdapter
-
+    private var listener: OnPlayerAction? = null
+    private var action: PlayerAction? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             adventure = it.getSerializable(ARG_ADV) as Adventure
             combat = it.getSerializable(ARG_CBT) as Combat
-            isMaster = it.getBoolean(ARG_MASTER)
         }
 
-        Adventure.ListPlayers(adventure.id).addOnSuccessListener{ task ->
-            val list = task.documents
+        PlayerAction.GetByTurn(adventure.id, adventure.combatInfo.sessionId, combat.id, combat.currentTurn.id, User.GetInstance()!!.id).addOnSuccessListener {
+            val docs = it.documents
 
-            players = ArrayList<Player>()
-            for(doc in list){
-                Toast.makeText(activity, "Success!", Toast.LENGTH_SHORT).show()
-                players.add(doc.toObject(Player::class.java) as Player)
+            if(docs.size > 0){
+                action = docs.get(0).toObject(PlayerAction::class.java)
+                if(action != null){
+                    player_action.text.clear()
+                    player_action.text.append(action!!.description)
+                }
+
             }
-
-            linearLayoutManager = LinearLayoutManager(activity)
-            recyclerView.layoutManager = linearLayoutManager
-
-            adapter = PlayerSelectionAdapter(players)
-            recyclerView.adapter = adapter
-
         }
 
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-
-
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_start_turn, container, false)
+        return inflater.inflate(R.layout.fragment_player_action_create, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        start_turn_btn.setOnClickListener {
-            startTurn()
+        player_action_submit.setOnClickListener {
+            saveAction()
         }
     }
 
-    private fun startTurn(){
+    private fun saveAction(){
         if(!validateForm()){
             return
         }
 
-        val desc = turn_description.text.toString()
+        val action_text = player_action.text.toString()
 
-        val turnUsers = ArrayList<String>()
+        if(action != null){
+            action!!.description = action_text
 
-        for ( i in 0..(adapter.itemCount-1)){
-            val vh = recyclerView.findViewHolderForAdapterPosition(i) as PlayerSelectionAdapter.PlayerSelectionHolder
-            if(vh.checked){
-                turnUsers.add(vh.player!!.userId)
+            PlayerAction.Update(adventure.id, adventure.combatInfo.sessionId, combat.id, action!!)
+
+        } else{
+            action = PlayerAction().apply {
+                description = action_text
+                turnId = combat.currentTurn.id
+                userId = User.GetInstance()!!.id
             }
+
+            PlayerAction.Insert(adventure.id, adventure.combatInfo.sessionId, combat.id, action!!)
         }
 
-        val turn = Turn().apply {
-            id = combat.turns.size
-            description = desc
-            availablePlayers = turnUsers
-            status = TurnState.WAITING_ACTIONS
-        }
+        listener!!.OnPlayerAction(adventure, combat)
 
-        if(combat.currentTurn.status != TurnState.NOT_STARTED){
-            combat.turns.add(combat.currentTurn)
-        }
+        //Remove itself
 
-        combat.currentTurn = turn
-
-        Combat.Update(adventure.id, adventure.combatInfo.sessionId, combat)
-
-        listener!!.OnTurnStarted(adventure, combat)
+        Toast.makeText(context, "Ação salva com sucesso!", Toast.LENGTH_LONG).show()
 
         //Remove itself
 
         fragmentManager!!.beginTransaction().remove(this).commit()
-    }
 
+    }
 
     private fun validateForm(): Boolean {
         var valid = true
         val myIcon = resources.getDrawable(R.drawable.igor_attention)
         myIcon.setBounds(0, 0, myIcon.getIntrinsicWidth()/2, myIcon.getIntrinsicHeight()/2)
 
-        val description = turn_description.text.toString()
+        val description = player_action.text.toString()
         if (TextUtils.isEmpty(description)) {
-            turn_description.setError("Required", myIcon)
+            player_action.setError("Required", myIcon)
             valid = false
         } else {
-            turn_description.error = null
+            player_action.error = null
         }
 
         return valid
@@ -143,10 +127,10 @@ class StartTurnFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is OnTurnStarted) {
+        if (context is OnPlayerAction) {
             listener = context
         } else {
-            throw RuntimeException(context.toString() + " must implement OnTurnStarted")
+            throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
         }
     }
 
@@ -166,20 +150,18 @@ class StartTurnFragment : Fragment() {
      * (http://developer.android.com/training/basics/fragments/communicating.html)
      * for more information.
      */
-    interface OnTurnStarted {
+    interface OnPlayerAction {
         // TODO: Update argument type and name
-        fun OnTurnStarted(adventure: Adventure, combat: Combat)
+        fun OnPlayerAction(adventure: Adventure, combat: Combat)
     }
 
     companion object {
-
         @JvmStatic
-        fun newInstance(adventure: Adventure, combat: Combat, isMaster: Boolean) =
-                StartTurnFragment().apply {
+        fun newInstance(adventure: Adventure, combat: Combat) =
+                PlayerActionCreateFragment().apply {
                     arguments = Bundle().apply {
                         putSerializable(ARG_ADV, adventure)
                         putSerializable(ARG_CBT, combat)
-                        putBoolean(ARG_MASTER, isMaster)
                     }
                 }
     }

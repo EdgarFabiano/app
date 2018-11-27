@@ -16,10 +16,7 @@ import android.widget.TextView
 import android.widget.Toast
 import br.unb.cic.igor.adapters.MenuAdapter
 import br.unb.cic.igor.classes.*
-import br.unb.cic.igor.fragments.AdventureTabsFragment
-import br.unb.cic.igor.fragments.AdventuresFragment
-import br.unb.cic.igor.fragments.CombatFragment
-import br.unb.cic.igor.fragments.StartTurnFragment
+import br.unb.cic.igor.fragments.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
@@ -32,7 +29,8 @@ class MainActivity : AppCompatActivity(),
         AdventuresFragment.OnAdventureSelected,
         AdventureTabsFragment.OnCombatStarted,
         CombatFragment.OnCombatFinished,
-        StartTurnFragment.OnTurnStarted {
+        StartTurnFragment.OnTurnStarted,
+        PlayerActionCreateFragment.OnPlayerAction{
 
     private var state: State = State.ADVENTURES
 
@@ -227,6 +225,10 @@ class MainActivity : AppCompatActivity(),
 
     override fun OnTurnStarted(adventure: Adventure, combat: Combat) {
         (currentFragment as CombatFragment).updateAdventure(adventure, combat)
+    }
+
+    override fun OnPlayerAction(adventure: Adventure, combat: Combat) {
+        (currentFragment as CombatFragment).checkAllPlayerActions()
     }
 
     enum class State(val description: String) {
