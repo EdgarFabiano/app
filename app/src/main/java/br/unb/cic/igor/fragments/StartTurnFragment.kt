@@ -100,10 +100,13 @@ class StartTurnFragment : Fragment() {
         if(!validateForm()){
             return
         }
+        start_turn_btn.isClickable = false
         val desc = turn_description.text.toString()
         if (switchFinish.isChecked) {
-             combat.currentTurn.status = TurnState.ENDING_COMBAT
-             
+            combat.currentTurn.status = TurnState.ENDING_COMBAT
+            Combat.Update(adventure.id, adventure.combatInfo.sessionId, combat).addOnSuccessListener {
+                listener!!.OnTurnStarted(adventure, combat)
+            }
         } else {
             val turnUsers = ArrayList<String>()
 
