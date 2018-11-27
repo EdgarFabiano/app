@@ -256,7 +256,5 @@ class MainActivity : AppCompatActivity(),
 
             return ADVENTURES
         }
-
-
     }
 }

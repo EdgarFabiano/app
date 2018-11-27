@@ -22,14 +22,14 @@ data class Adventure (var id: String = "", var name: String = "", var summary : 
             return docRef.get()
         }
 
-        fun Update(adventure: Adventure): Adventure{
-            FirebaseFirestore.getInstance().collection("adventure").document(adventure.id).update(
+        fun Update(adventure: Adventure): Task<Void> {
+            return FirebaseFirestore.getInstance().collection("adventure").document(adventure.id).update(
                             "summary", adventure.summary,
                     "name", adventure.name,
-                                        "combatInfo", adventure.combatInfo
+                                        "combatInfo.inCombat", adventure.combatInfo.inCombat,
+                                        "combatInfo.sessionId", adventure.combatInfo.sessionId,
+                                        "combatInfo.combatId", adventure.combatInfo.combatId
                     )
-
-            return adventure
         }
 
         fun AddPlayer(id: String, player: Player): String {

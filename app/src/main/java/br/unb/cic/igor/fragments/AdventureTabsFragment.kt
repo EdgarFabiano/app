@@ -7,9 +7,7 @@ import android.view.*
 import android.widget.Toast
 import br.unb.cic.igor.MainActivity
 import br.unb.cic.igor.R
-import br.unb.cic.igor.classes.Adventure
-import br.unb.cic.igor.classes.Player
-import br.unb.cic.igor.classes.Session
+import br.unb.cic.igor.classes.*
 import br.unb.cic.igor.extensions.toList
 import kotlinx.android.synthetic.main.fragment_adventure_tabs.*
 import kotlinx.android.synthetic.main.fragment_adventure_tabs.view.*
@@ -171,6 +169,15 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
             State.PLAYERS -> {
                 stateTransition(State.PLAYER_ADD, AddPlayerFragment.newInstance())
             }
+            State.SESSION -> {
+                var newCombat = Combat()
+                Combat.Insert(adventureId, selectedSession!!.id, newCombat).addOnSuccessListener {
+                    adventure!!.combatInfo = CombatInfo(true, selectedSession!!.id, newCombat.id)
+                    Adventure.Update(adventure!!).addOnSuccessListener {
+                        combatListener!!.onCombatStarted(adventure!!)
+                    }
+                }
+            }
             else -> toast("wrong state")
         }
     }
@@ -198,7 +205,8 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
                 addButton.setImageResource(R.drawable.add_player)
             }
             State.SESSION -> {
-                addButton.visibility = View.INVISIBLE
+                addButton.visibility = View.VISIBLE
+                addButton.setImageResource(R.drawable.start_combat)
                 setHasOptionsMenu(true)
             }
             State.ADV_EDIT -> {

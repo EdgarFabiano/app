@@ -28,7 +28,7 @@ private const val ARG_SUB_PARAM = "COMBAT_SUB_PARAM"
  * create an instance of this fragment.
  *
  */
-class CombatFragment : Fragment(), ActionRateFragment.OnActionRatesDoneListener, ActionResultFragment.OnActionResultListener {
+class CombatFragment : Fragment(), ActionRateFragment.OnActionRatesDoneListener, ActionResultFragment.OnActionResultListener, ViewCombatEndFragment.OnCombatEndViewedListener {
 
     private var adventure: Adventure? = null
     private var listener: OnCombatFinished? = null
@@ -136,7 +136,7 @@ class CombatFragment : Fragment(), ActionRateFragment.OnActionRatesDoneListener,
                         val finishedTurn = combat!!.currentTurn
                         finishedTurn.status = TurnState.FINISHED
                         combat!!.turns.add(finishedTurn)
-                        combat!!.currentTurn = Turn()
+                        combat!!.currentTurn = Turn(id = finishedTurn.id++)
                         Combat.Update(adventure!!.id, adventure!!.combatInfo.sessionId, combat!!).addOnSuccessListener {
                             loadCombat()
                         }
@@ -144,7 +144,28 @@ class CombatFragment : Fragment(), ActionRateFragment.OnActionRatesDoneListener,
                 }
             }
             TurnState.ENDING_COMBAT ->
-                toast("FINISHING COMBAT!")
+                if (isMaster!!) {
+                    showWaiting()
+                    if (playerActions.size >= combat!!.currentTurn.availablePlayers.size && combat!!.currentTurn.availablePlayers.all { playerActions.any {a -> a.userId == it} }) {
+                        val finishedTurn = combat!!.currentTurn
+                        finishedTurn.status = TurnState.FINISHED
+                        combat!!.turns.add(finishedTurn)
+                        combat!!.currentTurn = Turn()
+                        Combat.Update(adventure!!.id, adventure!!.combatInfo.sessionId, combat!!).addOnSuccessListener {
+                            adventure!!.combatInfo = CombatInfo()
+                            Adventure.Update(adventure!!).addOnSuccessListener { _ ->
+                                listener!!.onCombatFinished(adventure!!.id)
+                            }
+                        }
+                    }
+                } else {
+                    val thisPlayerAction = playerActions.firstOrNull { it.userId == User.GetInstance()!!.id }
+                    if (thisPlayerAction != null) {
+                        showWaiting()
+                    } else {
+                        switchContent(ViewCombatEndFragment.newInstance(adventure!!, combat!!))
+                    }
+                }
         }
 
     }
@@ -246,6 +267,13 @@ class CombatFragment : Fragment(), ActionRateFragment.OnActionRatesDoneListener,
     override fun onActionResult(playerAction: PlayerAction) {
         PlayerAction.Update(adventure!!.id, adventure!!.combatInfo.sessionId, adventure!!.combatInfo.combatId, playerAction).addOnSuccessListener {
             (currentFragment as ActionResultFragment).updatePlayerAction(playerAction)
+        }
+    }
+
+    override fun onCombatEndViewed() {
+        val playerAction = PlayerAction(turnId = combat!!.currentTurn.id, userId = User.GetInstance()!!.id)
+        PlayerAction.Insert(adventure!!.id, adventure!!.combatInfo.sessionId, adventure!!.combatInfo.combatId, playerAction).addOnSuccessListener {
+            loadCombat()
         }
     }
 

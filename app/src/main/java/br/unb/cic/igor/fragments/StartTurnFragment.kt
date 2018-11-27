@@ -67,7 +67,6 @@ class StartTurnFragment : Fragment() {
             recyclerView.adapter = adapter
 
         }
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -104,6 +103,7 @@ class StartTurnFragment : Fragment() {
         val desc = turn_description.text.toString()
         if (switchFinish.isChecked) {
             combat.currentTurn.status = TurnState.ENDING_COMBAT
+            combat.currentTurn.availablePlayers = ArrayList(players.map { it -> it.userId })
             Combat.Update(adventure.id, adventure.combatInfo.sessionId, combat).addOnSuccessListener {
                 listener!!.OnTurnStarted(adventure, combat)
             }

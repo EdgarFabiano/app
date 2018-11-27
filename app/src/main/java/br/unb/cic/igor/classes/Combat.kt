@@ -9,12 +9,11 @@ import java.io.Serializable
 // Current turns are not included in the turns array
 data class Combat(var id: String = "", var currentTurn: Turn = Turn(), var turns: ArrayList<Turn> = ArrayList()) : Serializable {
     companion object {
-        fun Insert(adventureId: String, sessionId: String, combat: Combat): Combat{
+        fun Insert(adventureId: String, sessionId: String, combat: Combat): Task<Void> {
             val ref = FirebaseFirestore.getInstance().collection("adventure").document(adventureId)
                     .collection("sessions").document(sessionId).collection("combats").document()
             combat.id = ref.id
-            ref.set(combat)
-            return combat
+            return ref.set(combat)
         }
 
         private fun turnToMap(turn: Turn): Map<String, Any>{
@@ -73,12 +72,11 @@ data class Turn(var id: Int = 0, var status: TurnState = TurnState.NOT_STARTED, 
 
 data class PlayerAction(var id: String = "", var turnId: Int = 0, var userId: String = "", var description: String = "", var successRate: Int? = null, var actionResult: Int? = null) : Serializable {
     companion object {
-        fun Insert(adventureId: String, sessionId: String, combatId: String, action: PlayerAction): PlayerAction{
+        fun Insert(adventureId: String, sessionId: String, combatId: String, action: PlayerAction): Task<Void> {
             val ref = FirebaseFirestore.getInstance().collection("adventure").document(adventureId)
                     .collection("sessions").document(sessionId).collection("combats").document(combatId).collection("playerActions").document()
             action.id = ref.id
-            ref.set(action)
-            return action
+            return ref.set(action)
         }
 
         fun BatchUpdate(adventureId: String, sessionId: String, combatId: String, actions: ArrayList<PlayerAction>) {
