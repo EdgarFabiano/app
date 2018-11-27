@@ -72,6 +72,8 @@ class PlayerActionCreateFragment : Fragment() {
         player_action_submit.setOnClickListener {
             saveAction()
         }
+
+        description.text = combat.currentTurn.description
     }
 
     private fun saveAction(){
