@@ -94,7 +94,7 @@ class StartTurnFragment : Fragment() {
     }
 
     fun updateUI() {
-        val pagerAdapter = ScreenSlidePagerAdapter(fragmentManager!!, ArrayList(playerActions))
+        val pagerAdapter = ScreenSlidePagerAdapter(fragmentManager!!, ArrayList(playerActions.filter { it.turnId == (combat.currentTurn.id-1)}) )
         reviewActionPager.adapter = pagerAdapter
     }
 
@@ -138,7 +138,6 @@ class StartTurnFragment : Fragment() {
         } else {
 
             combat.currentTurn = Turn().apply {
-                id = combat.turns.size
                 description = desc
                 availablePlayers = turnUsers
                 status = TurnState.WAITING_ACTIONS

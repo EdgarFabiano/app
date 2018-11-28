@@ -138,7 +138,7 @@ class CombatFragment : Fragment(), ActionRateFragment.OnActionRatesDoneListener,
                         val finishedTurn = combat!!.currentTurn
                         finishedTurn.status = TurnState.FINISHED
                         combat!!.turns.add(finishedTurn)
-                        combat!!.currentTurn = Turn(id = finishedTurn.id++)
+                        combat!!.currentTurn = Turn(id = (finishedTurn.id + 1))
                         Combat.Update(adventure!!.id, adventure!!.combatInfo.sessionId, combat!!).addOnSuccessListener {
                             loadCombat()
                         }
@@ -152,7 +152,7 @@ class CombatFragment : Fragment(), ActionRateFragment.OnActionRatesDoneListener,
                         val finishedTurn = combat!!.currentTurn
                         finishedTurn.status = TurnState.FINISHED
                         combat!!.turns.add(finishedTurn)
-                        combat!!.currentTurn = Turn()
+                        combat!!.currentTurn = Turn(combat!!.currentTurn.id + 1)
                         Combat.Update(adventure!!.id, adventure!!.combatInfo.sessionId, combat!!).addOnSuccessListener {
                             adventure!!.combatInfo = CombatInfo()
                             Adventure.Update(adventure!!).addOnSuccessListener { _ ->

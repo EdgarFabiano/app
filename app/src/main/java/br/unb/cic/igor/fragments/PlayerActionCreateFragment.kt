@@ -75,8 +75,7 @@ class PlayerActionCreateFragment : Fragment() {
             saveAction()
         }
 
-        master_desc.text.clear()
-        master_desc.text.append(combat.currentTurn.description)
+        master_desc.text = combat.currentTurn.description
         
     }
 
