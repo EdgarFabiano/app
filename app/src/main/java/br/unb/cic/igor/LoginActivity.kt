@@ -100,8 +100,4 @@ class LoginActivity : AppCompatActivity() {
         private val TAG = "EmailPassword"
     }
 
-    fun criarConta(v: View) {
-        startActivity(Intent(this, CreateAccountActivity::class.java))
-    }
-
 }

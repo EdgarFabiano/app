@@ -1,5 +1,6 @@
 package br.unb.cic.igor.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
@@ -11,6 +12,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
+import android.widget.ImageButton
+import br.unb.cic.igor.CreateAdventureActivity
 import br.unb.cic.igor.MainActivity
 import br.unb.cic.igor.R
 import br.unb.cic.igor.adapters.AdventuresAdapter
@@ -20,8 +23,8 @@ import br.unb.cic.igor.extensions.toList
 
 class AdventuresFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
-    lateinit var rv : RecyclerView
     lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
+    lateinit var rv : RecyclerView
 
     override fun onRefresh() {
         var adventures : List<Adventure> = ArrayList()
@@ -36,9 +39,12 @@ class AdventuresFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     }
 
+    fun refresh(){
+        onRefresh()
+    }
 
     companion object {
-        fun newInstance() = AdventuresFragment()
+        fun newInstance() =  AdventuresFragment()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -65,10 +71,8 @@ class AdventuresFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 android.R.color.holo_blue_dark)
 
         val fab: View = view.findViewById(R.id.fab)
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null)
-                    .show()
+        fab.setOnClickListener {
+            startActivity(Intent(context, CreateAdventureActivity::class.java))
         }
 
         return view

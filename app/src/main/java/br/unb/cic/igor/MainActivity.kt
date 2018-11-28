@@ -1,30 +1,25 @@
 package br.unb.cic.igor
 
-import android.support.v4.app.Fragment
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.support.design.widget.Snackbar
+import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.util.AttributeSet
 import android.view.Menu
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import br.unb.cic.igor.adapters.MenuAdapter
-import br.unb.cic.igor.classes.*
+import br.unb.cic.igor.classes.User
 import br.unb.cic.igor.fragments.AdventureTabsFragment
 import br.unb.cic.igor.fragments.AdventuresFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
-import com.google.firebase.firestore.QueryDocumentSnapshot
-import kotlinx.android.synthetic.main.activity_main.view.*
-import java.util.*
 
 
 class MainActivity : AppCompatActivity(), AdventuresFragment.OnAdventureSelected {
@@ -103,7 +98,6 @@ class MainActivity : AppCompatActivity(), AdventuresFragment.OnAdventureSelected
             changeColor(adapter, position)
 
         }
-
 
     }
 
