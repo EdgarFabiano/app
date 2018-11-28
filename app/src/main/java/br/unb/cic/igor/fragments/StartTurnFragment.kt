@@ -120,18 +120,12 @@ class StartTurnFragment : Fragment() {
             }
         } else {
 
-            val turn = Turn().apply {
+            combat.currentTurn = Turn().apply {
                 id = combat.turns.size
                 description = desc
                 availablePlayers = turnUsers
                 status = TurnState.WAITING_ACTIONS
             }
-
-            if(combat.currentTurn.status != TurnState.NOT_STARTED){
-                combat.turns.add(combat.currentTurn)
-            }
-
-            combat.currentTurn = turn
 
             Combat.Update(adventure.id, adventure.combatInfo.sessionId, combat)
 

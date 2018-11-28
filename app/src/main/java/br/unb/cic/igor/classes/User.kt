@@ -38,6 +38,11 @@ data class User(var id: String = "id", var email: String = "email", var username
             return docRef.get()
         }
 
+        fun List(): Task<QuerySnapshot> {
+            var colRef = FirebaseFirestore.getInstance().collection("users")
+            return colRef.get()
+        }
+
         fun Adventures(): Task<QuerySnapshot>{
             var adRefs = this.GetInstance()!!.adventureRefs
             var docRef = FirebaseFirestore.getInstance().collection("adventure").takeIf {
