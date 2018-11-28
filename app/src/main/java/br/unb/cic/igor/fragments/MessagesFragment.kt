@@ -23,7 +23,8 @@ import kotlinx.android.synthetic.main.fragment_messages_list.view.*
 class MessagesFragment : Fragment() {
 
     // TODO: Customize parameters
-    private var columnCount = 1
+    private var player: Player? = null
+    private var adventureId : String? = null
 
     private var listener: OnMessagesFragmentInteractionListener? = null
 
@@ -31,7 +32,8 @@ class MessagesFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         arguments?.let {
-            columnCount = it.getInt(ARG_COLUMN_COUNT)
+            player = arguments?.getSerializable(PLAYER_ARG_KEY) as Player?
+            adventureId = arguments?.getString(ADV_ID_ARG_KEY) as String?
         }
     }
 
@@ -42,12 +44,20 @@ class MessagesFragment : Fragment() {
         // Set the adapter
         if (view.messages_list is RecyclerView) {
             with(view.messages_list) {
-                layoutManager = when {
-                    columnCount <= 1 -> LinearLayoutManager(context)
-                    else -> GridLayoutManager(context, columnCount)
+                layoutManager = LinearLayoutManager(context)
+                adapter = MessagesAdapter(player!!.messages, listener)
+            }
+        }
+
+        view.sendButton.setOnClickListener {
+            player = Player.AddMessage(view.message.text.toString(), player!!, adventureId!!)
+            view.message.setText("")
+            // Reset the adapter
+            if (view.messages_list is RecyclerView) {
+                with(view.messages_list) {
+                    layoutManager = LinearLayoutManager(context)
+                    adapter = MessagesAdapter(player!!.messages, listener)
                 }
-                adapter = MessagesAdapter(listOf("Você encontrou um Dragão Branco dos Olhos Azuis furioso e faminto",
-                        "Você precisa rolar os dados pra saber se vai morrer pelo Dragão Branco dos Olhos Azuis, ou se vai sair com vida", "Valeu fera, tu fugiu com sucesso"), listener)
             }
         }
         return view
@@ -89,14 +99,16 @@ class MessagesFragment : Fragment() {
     companion object {
 
         // TODO: Customize parameter argument names
-        const val ARG_COLUMN_COUNT = "column-count"
+        const val PLAYER_ARG_KEY = "player_arg_key"
+        const val ADV_ID_ARG_KEY = "adv_id_arg_key"
 
         // TODO: Customize parameter initialization
         @JvmStatic
-        fun newInstance(columnCount: Int) =
+        fun newInstance(player: Player?, adventureId: String) =
                 MessagesFragment().apply {
                     arguments = Bundle().apply {
-                        putInt(ARG_COLUMN_COUNT, columnCount)
+                        putString(ADV_ID_ARG_KEY, adventureId)
+                        putSerializable(PLAYER_ARG_KEY, player)
                     }
                 }
     }

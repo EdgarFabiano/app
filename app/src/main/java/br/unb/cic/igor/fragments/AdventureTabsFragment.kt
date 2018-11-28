@@ -1,9 +1,11 @@
 package br.unb.cic.igor.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
 import android.widget.Toast
+import br.unb.cic.igor.MainActivity
 import br.unb.cic.igor.R
 import br.unb.cic.igor.classes.Adventure
 import br.unb.cic.igor.classes.Player
@@ -30,19 +32,23 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
         PlayerDetailsFragment.OnShowMessagesListener,
         AddSessionFragment.AddSessionListener,
         AdventureEditFragment.EditAdventureListener,
-        SessionEditFragment.SessionEditListener {
+        SessionEditFragment.SessionEditListener,
+        AddPlayerFragment.AddPlayerListener {
 
     private val ADVENTURE_ID_ARG : String = "session_arg_key"
 
+    private var listener: OnAdventureTabsFragmentInteractionListener? = null
+
     private var state: State = State.ADVENTURE
     private var adventureFragment: Fragment = AdventureFragment.newInstance()
-    private var playersFragment: Fragment = PlayersFragment.newInstance(1)
+    private var playersFragment: Fragment = PlayersFragment.newInstance()
     private var currentFragment: Fragment = adventureFragment
     private var selectedSession: Session? = null
     private lateinit var adventureId: String
     private var adventure : Adventure? = null
     private var sessions: List<Session> = ArrayList()
     private var players: List<Player> = ArrayList()
+    private var lastSelectedPlayer: Player?  = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,9 +59,14 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
 
         loadSessions()
 
+        loadPlayers()
+    }
+
+    fun loadPlayers() {
         Player.ListByAdventure(adventureId).addOnSuccessListener {
             if (it != null) {
                 players = it.toList(Player::class.java)
+                (playersFragment as PlayersFragment).updatePlayers(players)
             }
         }
     }
@@ -140,13 +151,23 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
         return view
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        if (activity is OnAdventureTabsFragmentInteractionListener) {
+            listener = activity as MainActivity
+        } else {
+            throw RuntimeException(activity.toString() + " must implement OnAdventureTabsFragmentInteractionListener")
+        }
+    }
+
     private fun onAddButtonPressed() {
         when (state) {
             State.ADVENTURE -> {
                 stateTransition(State.SESSION_CREATE, AddSessionFragment.newInstance(adventureId))
             }
             State.PLAYERS -> {
-                stateTransition(State.PLAYER_ADD, AddPlayerFragment.newInstance())
+                stateTransition(State.PLAYER_ADD, AddPlayerFragment.newInstance(adventureId))
             }
             else -> toast("wrong state")
         }
@@ -202,8 +223,14 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
             State.SESSION, State.SESSION_CREATE, State.SESSION_EDIT -> {
                 stateTransition(State.ADVENTURE, adventureFragment)
             }
-            State.PLAYER_DETAILS, State.PLAYER_ADD, State.MESSAGES_LIST -> {
+            State.PLAYER_DETAILS, State.PLAYER_ADD -> {
                 stateTransition(State.PLAYERS, playersFragment)
+            }
+            State.MESSAGES_LIST -> {
+                stateTransition(State.PLAYER_DETAILS, PlayerDetailsFragment.newInstance(lastSelectedPlayer, adventureId))
+            }
+            State.ADVENTURE -> {
+                listener?.adventureTabsFragmentWantsToGoBack()
             }
             else -> {
                 stateTransition(State.ADVENTURE, adventureFragment)
@@ -222,10 +249,13 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
      * activity.
      *
      *
-     * See the Android Training lesson [Communicating with Other Fragments]
-     * (http://developer.android.com/training/basics/fragments/communicating.html)
+     * See the Android Training lesson
+     * [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html)
      * for more information.
      */
+    interface OnAdventureTabsFragmentInteractionListener {
+        fun adventureTabsFragmentWantsToGoBack()
+    }
 
     companion object {
         /**
@@ -250,16 +280,22 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
     }
 
     override fun onPlayersFragmentInteraction(item: Player?){
-        stateTransition(State.PLAYER_DETAILS, PlayerDetailsFragment.newInstance(item))
+        lastSelectedPlayer = item
+        stateTransition(State.PLAYER_DETAILS, PlayerDetailsFragment.newInstance(item, adventureId))
     }
 
-    override fun onShowMessagesClick() {
-        stateTransition(State.MESSAGES_LIST, MessagesFragment.newInstance(1))
+    override fun onShowMessagesClick(player: Player?, adventureId: String) {
+        stateTransition(State.MESSAGES_LIST, MessagesFragment.newInstance(lastSelectedPlayer, adventureId))
     }
 
     override fun sessionCreated() {
         loadSessions()
         stateTransition(State.ADVENTURE, adventureFragment)
+    }
+
+    override fun playerCreated(){
+        loadPlayers()
+        stateTransition(State.PLAYERS, playersFragment)
     }
 
     override fun adventureChanged() {

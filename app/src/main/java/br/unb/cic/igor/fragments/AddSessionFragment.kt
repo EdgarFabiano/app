@@ -89,7 +89,7 @@ class AddSessionFragment : Fragment() {
         if (fragment is AddSessionListener) {
             listener = fragment
         } else {
-            throw RuntimeException(fragment.toString() + " must implement OnSessionSelectedListener")
+            throw RuntimeException(fragment.toString() + " must implement AddSessionListener")
         }
     }
 
