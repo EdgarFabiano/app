@@ -83,6 +83,9 @@ class CombatFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, ActionR
                             this.combat = combat
                             updateState()
                         }
+                    } else{
+                        mSwipeRefreshLayout.setRefreshing(false)
+                        updateState()
                     }
 
                 }
