@@ -119,6 +119,10 @@ class CombatFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, ActionR
     }
 
     fun updateState() {
+        if (!adventure!!.combatInfo.inCombat) {
+            listener!!.onCombatFinished(adventure!!.id)
+        }
+
         when (combat!!.currentTurn.status) {
             TurnState.NOT_STARTED->
                 startingTurn()
@@ -128,7 +132,7 @@ class CombatFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, ActionR
                 waitingActions()
             TurnState.REVIEWING_ACTIONS ->
                 if (isMaster!!) {
-                    switchContent(ActionRateFragment.newInstance(adventure!!, combat!!))
+                    switchContent(ActionRateFragment.newInstance(adventure!!, combat!!, ArrayList(playerActions)))
                 } else {
                     showWaiting()
                 }

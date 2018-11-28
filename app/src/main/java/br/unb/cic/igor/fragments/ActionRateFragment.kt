@@ -24,6 +24,7 @@ import kotlinx.android.synthetic.main.fragment_action_rate.*
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val COMBAT_PARAM = "combat_param"
 private const val ADV_PARAM = "adv_param"
+private const val ACTIONS_PARAM = "actions_param"
 
 /**
  * A simple [Fragment] subclass.
@@ -39,24 +40,14 @@ class ActionRateFragment : Fragment() {
     private var adventure: Adventure? = null
     private var combat: Combat? = null
     private var listener: OnActionRatesDoneListener? = null
-    private var playerActions: List<PlayerAction> = ArrayList()
+    private var playerActions: ArrayList<PlayerAction> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             adventure = it.getSerializable(ADV_PARAM) as Adventure
             combat = it.getSerializable(COMBAT_PARAM) as Combat
-        }
-
-        loadPlayerActions()
-    }
-
-    fun loadPlayerActions() {
-        PlayerAction.List(adventure!!.id, adventure!!.combatInfo.sessionId, adventure!!.combatInfo.combatId).addOnSuccessListener {
-            playerActions = it.toList(PlayerAction::class.java).filter { pa ->
-                pa.turnId == combat!!.currentTurn.id
-            }
-            updateUI()
+            playerActions = it.getSerializable(ACTIONS_PARAM) as ArrayList<PlayerAction>
         }
     }
 
@@ -131,11 +122,12 @@ class ActionRateFragment : Fragment() {
          * @return A new instance of fragment ActionRateFragment.
          */
         @JvmStatic
-        fun newInstance(adventure: Adventure, combat: Combat) =
+        fun newInstance(adventure: Adventure, combat: Combat, playerActions: ArrayList<PlayerAction>) =
                 ActionRateFragment().apply {
                     arguments = Bundle().apply {
                         putSerializable(ADV_PARAM, adventure)
                         putSerializable(COMBAT_PARAM, combat)
+                        putSerializable(ACTIONS_PARAM, playerActions)
                     }
                 }
     }

@@ -131,13 +131,14 @@ class StartTurnFragment : Fragment() {
         val desc = turn_description.text.toString()
         if (switchFinish.isChecked) {
             combat.currentTurn.status = TurnState.ENDING_COMBAT
+            combat.currentTurn.description = desc
             combat.currentTurn.availablePlayers = ArrayList(players.map { it -> it.userId })
             Combat.Update(adventure.id, adventure.combatInfo.sessionId, combat).addOnSuccessListener {
                 listener!!.OnTurnStarted(adventure, combat)
             }
         } else {
 
-            combat.currentTurn = Turn().apply {
+            combat.currentTurn.apply {
                 description = desc
                 availablePlayers = turnUsers
                 status = TurnState.WAITING_ACTIONS
