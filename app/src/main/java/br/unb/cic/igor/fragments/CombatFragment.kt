@@ -143,32 +143,35 @@ class CombatFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, ActionR
                     }
                 } else if (isMaster!!) {
                     val completedActions = playerActions.filter { a -> a.actionResult != null }
-                    showWaiting()
                     if (completedActions.size >= combat!!.currentTurn.availablePlayers.size && combat!!.currentTurn.availablePlayers.all { completedActions.any {a -> a.userId == it} }) {
                         val finishedTurn = combat!!.currentTurn
                         finishedTurn.status = TurnState.FINISHED
                         combat!!.turns.add(finishedTurn)
-                        combat!!.currentTurn = Turn(id = (finishedTurn.id + 1))
+                        combat!!.currentTurn = Turn(finishedTurn.id + 1)
                         Combat.Update(adventure!!.id, adventure!!.combatInfo.sessionId, combat!!).addOnSuccessListener {
                             loadCombat()
                         }
+                    } else{
+                        showWaiting()
                     }
                 }
             }
             TurnState.ENDING_COMBAT ->
                 if (isMaster!!) {
-                    showWaiting()
+
                     if (playerActions.size >= combat!!.currentTurn.availablePlayers.size && combat!!.currentTurn.availablePlayers.all { playerActions.any {a -> a.userId == it} }) {
                         val finishedTurn = combat!!.currentTurn
                         finishedTurn.status = TurnState.FINISHED
                         combat!!.turns.add(finishedTurn)
-                        combat!!.currentTurn = Turn(combat!!.currentTurn.id + 1)
+                        combat!!.currentTurn = Turn()
                         Combat.Update(adventure!!.id, adventure!!.combatInfo.sessionId, combat!!).addOnSuccessListener {
                             adventure!!.combatInfo = CombatInfo()
                             Adventure.Update(adventure!!).addOnSuccessListener { _ ->
                                 listener!!.onCombatFinished(adventure!!.id)
                             }
                         }
+                    } else{
+                        showWaiting()
                     }
                 } else {
                     val thisPlayerAction = playerActions.firstOrNull { it.userId == User.GetInstance()!!.id }
@@ -203,12 +206,13 @@ class CombatFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, ActionR
 
     private fun waitingActions(){
         if(isMaster!!){
-            showWaiting()
             if (playerActions.size >= combat!!.currentTurn.availablePlayers.size && combat!!.currentTurn.availablePlayers.all { playerActions.any {a -> a.userId == it} }) {
                 combat!!.currentTurn.status = TurnState.REVIEWING_ACTIONS
                 Combat.Update(adventure!!.id, adventure!!.combatInfo.sessionId, combat!!).addOnSuccessListener {
                     loadCombat()
                 }
+            } else{
+                showWaiting()
             }
         } else{
             hideWaiting()
