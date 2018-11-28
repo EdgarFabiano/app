@@ -5,6 +5,7 @@ import android.net.Uri
 import android.opengl.Visibility
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.widget.SwipeRefreshLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,8 +29,7 @@ private const val ARG_SUB_PARAM = "COMBAT_SUB_PARAM"
  * create an instance of this fragment.
  *
  */
-class CombatFragment : Fragment(), ActionRateFragment.OnActionRatesDoneListener, ActionResultFragment.OnActionResultListener, ViewCombatEndFragment.OnCombatEndViewedListener {
-
+class CombatFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, ActionRateFragment.OnActionRatesDoneListener, ActionResultFragment.OnActionResultListener, ViewCombatEndFragment.OnCombatEndViewedListener {
     private var adventure: Adventure? = null
     private var listener: OnCombatFinished? = null
     private var combat: Combat? = null
@@ -37,8 +37,7 @@ class CombatFragment : Fragment(), ActionRateFragment.OnActionRatesDoneListener,
     private var allPlayerActions: List<PlayerAction> = ArrayList()
     private var currentFragment: Fragment? = null
     private var isMaster: Boolean? = null
-    private var waiting: Boolean = true
-
+    lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +65,7 @@ class CombatFragment : Fragment(), ActionRateFragment.OnActionRatesDoneListener,
             playerActions = allPlayerActions.filter { pa ->
                 pa.turnId == combat!!.currentTurn.id
             }
+            mSwipeRefreshLayout.setRefreshing(false)
             updateState()
         }
     }
@@ -106,7 +106,16 @@ class CombatFragment : Fragment(), ActionRateFragment.OnActionRatesDoneListener,
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_combat, container, false)
+        val view = inflater.inflate(R.layout.fragment_combat, container, false)
+
+        mSwipeRefreshLayout = view.findViewById(R.id.combat_swipe_container)
+        mSwipeRefreshLayout.setOnRefreshListener(this)
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,
+                android.R.color.holo_green_dark,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_blue_dark)
+
+        return view
     }
 
     fun updateState() {
@@ -127,6 +136,7 @@ class CombatFragment : Fragment(), ActionRateFragment.OnActionRatesDoneListener,
                 if (!isMaster!! ) {
                     val thisPlayerAction = playerActions.firstOrNull { it.userId == User.GetInstance()!!.id }
                     if (thisPlayerAction != null) {
+                        hideWaiting()
                         switchContent(ActionResultFragment.newInstance(adventure!!, combat!!, thisPlayerAction))
                     } else {
                         showWaiting()
@@ -207,6 +217,7 @@ class CombatFragment : Fragment(), ActionRateFragment.OnActionRatesDoneListener,
     }
 
     private fun switchContent(fragment: Fragment) {
+        hideWaiting()
         currentFragment = fragment
         val ft = fragmentManager!!.beginTransaction()
         ft.replace(R.id.combat_inner_fragment, fragment)
@@ -278,6 +289,10 @@ class CombatFragment : Fragment(), ActionRateFragment.OnActionRatesDoneListener,
         PlayerAction.Insert(adventure!!.id, adventure!!.combatInfo.sessionId, adventure!!.combatInfo.combatId, playerAction).addOnSuccessListener {
             loadCombat()
         }
+    }
+
+    override fun onRefresh() {
+        loadCombat()
     }
 
     companion object {
