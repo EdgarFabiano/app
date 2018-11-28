@@ -4,6 +4,8 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v7.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -14,6 +16,7 @@ import android.widget.Toast
 import br.unb.cic.igor.R
 import br.unb.cic.igor.adapters.PlayerSelectionAdapter
 import br.unb.cic.igor.classes.*
+import kotlinx.android.synthetic.main.fragment_action_rate.*
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_start_turn.*
 
@@ -22,6 +25,7 @@ import kotlinx.android.synthetic.main.fragment_start_turn.*
 private const val ARG_ADV = "ARG_ADV"
 private const val ARG_CBT = "ARG_CBT"
 private const val ARG_MASTER = "ARG_MASTER"
+private const val ARG_ACTIONS = "ARG_ACTIONS"
 
 /**
  * A simple [Fragment] subclass.
@@ -36,6 +40,7 @@ class StartTurnFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private lateinit var adventure: Adventure
     private lateinit var combat: Combat
+    private lateinit var playerActions: ArrayList<PlayerAction>
     private var isMaster: Boolean = false
     private var listener: OnTurnStarted? = null
     private var players: ArrayList<Player> = ArrayList()
@@ -48,13 +53,14 @@ class StartTurnFragment : Fragment() {
         arguments?.let {
             adventure = it.getSerializable(ARG_ADV) as Adventure
             combat = it.getSerializable(ARG_CBT) as Combat
+            playerActions = it.getSerializable(ARG_ACTIONS) as ArrayList<PlayerAction>
             isMaster = it.getBoolean(ARG_MASTER)
         }
 
         Adventure.ListPlayers(adventure.id).addOnSuccessListener{ task ->
             val list = task.documents
 
-            players = ArrayList<Player>()
+            players = ArrayList()
             for(doc in list){
                 Toast.makeText(activity, "Success!", Toast.LENGTH_SHORT).show()
                 players.add(doc.toObject(Player::class.java) as Player)
@@ -72,9 +78,13 @@ class StartTurnFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
-
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_start_turn, container, false)
+    }
+
+    fun updateUI() {
+        val pagerAdapter = ScreenSlidePagerAdapter(fragmentManager!!, ArrayList(playerActions))
+        reviewActionPager.adapter = pagerAdapter
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -88,6 +98,13 @@ class StartTurnFragment : Fragment() {
                 recyclerView.visibility = View.VISIBLE
                 start_turn_title.text = "Início de turno"
             }
+        }
+
+        if (combat.currentTurn.id > 0) {
+            reviewActionPager.visibility = View.VISIBLE
+            updateUI()
+        } else {
+            reviewActionPager.visibility = View.GONE
         }
 
         start_turn_btn.setOnClickListener {
@@ -187,14 +204,21 @@ class StartTurnFragment : Fragment() {
         fun OnTurnStarted(adventure: Adventure, combat: Combat)
     }
 
+    private inner class ScreenSlidePagerAdapter(fm: FragmentManager, val actions: ArrayList<PlayerAction>) : FragmentStatePagerAdapter(fm) {
+        override fun getCount(): Int = actions.size
+
+        override fun getItem(position: Int): Fragment = ActionReviewFragment.newInstance(actions[position])
+    }
+
     companion object {
 
         @JvmStatic
-        fun newInstance(adventure: Adventure, combat: Combat, isMaster: Boolean) =
+        fun newInstance(adventure: Adventure, combat: Combat, isMaster: Boolean, actions: ArrayList<PlayerAction>) =
                 StartTurnFragment().apply {
                     arguments = Bundle().apply {
                         putSerializable(ARG_ADV, adventure)
                         putSerializable(ARG_CBT, combat)
+                        putSerializable(ARG_ACTIONS, actions)
                         putBoolean(ARG_MASTER, isMaster)
                     }
                 }

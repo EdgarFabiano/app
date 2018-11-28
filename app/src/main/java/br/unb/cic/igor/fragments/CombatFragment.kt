@@ -34,6 +34,7 @@ class CombatFragment : Fragment(), ActionRateFragment.OnActionRatesDoneListener,
     private var listener: OnCombatFinished? = null
     private var combat: Combat? = null
     private var playerActions: List<PlayerAction> = ArrayList()
+    private var allPlayerActions: List<PlayerAction> = ArrayList()
     private var currentFragment: Fragment? = null
     private var isMaster: Boolean? = null
     private var waiting: Boolean = true
@@ -61,7 +62,8 @@ class CombatFragment : Fragment(), ActionRateFragment.OnActionRatesDoneListener,
 
     fun loadPlayerActions() {
         PlayerAction.List(adventure!!.id, adventure!!.combatInfo.sessionId, adventure!!.combatInfo.combatId).addOnSuccessListener {
-            playerActions = it.toList(PlayerAction::class.java).filter { pa ->
+            allPlayerActions = it.toList(PlayerAction::class.java)
+            playerActions = allPlayerActions.filter { pa ->
                 pa.turnId == combat!!.currentTurn.id
             }
             updateState()
@@ -212,7 +214,7 @@ class CombatFragment : Fragment(), ActionRateFragment.OnActionRatesDoneListener,
 
     private fun loadStartTurn(){
         val ft = fragmentManager!!.beginTransaction()
-        ft.replace(R.id.combat_inner_fragment, StartTurnFragment.newInstance(adventure!!, combat!!, isMaster!!), "StartTurnFragment Transaction")
+        ft.replace(R.id.combat_inner_fragment, StartTurnFragment.newInstance(adventure!!, combat!!, isMaster!!, ArrayList(allPlayerActions)), "StartTurnFragment Transaction")
         ft.addToBackStack(null)
         ft.commit()
     }

@@ -61,9 +61,6 @@ class ActionRateFragment : Fragment() {
     }
 
     fun updateUI() {
-        val mock = ArrayList<PlayerAction>()
-        mock.add(PlayerAction("1", 0, User.GetInstance()!!.id, "Vou atirar com meu raio de calor congelante", 0))
-        mock.add(PlayerAction("2", 0, User.GetInstance()!!.id, "Vou atirar com meu raio de calor congelante 2", 0))
 
         val pagerAdapter = ScreenSlidePagerAdapter(fragmentManager!!, ArrayList(playerActions))
         actionsPager.adapter = pagerAdapter
