@@ -26,7 +26,7 @@ import kotlinx.android.synthetic.main.activity_main.view.*
 import java.util.*
 
 
-class MainActivity : AppCompatActivity(), AdventuresFragment.OnAdventureSelected {
+class MainActivity : AppCompatActivity(), AdventuresFragment.OnAdventureSelected, AdventureTabsFragment.OnAdventureTabsFragmentInteractionListener {
 
     private var state: State = State.ADVENTURES
 
@@ -41,6 +41,8 @@ class MainActivity : AppCompatActivity(), AdventuresFragment.OnAdventureSelected
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
+        } else if (currentFragment is AdventureTabsFragment) {
+            (currentFragment as AdventureTabsFragment).onBackPressed()
         } else {
             if (doubleBackToExitPressedOnce) {
                 super.onBackPressed()
@@ -53,9 +55,7 @@ class MainActivity : AppCompatActivity(), AdventuresFragment.OnAdventureSelected
             Handler().postDelayed({ doubleBackToExitPressedOnce = false }, 2000)
         }
 
-        if (currentFragment is AdventureTabsFragment) {
-            (currentFragment as AdventureTabsFragment).onBackPressed()
-        }
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -208,6 +208,11 @@ class MainActivity : AppCompatActivity(), AdventuresFragment.OnAdventureSelected
 
     override fun onAdventureSelected(adventureId: String) {
         switchContent(AdventureTabsFragment.newInstance(adventureId))
+    }
+
+    override fun adventureTabsFragmentWantsToGoBack() {
+        state = State.ADVENTURES
+        switchContent(AdventuresFragment.newInstance())
     }
 
     enum class State(val description: String) {

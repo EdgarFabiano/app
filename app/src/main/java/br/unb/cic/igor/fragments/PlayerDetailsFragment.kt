@@ -21,6 +21,7 @@ import kotlinx.android.synthetic.main.fragment_add_session.*
 import kotlinx.android.synthetic.main.fragment_player_details.*
 import kotlinx.android.synthetic.main.fragment_player_details.view.*
 import java.text.SimpleDateFormat
+import kotlin.collections.ArrayList
 
 
 /**
@@ -31,8 +32,10 @@ import java.text.SimpleDateFormat
  */
 class PlayerDetailsFragment : Fragment() {
     private val PLAYER_ARG_KEY = "player_arg_key"
+    private val ADV_ID_ARG_KEY = "adv_id_arg_key"
     private var player: Player? = null
     private var listener: OnShowMessagesListener? = null
+    private var adventureId : String? = null
 
     init {
     }
@@ -40,6 +43,7 @@ class PlayerDetailsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         player = arguments?.getSerializable(PLAYER_ARG_KEY) as Player?
+        adventureId = arguments?.getString(ADV_ID_ARG_KEY) as String?
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -70,12 +74,12 @@ class PlayerDetailsFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         messages_button.setOnClickListener {
-            listener?.onShowMessagesClick()
+            listener?.onShowMessagesClick(player, adventureId!!)
         }
     }
 
     interface OnShowMessagesListener {
-        fun onShowMessagesClick()
+        fun onShowMessagesClick(player: Player?, adventureId: String)
     }
 
     companion object {
@@ -87,10 +91,11 @@ class PlayerDetailsFragment : Fragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(player: Player?) =
+        fun newInstance(player: Player?, adventureId: String) =
                 PlayerDetailsFragment().apply {
                     val bundle = Bundle()
                     bundle.putSerializable(PLAYER_ARG_KEY, player)
+                    bundle.putString(ADV_ID_ARG_KEY, adventureId)
                     arguments = bundle
                 }
     }

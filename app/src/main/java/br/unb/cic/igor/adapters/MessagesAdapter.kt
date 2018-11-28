@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.player_item.view.*
  * TODO: Replace the implementation with code for your data type.
  */
 class MessagesAdapter(
-        private val mValues: List<String>,
+        private val mValues: ArrayList<String>,
         private val mListener: MessagesFragment.OnMessagesFragmentInteractionListener?)
     : RecyclerView.Adapter<MessagesAdapter.ViewHolder>() {
 

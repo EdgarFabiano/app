@@ -6,7 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import java.io.Serializable
 
-data class Player(var id: String = "", var userId: String = "", var name: String = "", var character: String = "", var description: String = "", var attrs: String = "", var info: String = "", var messages: ArrayList<String> = ArrayList()) : Serializable {
+data class Player(var id: String = "", var userId: String = "", var name: String? = "", var character: String = "", var description: String = "", var attrs: String = "", var info: String = "", var messages: ArrayList<String> = ArrayList()) : Serializable {
 
 
     companion object {
@@ -47,7 +47,7 @@ data class Player(var id: String = "", var userId: String = "", var name: String
 
         fun ListByAdventure(adventureId: String): Task<QuerySnapshot>{
             var colRef = FirebaseFirestore.getInstance().collection("adventure").document(adventureId)
-                    .collection("sessions")
+                    .collection("players")
 
             return colRef.get()
         }
