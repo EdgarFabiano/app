@@ -33,7 +33,8 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
         AddSessionFragment.AddSessionListener,
         AdventureEditFragment.EditAdventureListener,
         SessionEditFragment.SessionEditListener,
-        AddPlayerFragment.AddPlayerListener {
+        AddPlayerFragment.AddPlayerListener,
+        PlayerEditFragment.PlayerEditListener {
 
     private val ADVENTURE_ID_ARG : String = "session_arg_key"
 
@@ -102,6 +103,8 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
                         stateTransition(State.SESSION_EDIT, SessionEditFragment.newInstance(selectedSession!!))
                     State.ADVENTURE ->
                         stateTransition(State.ADV_EDIT, AdventureEditFragment.newInstance(adventure!!))
+                    State.PLAYER_DETAILS ->
+                        stateTransition(State.PLAYER_EDIT, PlayerEditFragment.newInstance(lastSelectedPlayer, adventureId))
                     else ->
                         toast("invalid state")
                 }
@@ -176,7 +179,7 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
     fun stateTransition(nextState : State, fragment : Fragment) {
         switchContent(fragment)
         when (nextState) {
-            State.SESSION_CREATE, State.SESSION_EDIT, State.PLAYER_DETAILS, State.PLAYER_ADD, State.MESSAGES_LIST -> {
+            State.SESSION_CREATE, State.SESSION_EDIT, State.PLAYER_ADD, State.MESSAGES_LIST, State.PLAYER_EDIT -> {
                 addButton.visibility = View.INVISIBLE
                 setHasOptionsMenu(false)
             }
@@ -195,7 +198,7 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
                 setHasOptionsMenu(true)
                 addButton.setImageResource(R.drawable.add_player)
             }
-            State.SESSION -> {
+            State.SESSION, State.PLAYER_DETAILS -> {
                 addButton.visibility = View.INVISIBLE
                 setHasOptionsMenu(true)
             }
@@ -298,6 +301,11 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
         stateTransition(State.PLAYERS, playersFragment)
     }
 
+    override fun playerChanged(){
+        loadPlayers()
+        stateTransition(State.PLAYER_DETAILS, PlayerDetailsFragment.newInstance(lastSelectedPlayer, adventureId))
+    }
+
     override fun adventureChanged() {
         loadAdventure()
         stateTransition(State.ADVENTURE, adventureFragment)
@@ -315,6 +323,7 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
         PLAYERS,
         PLAYER_DETAILS,
         PLAYER_ADD,
+        PLAYER_EDIT,
         SESSION,
         SESSION_CREATE,
         SESSION_EDIT
