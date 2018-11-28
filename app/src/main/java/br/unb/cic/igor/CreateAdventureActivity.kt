@@ -5,8 +5,10 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.RadioGroup
 import android.widget.TextView
 import br.unb.cic.igor.classes.Adventure
+
 
 class CreateAdventureActivity : AppCompatActivity() {
 
@@ -18,8 +20,13 @@ class CreateAdventureActivity : AppCompatActivity() {
 
         form_create.findViewById<TextView>(R.id.close).setOnClickListener { onBackPressed() }
 
+        val bg = findViewById<RadioGroup>(R.id.bgs)
+
         form_create.findViewById<Button>(R.id.create_adventure).setOnClickListener {
-            Adventure.Insert(Adventure(name = form_create.findViewById<EditText>(R.id.nome_aventura).text.toString()))
+
+            Adventure.Insert(Adventure(
+                    name = form_create.findViewById<EditText>(R.id.nome_aventura).text.toString(),
+                    bg = bg.checkedRadioButtonId.minus(1) % 5))
             onBackPressed()
         }
 

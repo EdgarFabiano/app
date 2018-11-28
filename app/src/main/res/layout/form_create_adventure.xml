@@ -38,9 +38,36 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/nome_aventura"
                 android:hint="@string/nome_da_aventura"
+                android:layout_marginBottom="@dimen/image_bottom_margin"
                 android:maxLines="2"
                 android:paddingTop="@dimen/activity_vertical_margin"
                 android:singleLine="true" />
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/bgs">
+                <RadioButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/miniatura_coast"/>
+                <RadioButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/miniatura_corvali"/>
+                <RadioButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/miniatura_heartlands"/>
+                <RadioButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/miniatura_imagem"/>
+                <RadioButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/miniatura_krevast"/>
+            </RadioGroup>
 
             <Button
                 android:id="@+id/create_adventure"
