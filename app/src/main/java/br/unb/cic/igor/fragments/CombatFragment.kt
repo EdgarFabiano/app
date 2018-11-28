@@ -70,8 +70,8 @@ class CombatFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, ActionR
         }
     }
 
-    fun updateAdventure(adventure: Adventure? = null, combat: Combat? = null){
-        if(adventure == null){
+    fun updateAdventure(adv: Adventure? = null, combat: Combat? = null){
+        if(adv == null){
             Adventure.Get(adventure!!.id).addOnSuccessListener {
                 if (it != null) {
                     this.adventure = it.toObject(Adventure::class.java)
@@ -300,7 +300,7 @@ class CombatFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, ActionR
     }
 
     override fun onRefresh() {
-        loadCombat()
+        updateAdventure()
     }
 
     companion object {
