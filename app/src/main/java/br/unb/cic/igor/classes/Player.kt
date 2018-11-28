@@ -11,7 +11,7 @@ data class Player(var id: String = "", var userId: String = "", var name: String
 
     companion object {
         fun Insert(player: Player, adventureId: String): Player{
-            var ref = FirebaseFirestore.getInstance().collection("adventure").document(adventureId)
+            val ref = FirebaseFirestore.getInstance().collection("adventure").document(adventureId)
                     .collection("players").document()
             player.id = ref.id
             ref.set(player)
