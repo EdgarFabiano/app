@@ -37,6 +37,7 @@ class PlayerActionCreateFragment : Fragment() {
     private lateinit var adventure: Adventure
     private lateinit var combat: Combat
     private var action: PlayerAction? = null
+    private var listener: OnPlayerActionCreated? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,6 +103,8 @@ class PlayerActionCreateFragment : Fragment() {
 
         Toast.makeText(context, "Ação salva com sucesso!", Toast.LENGTH_LONG).show()
 
+        listener!!.OnPlayerActionCreated()
+
         //Remove itself
 
         fragmentManager!!.beginTransaction().remove(this).commit()
@@ -122,6 +125,19 @@ class PlayerActionCreateFragment : Fragment() {
         }
 
         return valid
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnPlayerActionCreated) {
+            listener = context
+        } else {
+            throw RuntimeException(context.toString() + " must implement OnPlayerActionCreated")
+        }
+    }
+
+    interface OnPlayerActionCreated{
+        fun OnPlayerActionCreated()
     }
 
     /**

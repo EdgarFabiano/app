@@ -56,7 +56,7 @@ data class Player(var id: String = "", var userId: String = "", var name: String
 
 object PlayerContent{
     val PLAYERS: List<Player> = listOf(
-            Player("a","brunin","Bruno","D4Rk 4vEnGeR", "Destruidor de lares", "High testosterone", ""),
-            Player("b","avent","","OuTroAvenT", "Destruidor de joaninhas", "High strengh", "")
+            Player("a","8v08uGYQYEbeor5IqUhq4fWAfxi2","Fernando","Lixo Extradordinário", "Lixo mesmo", "Low testosterone", "Fufinustes"),
+            Player("b","FDSdPFONaiUMsIne3uUV83aO5iX2","Fábio","Dazor", "Destruidor de planetas", "High strengh", "DAZÓR")
     )
 }

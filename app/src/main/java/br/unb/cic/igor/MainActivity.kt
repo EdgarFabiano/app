@@ -29,7 +29,9 @@ class MainActivity : AppCompatActivity(),
         AdventuresFragment.OnAdventureSelected,
         AdventureTabsFragment.OnCombatStarted,
         CombatFragment.OnCombatFinished,
-        StartTurnFragment.OnTurnStarted {
+        StartTurnFragment.OnTurnStarted,
+        PlayerActionCreateFragment.OnPlayerActionCreated{
+
 
     private var state: State = State.ADVENTURES
 
@@ -105,19 +107,30 @@ class MainActivity : AppCompatActivity(),
 
         }
 
-//        var master = Master("8v08uGYQYEbeor5IqUhq4fWAfxi2", "Fernando", "FUFINUSTES", "Description")
+//        var master = Master("7LU1LH1JM5bnlnhFEv2Btyf4d1s2", "Mestre Fábio", "Zortani", "Mestre do mal")
 //
-//        var adventure = Adventure("", "Aventura", "Eh hora da Aventura!", master)
+//        var adventure = Adventure("", "Arco de Wano", "Estamos perdidos na terra dos samurais", master)
 //        var players = PlayerContent.PLAYERS
 //
+//        for(player in players){
+//            Player.Insert(player, adventure.id)
+//        }
+
 //        var adId = Adventure.Insert(adventure)
 //
-
-//        var combat = Combat().apply {
-//            this.currentTurn = Turn(0)
-//        }z
+//        var session = Session().apply {
+//            adventureId = adId
+//            name = "Capítulo 1"
+//            date = Date()
+//            summary = "Primeiro capítulo, os heróis acabam de chegar na ilha"
+//        }
 //
-//        Combat.Insert("RN3XRKtJVRHzpe5zF9n2", "QJhEO7yg5ON9ThL7PE5y", combat)
+//        session = Session.Insert(session, adId)
+//
+//        var combat = Combat()
+//
+//        Combat.Insert(adId, session.id, combat)
+
 
 //        val playerAction = PlayerAction("", 0, "EeEuM4KTyYa3crUbxTnQ69OTsNC2", "Vou te atirar")
 //
@@ -237,6 +250,10 @@ class MainActivity : AppCompatActivity(),
 
     override fun OnTurnStarted(adventure: Adventure, combat: Combat) {
         (currentFragment as CombatFragment).updateAdventure(adventure, combat)
+    }
+
+    override fun OnPlayerActionCreated() {
+        (currentFragment as CombatFragment).updateState()
     }
 
     enum class State(val description: String) {
