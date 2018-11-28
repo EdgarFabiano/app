@@ -194,8 +194,9 @@ class CombatFragment : Fragment(), ActionRateFragment.OnActionRatesDoneListener,
             showWaiting()
             if (playerActions.size >= combat!!.currentTurn.availablePlayers.size && combat!!.currentTurn.availablePlayers.all { playerActions.any {a -> a.userId == it} }) {
                 combat!!.currentTurn.status = TurnState.REVIEWING_ACTIONS
-                Combat.Update(adventure!!.combatInfo.sessionId, adventure!!.id, combat!!)
-                loadCombat()
+                Combat.Update(adventure!!.id, adventure!!.combatInfo.sessionId, combat!!).addOnSuccessListener {
+                    loadCombat()
+                }
             }
         } else{
             hideWaiting()

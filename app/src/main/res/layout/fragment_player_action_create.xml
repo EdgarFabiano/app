@@ -17,6 +17,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginBottom="136dp"
         android:ems="10"
+        android:hint="Digite a sua ação!"
         android:inputType="textMultiLine"
         android:maxLines="6"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -50,27 +51,26 @@
         app:layout_constraintTop_toBottomOf="@+id/player_action"
         app:layout_constraintVertical_bias="0.291" />
 
-
-    <ScrollView
+    <EditText
+        android:id="@+id/master_desc"
         android:layout_width="match_parent"
-        android:layout_height="168dp"
+        android:layout_height="143dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        android:maxLines="5"
+        android:focusable="false"
         app:layout_constraintBottom_toTopOf="@+id/player_action"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4"
-        app:layout_constraintVertical_bias="0.914">
+        app:layout_constraintVertical_bias="0.652" />
 
-        <TextView
-            android:id="@+id/description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="" />
-    </ScrollView>
+
 </android.support.constraint.ConstraintLayout>

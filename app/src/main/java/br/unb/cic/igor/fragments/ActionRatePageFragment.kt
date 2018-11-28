@@ -29,8 +29,9 @@ class ActionRatePageFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         actionDescriptionInfo.text = action!!.description
-        successRatingText.text = "${action!!.successRate ?: 0} %"
-        successRatingBar.progress = action!!.successRate ?: 0
+        action!!.successRate = action!!.successRate ?: 0
+        successRatingText.text = "${action!!.successRate!!} %"
+        successRatingBar.progress = action!!.successRate!!
         successRatingBar.incrementProgressBy(1)
         successRatingBar.max = 100
         successRatingBar.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
