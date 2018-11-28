@@ -75,16 +75,20 @@ class CombatFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, ActionR
             Adventure.Get(adventure!!.id).addOnSuccessListener {
                 if (it != null) {
                     this.adventure = it.toObject(Adventure::class.java)
-                    if(combat == null){
-                        loadCombat()
-                    } else{
-                        this.combat = combat
-                        updateState()
+
+                    if(this.adventure!!.combatInfo.inCombat){
+                        if(combat == null){
+                            loadCombat()
+                        } else{
+                            this.combat = combat
+                            updateState()
+                        }
                     }
+
                 }
             }
         } else{
-            this.adventure = adventure
+            this.adventure = adv
             if(combat == null){
                 loadCombat()
             } else{
