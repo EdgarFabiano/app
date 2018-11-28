@@ -44,6 +44,7 @@ class StartTurnFragment : Fragment() {
     private var isMaster: Boolean = false
     private var listener: OnTurnStarted? = null
     private var players: ArrayList<Player> = ArrayList()
+    private var turnUsers: ArrayList<String> = ArrayList()
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var adapter: PlayerSelectionAdapter
 
@@ -63,13 +64,23 @@ class StartTurnFragment : Fragment() {
             players = ArrayList()
             for(doc in list){
                 Toast.makeText(activity, "Success!", Toast.LENGTH_SHORT).show()
-                players.add(doc.toObject(Player::class.java) as Player)
+                val player = doc.toObject(Player::class.java) as Player
+                players.add(player)
+                turnUsers.add(player.userId)
             }
 
             linearLayoutManager = LinearLayoutManager(activity)
             recyclerView.layoutManager = linearLayoutManager
 
-            adapter = PlayerSelectionAdapter(players)
+            adapter = PlayerSelectionAdapter(players) {
+                it -> {
+                    if(turnUsers.contains(it)){
+                        turnUsers.remove(it)
+                    } else{
+                        turnUsers.add(it)
+                    }
+                }
+            }
             recyclerView.adapter = adapter
 
         }
@@ -125,27 +136,13 @@ class StartTurnFragment : Fragment() {
                 listener!!.OnTurnStarted(adventure, combat)
             }
         } else {
-            val turnUsers = ArrayList<String>()
 
-            for ( i in 0..(adapter.itemCount-1)){
-                val vh = recyclerView.findViewHolderForAdapterPosition(i) as PlayerSelectionAdapter.PlayerSelectionHolder
-                if(vh.checked){
-                    turnUsers.add(vh.player!!.userId)
-                }
-            }
-
-            val turn = Turn().apply {
+            combat.currentTurn = Turn().apply {
                 id = combat.turns.size
                 description = desc
                 availablePlayers = turnUsers
                 status = TurnState.WAITING_ACTIONS
             }
-
-            if(combat.currentTurn.status != TurnState.NOT_STARTED){
-                combat.turns.add(combat.currentTurn)
-            }
-
-            combat.currentTurn = turn
 
             Combat.Update(adventure.id, adventure.combatInfo.sessionId, combat)
 

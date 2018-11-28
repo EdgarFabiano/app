@@ -11,14 +11,7 @@ import kotlinx.android.synthetic.main.player_selection_row.view.*
 import android.view.MotionEvent
 
 
-
-
-public interface MyPlayerSelectedListener{
-    fun playerSelected(checked: Boolean, userId: String): Boolean
-}
-
-class PlayerSelectionAdapter(private val players: ArrayList<Player>): RecyclerView.Adapter<PlayerSelectionAdapter.PlayerSelectionHolder>() {
-    var checkedPlayers: ArrayList<String> = ArrayList()
+class PlayerSelectionAdapter(private val players: ArrayList<Player>, private val callback: (String) -> Any): RecyclerView.Adapter<PlayerSelectionAdapter.PlayerSelectionHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayerSelectionHolder {
         val inflatedView = parent.inflate(R.layout.player_selection_row, false)
@@ -29,8 +22,7 @@ class PlayerSelectionAdapter(private val players: ArrayList<Player>): RecyclerVi
 
     override fun onBindViewHolder(holder: PlayerSelectionHolder, position: Int) {
         val itemPlayer = players[position]
-        checkedPlayers.add(itemPlayer.userId)
-        holder.bindPlayer(itemPlayer)
+        holder.bindPlayer(itemPlayer , callback)
     }
 
     class PlayerSelectionHolder(v: View) : RecyclerView.ViewHolder(v) {
@@ -42,17 +34,17 @@ class PlayerSelectionAdapter(private val players: ArrayList<Player>): RecyclerVi
         //3
         init {
             view.switch_selection.isChecked = true
+        }
 
+        fun bindPlayer(player: Player, callback: (String) -> Any){
+            this.player = player
+            val str = "${player.character} (${player.name})"
+            view.player_name.text = str
             view.setOnClickListener {
                 view.switch_selection.isChecked = !checked
                 checked = !checked
+                callback(this.player!!.id)
             }
-        }
-
-        fun bindPlayer(player: Player){
-            this.player = player
-            val str = "${player!!.character} (${player!!.name})"
-            view.player_name.text = str
         }
 
         companion object {

@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.TextUtils
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,6 +38,7 @@ class PlayerActionCreateFragment : Fragment() {
     private lateinit var adventure: Adventure
     private lateinit var combat: Combat
     private var action: PlayerAction? = null
+    private var listener: OnPlayerActionCreated? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,7 +75,9 @@ class PlayerActionCreateFragment : Fragment() {
             saveAction()
         }
 
-        description.text = combat.currentTurn.description
+        master_desc.text.clear()
+        master_desc.text.append(combat.currentTurn.description)
+        
     }
 
     private fun saveAction(){
@@ -102,6 +106,8 @@ class PlayerActionCreateFragment : Fragment() {
 
         Toast.makeText(context, "Ação salva com sucesso!", Toast.LENGTH_LONG).show()
 
+        listener!!.OnPlayerActionCreated()
+
         //Remove itself
 
         fragmentManager!!.beginTransaction().remove(this).commit()
@@ -122,6 +128,19 @@ class PlayerActionCreateFragment : Fragment() {
         }
 
         return valid
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnPlayerActionCreated) {
+            listener = context
+        } else {
+            throw RuntimeException(context.toString() + " must implement OnPlayerActionCreated")
+        }
+    }
+
+    interface OnPlayerActionCreated{
+        fun OnPlayerActionCreated()
     }
 
     /**
