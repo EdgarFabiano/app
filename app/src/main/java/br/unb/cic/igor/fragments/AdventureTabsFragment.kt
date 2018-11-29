@@ -7,6 +7,7 @@ import android.view.*
 import android.widget.Toast
 import br.unb.cic.igor.MainActivity
 import br.unb.cic.igor.R
+import br.unb.cic.igor.adapters.AdventuresAdapter
 import br.unb.cic.igor.classes.Adventure
 import br.unb.cic.igor.classes.Player
 import br.unb.cic.igor.classes.Session
@@ -77,6 +78,8 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
             if (adv != null) {
                 adventure = adv.toObject(Adventure::class.java)
                 (adventureFragment as AdventureFragment).updateAdventure(adventure!!)
+                adventureBg.setBackgroundResource(AdventuresAdapter.images[adventure!!.bg])
+                adventureTitle.text = adventure!!.name
             }
         }
     }

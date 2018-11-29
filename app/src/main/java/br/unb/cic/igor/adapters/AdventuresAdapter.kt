@@ -20,12 +20,14 @@ import java.util.*
 class AdventuresAdapter(var adventures: List<Adventure>, private val context: Context?, private val mListener: AdventuresFragment.OnAdventureSelected?) : RecyclerView.Adapter<AdventuresRecyclerViewHolder>() {
     private val mOnClickListener: View.OnClickListener
 
-    val images = intArrayOf(
-            R.drawable.miniatura_coast,
-            R.drawable.miniatura_corvali,
-            R.drawable.miniatura_heartlands,
-            R.drawable.miniatura_imagem,
-            R.drawable.miniatura_krevast)
+    companion object {
+        val images = intArrayOf(
+                R.drawable.miniatura_coast,
+                R.drawable.miniatura_corvali,
+                R.drawable.miniatura_heartlands,
+                R.drawable.miniatura_imagem,
+                R.drawable.miniatura_krevast)
+    }
 
     init {
         mOnClickListener = View.OnClickListener { v ->

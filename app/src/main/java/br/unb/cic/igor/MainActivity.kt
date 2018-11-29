@@ -155,11 +155,6 @@ class MainActivity : AppCompatActivity(), AdventuresFragment.OnAdventureSelected
         Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu, menu)
-        return true
-    }
-
     override fun onAdventureSelected(adventureId: String) {
         switchContent(AdventureTabsFragment.newInstance(adventureId))
     }
