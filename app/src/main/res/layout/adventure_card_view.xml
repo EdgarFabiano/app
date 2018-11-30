@@ -6,8 +6,35 @@
     android:layout_height="wrap_content"
     android:background="@drawable/miniatura_heartlands">
 
+    <RelativeLayout
+        android:id="@+id/background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorRed">
+
+        <ImageView
+            android:id="@+id/delete_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/baseline_delete_white_24dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@id/delete_icon"
+            android:text="Deletar"
+            android:textColor="#fff"
+            android:textSize="13dp" />
+
+    </RelativeLayout>
+
     <LinearLayout
-        android:id="@+id/main_layout"
+        android:id="@+id/foreground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/miniatura_heartlands"

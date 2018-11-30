@@ -3,7 +3,6 @@ package br.unb.cic.igor.adapters
 import android.content.Context
 import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
-import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +15,9 @@ import br.unb.cic.igor.extensions.toList
 import br.unb.cic.igor.fragments.AdventuresFragment
 import br.unb.cic.igor.util.FormatterUtil
 import java.util.*
+import android.content.ClipData.Item
+
+
 
 class AdventuresAdapter(var adventures: List<Adventure>, private val context: Context?, private val mListener: AdventuresFragment.OnAdventureSelected?) : RecyclerView.Adapter<AdventuresRecyclerViewHolder>() {
     private val mOnClickListener: View.OnClickListener
@@ -63,12 +65,22 @@ class AdventuresAdapter(var adventures: List<Adventure>, private val context: Co
         holder.mNextSession.text = "Próxima sessão " + FormatterUtil.formatDate(lastSession.date)
         holder.mSeekbar.progress = 1 + Random().nextInt(100)
         holder.mSeekbar.isEnabled = false
-        holder.mlayout.background = context!!.resources.getDrawable(images[adventure.bg])
+        holder.foreground.background = context!!.resources.getDrawable(images[adventure.bg])
 
         with(holder.view) {
             tag = adventure
             setOnClickListener(mOnClickListener)
         }
+    }
+
+    fun removeItem(position: Int) {
+        adventures.minus(position)
+        notifyItemRemoved(position)
+    }
+
+    fun restoreItem(item: Adventure, position: Int) {
+        adventures.plus(item)
+        notifyItemInserted(position)
     }
 
 }
