@@ -35,7 +35,8 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
         AdventureEditFragment.EditAdventureListener,
         SessionEditFragment.SessionEditListener,
         AddPlayerFragment.AddPlayerListener,
-        PlayerEditFragment.PlayerEditListener {
+        PlayerEditFragment.PlayerEditListener,
+        SessionFragment.onCombatsClickListener {
 
     private val ADVENTURE_ID_ARG : String = "session_arg_key"
 
@@ -175,6 +176,9 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
             State.PLAYERS -> {
                 stateTransition(State.PLAYER_ADD, AddPlayerFragment.newInstance(adventureId))
             }
+            State.COMBATS -> {
+                toast("Create combat")
+            }
             else -> toast("wrong state")
         }
     }
@@ -209,6 +213,10 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
                 addButton.visibility = View.INVISIBLE
                 setHasOptionsMenu(false)
             }
+            State.COMBATS -> {
+                addButton.visibility = View.VISIBLE
+                setHasOptionsMenu(false)
+            }
         }
 
         state = nextState
@@ -237,6 +245,9 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
             }
             State.ADVENTURE -> {
                 listener?.adventureTabsFragmentWantsToGoBack()
+            }
+            State.COMBATS -> {
+                stateTransition(State.ADVENTURE, adventureFragment)
             }
             else -> {
                 stateTransition(State.ADVENTURE, adventureFragment)
@@ -319,6 +330,10 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
         stateTransition(State.SESSION, SessionFragment.newInstance(session))
     }
 
+    override fun onCombatsClick(session: Session) {
+        stateTransition(State.COMBATS, CombatsFragment.newInstance(session))
+    }
+
     enum class State {
         ADVENTURE,
         ADV_EDIT,
@@ -329,6 +344,7 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
         PLAYER_EDIT,
         SESSION,
         SESSION_CREATE,
-        SESSION_EDIT
+        SESSION_EDIT,
+        COMBATS
     }
 }

@@ -33,27 +33,12 @@
                 app:layout_constraintStart_toStartOf="@+id/scrollView3"
                 app:layout_constraintTop_toTopOf="@+id/scrollView3" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Combates:"
-                android:layout_marginTop="10dp"
-                app:layout_constraintEnd_toEndOf="@+id/scrollView3"
-                app:layout_constraintStart_toStartOf="@+id/scrollView3"
-                app:layout_constraintTop_toTopOf="@+id/scrollView3" />
-
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <ListView
-                        android:id="@+id/combatsList"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"/>
-                </LinearLayout>
-            </ScrollView>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/combatesButton"
+                android:text="Combates"
+                android:layout_marginTop="30dp" />
 
         </LinearLayout>
     </ScrollView>

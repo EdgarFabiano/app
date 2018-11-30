@@ -1,21 +1,17 @@
 package br.unb.cic.igor.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-
+import android.widget.Button
+import br.unb.cic.igor.MainActivity
 import br.unb.cic.igor.R
-import br.unb.cic.igor.classes.Adventure
-import br.unb.cic.igor.classes.Combat
 import br.unb.cic.igor.classes.Session
-import br.unb.cic.igor.extensions.toList
 import kotlinx.android.synthetic.main.fragment_session.*
 import java.text.SimpleDateFormat
-
 
 
 /**
@@ -30,15 +26,33 @@ class SessionFragment : Fragment() {
     private val SESSION_ARG_KEY = "session_arg_key"
     private var session: Session? = null
 
+    private var listener: onCombatsClickListener? = null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         session = arguments?.getSerializable(SESSION_ARG_KEY) as Session?
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_session, container, false)
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        val fragment = (activity as MainActivity).currentFragment
+        if (fragment is SessionFragment.onCombatsClickListener) {
+            listener = fragment
+        } else {
+            throw RuntimeException(fragment.toString() + " must implement onCombatsClickListener")
+        }
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
+        var view = inflater.inflate(R.layout.fragment_session, container, false)
+
+        var combates = view.findViewById<Button>(R.id.combatesButton)
+        combates.setOnClickListener {
+            listener!!.onCombatsClick(session!!)
+        }
+        return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -47,20 +61,6 @@ class SessionFragment : Fragment() {
         sessionInfoText.text = if (summary != "") summary else "Sua sessão ainda não posssui um resumo!"
         sessionNameEdit.text = session!!.name
         sessionDateText.text = SimpleDateFormat("dd/MM").format(session!!.date)
-
-        Combat.List(sessionId = session!!.id, adventureId = session!!.adventureId).addOnSuccessListener {
-            if (it != null) {
-                var combats = it.toList(Combat::class.java)
-                combatsList.adapter  = ArrayAdapter(context!!, android.R.layout.simple_list_item_1, combats)
-                combatsList.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-
-                }
-            }
-        }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
     }
 
     /**
@@ -90,5 +90,9 @@ class SessionFragment : Fragment() {
                     bundle.putSerializable(SESSION_ARG_KEY, session)
                     arguments = bundle
                 }
+    }
+
+    interface onCombatsClickListener {
+        fun onCombatsClick(session: Session)
     }
 }

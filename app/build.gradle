@@ -9,7 +9,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "br.unb.cic.igor"
-        minSdkVersion 16
+        minSdkVersion 24
         targetSdkVersion 28
         multiDexEnabled true
         versionCode 1
