@@ -20,6 +20,10 @@ data class Player(var id: String = "", var userId: String = "", var name: String
 
             user.adventureRefs.add(adventureId)
 
+            val userRef = FirebaseFirestore.getInstance().collection("users").document(user.id)
+
+            batch.update(userRef, "adventureRefs", user.adventureRefs)
+
             batch.commit()
 
             return player

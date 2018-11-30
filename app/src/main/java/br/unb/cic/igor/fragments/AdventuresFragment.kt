@@ -29,19 +29,24 @@ class AdventuresFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, Swi
 
     lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
     lateinit var rv : RecyclerView
-    var adventures: List<Adventure> = ArrayList()
+    var adventures: ArrayList<Adventure> = ArrayList()
     lateinit var adapter: AdventuresAdapter
 
     override fun onRefresh() {
+        User.Get(User.GetInstance()!!.id).addOnSuccessListener {
+            val obj = it.toObject(User::class.java)
+            User.SetInstance(obj)
+        }
+
         Adventure.List().addOnSuccessListener {
-            adventures.minus(adventures)
+            adventures.clear()
             if (it != null) {
-                var allAdv = it.toList(Adventure::class.java)
-                var userId = User.GetInstance()!!.id
-                var userAdvs = User.GetInstance()!!.adventureRefs
+                val allAdv = it.toList(Adventure::class.java)
+                val userId = User.GetInstance()!!.id
+                val userAdvs = User.GetInstance()!!.adventureRefs
                 for(adv in allAdv){
                     if(adv.master.userId == userId || userAdvs.any { a -> a == adv.id }){
-                        adventures.plus(adv)
+                        adventures.add(adv)
                     }
                 }
                 runAnimation(rv, adventures)
@@ -67,12 +72,13 @@ class AdventuresFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, Swi
         recyclerView.layoutManager = LinearLayoutManager(activity)
         Adventure.List().addOnSuccessListener {
             if (it != null) {
+                adventures.clear()
                 var allAdv = it.toList(Adventure::class.java)
                 var userId = User.GetInstance()!!.id
                 var userAdvs = User.GetInstance()!!.adventureRefs
                 for(adv in allAdv){
                     if(adv.master.userId == userId || userAdvs.any { a -> a == adv.id }){
-                        adventures = adventures.plus(adv)
+                        adventures.add(adv)
                     }
                 }
                 runAnimation(recyclerView, adventures)
