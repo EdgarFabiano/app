@@ -198,14 +198,24 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
                 stateTransition(State.PLAYER_ADD, AddPlayerFragment.newInstance(adventureId))
             }
             State.COMBATS -> {
-                toast("Create combat")
+                if(adventure != null && adventure!!.master.userId == User.GetInstance()!!.id){
+                    val newCombat = Combat()
+                    Combat.Insert(adventureId, selectedSession!!.id, newCombat).addOnSuccessListener {
+                        adventure!!.combatInfo = CombatInfo(true, selectedSession!!.id, newCombat.id)
+                        Adventure.Update(adventure!!).addOnSuccessListener {
+                            combatListener!!.onCombatStarted(adventure!!)
+                        }
+                    }
+                }
             }
             State.SESSION -> {
-                var newCombat = Combat()
-                Combat.Insert(adventureId, selectedSession!!.id, newCombat).addOnSuccessListener {
-                    adventure!!.combatInfo = CombatInfo(true, selectedSession!!.id, newCombat.id)
-                    Adventure.Update(adventure!!).addOnSuccessListener {
-                        combatListener!!.onCombatStarted(adventure!!)
+                if(adventure != null && adventure!!.master.userId == User.GetInstance()!!.id){
+                    val newCombat = Combat()
+                    Combat.Insert(adventureId, selectedSession!!.id, newCombat).addOnSuccessListener {
+                        adventure!!.combatInfo = CombatInfo(true, selectedSession!!.id, newCombat.id)
+                        Adventure.Update(adventure!!).addOnSuccessListener {
+                            combatListener!!.onCombatStarted(adventure!!)
+                        }
                     }
                 }
             }
@@ -214,6 +224,7 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
     }
 
     fun stateTransition(nextState : State, fragment : Fragment) {
+        val isMaster = adventure != null && adventure!!.master.userId == User.GetInstance()!!.id
         switchContent(fragment)
         when (nextState) {
             State.SESSION_CREATE, State.SESSION_EDIT, State.PLAYER_ADD, State.MESSAGES_LIST, State.PLAYER_EDIT -> {
@@ -240,7 +251,7 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
                 }
             }
             State.SESSION -> {
-                addButton.visibility = View.VISIBLE
+                addButton.visibility = if(isMaster) View.VISIBLE else View.INVISIBLE
                 addButton.setImageResource(R.drawable.start_combat)
             }
             State.PLAYER_DETAILS -> {
@@ -252,7 +263,8 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
                 setHasOptionsMenu(false)
             }
             State.COMBATS, State.COMBAT_VIEW -> {
-                addButton.visibility = View.VISIBLE
+                addButton.visibility = if(isMaster) View.VISIBLE else View.INVISIBLE
+                addButton.setImageResource(R.drawable.start_combat)
                 setHasOptionsMenu(false)
             }
         }
