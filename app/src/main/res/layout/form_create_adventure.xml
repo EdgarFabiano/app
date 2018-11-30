@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/igor_sign_up_caixa_de_texto"
+    android:orientation="vertical"
+    android:theme="@style/AppDarkTheme">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/activity_vertical_margin">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/close"
+                android:drawableLeft="@drawable/close"
+                android:drawableTint="@color/gray"
+                android:layout_marginBottom="@dimen/image_bottom_margin"
+                android:textColor="@color/colorAccentSecondary"
+                android:text="    Criar Aventura"
+                android:drawableStart="@drawable/close" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="@color/gray"
+                android:text="@string/name_it"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/nome_aventura"
+                android:hint="@string/nome_da_aventura"
+                android:layout_marginBottom="@dimen/image_bottom_margin"
+                android:maxLines="2"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:singleLine="true" />
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/bgs">
+                <RadioButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/miniatura_coast"/>
+                <RadioButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/miniatura_corvali"/>
+                <RadioButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/miniatura_heartlands"/>
+                <RadioButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/miniatura_imagem"/>
+                <RadioButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/miniatura_krevast"/>
+            </RadioGroup>
+
+            <Button
+                android:id="@+id/create_adventure"
+                style="?android:textAppearanceSmall"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="16dp"
+                android:text="@string/pronto"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

@@ -1,6 +1,8 @@
 package br.unb.cic.igor.fragments
 
+import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
@@ -10,6 +12,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
+import android.widget.ImageButton
+import br.unb.cic.igor.CreateAdventureActivity
 import br.unb.cic.igor.MainActivity
 import br.unb.cic.igor.R
 import br.unb.cic.igor.adapters.AdventuresAdapter
@@ -20,8 +24,8 @@ import br.unb.cic.igor.extensions.toList
 
 class AdventuresFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
-    lateinit var rv : RecyclerView
     lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
+    lateinit var rv : RecyclerView
 
     override fun onRefresh() {
         var adventures : List<Adventure> = ArrayList()
@@ -42,9 +46,12 @@ class AdventuresFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         mSwipeRefreshLayout.setRefreshing(false)
     }
 
+    fun refresh(){
+        onRefresh()
+    }
 
     companion object {
-        fun newInstance() = AdventuresFragment()
+        fun newInstance() =  AdventuresFragment()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -77,15 +84,10 @@ class AdventuresFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 android.R.color.holo_orange_dark,
                 android.R.color.holo_blue_dark)
 
-        /**
-         * Showing Swipe Refresh animation on activity create
-         * As animation won't start on onCreate, post runnable is used
-         */
-//        mSwipeRefreshLayout.post(Runnable {
-//            mSwipeRefreshLayout.setRefreshing(true)
-//
-//        })
-
+        val fab: View = view.findViewById(R.id.fab)
+        fab.setOnClickListener {
+            startActivity(Intent(context, CreateAdventureActivity::class.java))
+        }
 
         return view
     }
@@ -93,7 +95,7 @@ class AdventuresFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private fun runAnimation(recyclerView: RecyclerView, adventures: List<Adventure>) {
         var animationController : LayoutAnimationController = AnimationUtils.loadLayoutAnimation(recyclerView.context, R.anim.layout_fall)
 
-        recyclerView.adapter = AdventuresAdapter(adventures, context, activity as MainActivity)
+        recyclerView.adapter = AdventuresAdapter(adventures, context, activity as OnAdventureSelected)
 
         recyclerView.layoutAnimation = animationController
         (recyclerView.adapter as AdventuresAdapter).notifyDataSetChanged()

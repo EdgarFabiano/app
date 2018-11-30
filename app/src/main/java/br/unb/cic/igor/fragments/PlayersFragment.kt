@@ -16,6 +16,7 @@ import br.unb.cic.igor.classes.PlayerContent
 
 import br.unb.cic.igor.fragments.dummy.DummyContent
 import br.unb.cic.igor.fragments.dummy.DummyContent.DummyItem
+import kotlinx.android.synthetic.main.fragment_players_list.*
 import kotlinx.android.synthetic.main.fragment_players_list.view.*
 
 /**
@@ -25,17 +26,11 @@ import kotlinx.android.synthetic.main.fragment_players_list.view.*
  */
 class PlayersFragment : Fragment() {
 
-    // TODO: Customize parameters
-    private var columnCount = 1
-
     private var listener: OnPlayersFragmentInteractionListener? = null
+    private var players: List<Player> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        arguments?.let {
-            columnCount = it.getInt(ARG_COLUMN_COUNT)
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -45,11 +40,8 @@ class PlayersFragment : Fragment() {
         // Set the adapter
         if (view.players_list is RecyclerView) {
             with(view.players_list) {
-                layoutManager = when {
-                    columnCount <= 1 -> LinearLayoutManager(context)
-                    else -> GridLayoutManager(context, columnCount)
-                }
-                adapter = PlayersAdapter(PlayerContent.PLAYERS, listener)
+                layoutManager = LinearLayoutManager(context)
+                adapter = PlayersAdapter(players, listener)
             }
         }
         return view
@@ -71,6 +63,23 @@ class PlayersFragment : Fragment() {
         listener = null
     }
 
+    fun updatePlayers(players: List<Player>) {
+        this.players = players
+        if (players_list != null) {
+            val sorted = players.sortedBy {
+                it.name
+            }
+
+            // Set the adapter
+            if (players_list is RecyclerView) {
+                with(players_list) {
+                    layoutManager = LinearLayoutManager(context)
+                    adapter = PlayersAdapter(players, listener)
+                }
+            }
+        }
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -88,17 +97,8 @@ class PlayersFragment : Fragment() {
     }
 
     companion object {
-
-        // TODO: Customize parameter argument names
-        const val ARG_COLUMN_COUNT = "column-count"
-
         // TODO: Customize parameter initialization
         @JvmStatic
-        fun newInstance(columnCount: Int) =
-                PlayersFragment().apply {
-                    arguments = Bundle().apply {
-                        putInt(ARG_COLUMN_COUNT, columnCount)
-                    }
-                }
+        fun newInstance() = PlayersFragment()
     }
 }

@@ -39,6 +39,9 @@
     <string name="complete_registration">Complete seu cadastro!</string>
     <string name="cancel">cancelar</string>
     <string name="roll_dice_message">Para realizar sua ação, você precisa tirar pelo menos:</string>
+    <string name="name_it">Dê um nome para sua aventura</string>
+    <string name="nome_da_aventura">Nome da aventura</string>
+    <string name="pronto">Pronto</string>
 
     <string-array name="menu_options">
         <item>Aventuras</item>

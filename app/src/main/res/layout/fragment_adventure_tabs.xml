@@ -6,6 +6,28 @@
     android:layout_height="match_parent"
     tools:context=".fragments.AdventureTabsFragment">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:id="@+id/adventureBg"
+            android:background="@null"
+            android:scaleType="fitCenter"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/adventureTitle"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:textSize="20dp"
+            android:textColor="@color/white"/>
+    </RelativeLayout>
+
     <ImageView
         android:id="@+id/contentView"
         android:layout_width="357dp"
