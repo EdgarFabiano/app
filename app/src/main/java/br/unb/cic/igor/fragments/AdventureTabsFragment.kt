@@ -239,7 +239,11 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
                     addButton.visibility = View.INVISIBLE
                 }
             }
-            State.SESSION, State.PLAYER_DETAILS -> {
+            State.SESSION -> {
+                addButton.visibility = View.VISIBLE
+                addButton.setImageResource(R.drawable.start_combat)
+            }
+            State.PLAYER_DETAILS -> {
                 addButton.visibility = View.INVISIBLE
                 setHasOptionsMenu(true)
             }
@@ -247,7 +251,7 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
                 addButton.visibility = View.INVISIBLE
                 setHasOptionsMenu(false)
             }
-            State.COMBATS -> {
+            State.COMBATS, State.COMBAT_VIEW -> {
                 addButton.visibility = View.VISIBLE
                 setHasOptionsMenu(false)
             }
@@ -280,7 +284,7 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
             State.ADVENTURE -> {
                 listener?.adventureTabsFragmentWantsToGoBack()
             }
-            State.COMBATS -> {
+            State.COMBATS, State.COMBAT_VIEW -> {
                 stateTransition(State.ADVENTURE, adventureFragment)
             }
             else -> {
@@ -379,6 +383,7 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
         SESSION,
         SESSION_CREATE,
         SESSION_EDIT,
-        COMBATS
+        COMBATS,
+        COMBAT_VIEW
     }
 }
