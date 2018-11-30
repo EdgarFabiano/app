@@ -88,7 +88,7 @@ class AddPlayerFragment : Fragment() {
         User.List().addOnSuccessListener{
             val list = it.toList(User::class.java)
 
-            userSpinner.adapter = ArrayAdapter<String>(context, android.R.layout.simple_selectable_list_item, list.map{ it.username })
+            userSpinner.adapter = ArrayAdapter<String>(context, android.R.layout.simple_selectable_list_item, list.filter { u -> u.username != User.GetInstance()!!.username }.map{ u -> u.username })
 
             userSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
                 override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -96,7 +96,7 @@ class AddPlayerFragment : Fragment() {
                 }
 
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    selectedUser = list[position]
+                    selectedUser = list.filter { u -> u.username != User.GetInstance()!!.username }[position]
                 }
             }
         }
