@@ -10,11 +10,17 @@ data class Player(var id: String = "", var userId: String = "", var name: String
 
 
     companion object {
-        fun Insert(player: Player, adventureId: String): Player{
+        fun Insert(player: Player, user: User, adventureId: String): Player{
+            val db = FirebaseFirestore.getInstance()
+            val batch = db.batch()
             val ref = FirebaseFirestore.getInstance().collection("adventure").document(adventureId)
                     .collection("players").document()
             player.id = ref.id
-            ref.set(player)
+            batch.set(ref, player)
+
+            user.adventureRefs.add(adventureId)
+
+            batch.commit()
 
             return player
         }

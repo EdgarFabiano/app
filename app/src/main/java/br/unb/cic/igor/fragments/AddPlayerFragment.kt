@@ -73,7 +73,7 @@ class AddPlayerFragment : Fragment() {
                 toast("Por favor, é preciso que você digite todos os campos. O único opcional é o de descrição.")
             } else {
                 var player = Player(userId = selectedUser!!.id, name = selectedUser!!.username, character = char, attrs = atts, description = desc)
-                Player.Insert(player, adventureId!!)
+                Player.Insert(player, selectedUser!!, adventureId!!)
                 listener!!.playerCreated()
                 toast("Jogador adicionado com sucesso!")
             }
