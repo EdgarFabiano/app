@@ -73,7 +73,7 @@ class AddPlayerFragment : Fragment() {
                 toast("Por favor, é preciso que você digite todos os campos. O único opcional é o de descrição.")
             } else {
                 var player = Player(userId = selectedUser!!.id, name = selectedUser!!.username, character = char, attrs = atts, description = desc)
-                Player.Insert(player, adventureId!!)
+                Player.Insert(player, selectedUser!!, adventureId!!)
                 listener!!.playerCreated()
                 toast("Jogador adicionado com sucesso!")
             }
@@ -88,7 +88,7 @@ class AddPlayerFragment : Fragment() {
         User.List().addOnSuccessListener{
             val list = it.toList(User::class.java)
 
-            userSpinner.adapter = ArrayAdapter<String>(context, android.R.layout.simple_selectable_list_item, list.map{ it.username })
+            userSpinner.adapter = ArrayAdapter<String>(context, android.R.layout.simple_selectable_list_item, list.filter { u -> u.username != User.GetInstance()!!.username }.map{ u -> u.username })
 
             userSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
                 override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -96,7 +96,7 @@ class AddPlayerFragment : Fragment() {
                 }
 
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    selectedUser = list[position]
+                    selectedUser = list.filter { u -> u.username != User.GetInstance()!!.username }[position]
                 }
             }
         }

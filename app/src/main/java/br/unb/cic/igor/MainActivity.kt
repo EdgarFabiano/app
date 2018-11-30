@@ -14,6 +14,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import br.unb.cic.igor.adapters.MenuAdapter
+import br.unb.cic.igor.classes.*
+import br.unb.cic.igor.fragments.*
 import br.unb.cic.igor.classes.User
 import br.unb.cic.igor.fragments.AdventureTabsFragment
 import br.unb.cic.igor.fragments.AdventuresFragment
@@ -22,7 +24,13 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
 
 
-class MainActivity : AppCompatActivity(), AdventuresFragment.OnAdventureSelected, AdventureTabsFragment.OnAdventureTabsFragmentInteractionListener {
+class MainActivity : AppCompatActivity(),
+        AdventuresFragment.OnAdventureSelected,
+        AdventureTabsFragment.OnCombatStarted,
+        CombatFragment.OnCombatFinished,
+        StartTurnFragment.OnTurnStarted,
+        PlayerActionCreateFragment.OnPlayerActionCreated,
+        AdventureTabsFragment.OnAdventureTabsFragmentInteractionListener {
 
     private var state: State = State.ADVENTURES
 
@@ -30,7 +38,6 @@ class MainActivity : AppCompatActivity(), AdventuresFragment.OnAdventureSelected
 
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDb: FirebaseFirestore
-
 
     private var doubleBackToExitPressedOnce: Boolean = false;
 
@@ -99,8 +106,75 @@ class MainActivity : AppCompatActivity(), AdventuresFragment.OnAdventureSelected
 
         }
 
-    }
+//        var master = Master("7LU1LH1JM5bnlnhFEv2Btyf4d1s2", "Mestre Fábio", "Zortani", "Mestre do mal")
+//
+//        var adventure = Adventure("", "Arco de Wano", "Estamos perdidos na terra dos samurais", master)
+//        var players = PlayerContent.PLAYERS
+//
+//        for(player in players){
+//            Player.Insert(player, adventure.id)
+//        }
 
+//        var adId = Adventure.Insert(adventure)
+//
+//        var session = Session().apply {
+//            adventureId = adId
+//            name = "Capítulo 1"
+//            date = Date()
+//            summary = "Primeiro capítulo, os heróis acabam de chegar na ilha"
+//        }
+//
+//        session = Session.Insert(session, adId)
+//
+//        var combat = Combat()
+//
+//        Combat.Insert(adId, session.id, combat)
+
+
+//        val playerAction = PlayerAction("", 0, "EeEuM4KTyYa3crUbxTnQ69OTsNC2", "Vou te atirar")
+//
+//        PlayerAction.Insert("QJhEO7yg5ON9ThL7PE5y", "RN3XRKtJVRHzpe5zF9n2", "inbVwVE4S3O7F0RvK0Jm", playerAction)
+
+
+//        val combat = Combat()
+//
+//       Combat.Insert("1BW2AYlaDCBKy4z2w1eN", "tSthabRpUZcXgdryAiqM", combat)
+
+//        Adventure.Get(adId, mDb).addOnSuccessListener{
+//            task ->
+//            val u = task.toObject(Adventure::class.java)
+//            if(u == null){
+//                Toast.makeText(this, "Error on registration.", Toast.LENGTH_SHORT).show()
+//            } else{
+//                Toast.makeText(this, "Success!", Toast.LENGTH_SHORT).show()
+//
+//                var pId0 = Adventure.AddPlayer(adId, players[0], mDb)
+//                var pId1 = Adventure.AddPlayer(adId, players[1], mDb)
+//            }
+//        }
+
+//        var list = Adventure.List().addOnSuccessListener{ task ->
+//            val list = task.documents
+//            if(list == null){
+//                Toast.makeText(this, "No documents", Toast.LENGTH_SHORT).show()
+//            } else{
+//                for(doc in list){
+//                    Toast.makeText(this, "Success!", Toast.LENGTH_SHORT).show()
+//                    var realDoc = doc.toObject(Adventure::class.java)
+//                    val a = 1;
+//                }
+//            }
+//        }
+
+//        var adId = "tSthabRpUZcXgdryAiqM"
+//        var session = Session(adventureId = adId, name = "session1", date = Date(), summary = "session summary")
+//        Session.Insert(session, adId)
+//
+//        session.summary = "ODEIO ISSO AQUI TUDO"
+//
+//        Session.Update(session, adId, mDb)
+
+    }
 
     override fun onStart() {
         super.onStart()
@@ -109,6 +183,10 @@ class MainActivity : AppCompatActivity(), AdventuresFragment.OnAdventureSelected
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.mainContent, currentFragment)
         ft.commit()
+    }
+
+    override fun onCombatFinished(adventureId: String) {
+        switchContent(AdventureTabsFragment.newInstance(adventureId))
     }
 
     fun switchContent(fragment: Fragment) {
@@ -159,6 +237,18 @@ class MainActivity : AppCompatActivity(), AdventuresFragment.OnAdventureSelected
         switchContent(AdventureTabsFragment.newInstance(adventureId))
     }
 
+    override fun onCombatStarted(adventure: Adventure) {
+        switchContent(CombatFragment.newInstance(adventure))
+    }
+
+    override fun OnTurnStarted(adventure: Adventure, combat: Combat) {
+        (currentFragment as CombatFragment).updateAdventure(adventure, combat)
+    }
+
+    override fun OnPlayerActionCreated() {
+        (currentFragment as CombatFragment).updateState()
+    }
+
     override fun adventureTabsFragmentWantsToGoBack() {
         state = State.ADVENTURES
         switchContent(AdventuresFragment.newInstance())
@@ -181,7 +271,5 @@ class MainActivity : AppCompatActivity(), AdventuresFragment.OnAdventureSelected
 
             return ADVENTURES
         }
-
-
     }
 }

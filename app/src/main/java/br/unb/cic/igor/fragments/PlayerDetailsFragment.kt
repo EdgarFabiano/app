@@ -14,8 +14,10 @@ import android.app.DatePickerDialog.OnDateSetListener
 import android.content.Context
 import android.widget.Toast
 import br.unb.cic.igor.MainActivity
+import br.unb.cic.igor.classes.Adventure
 import br.unb.cic.igor.classes.Player
 import br.unb.cic.igor.classes.Session
+import br.unb.cic.igor.classes.User
 import java.util.*
 import kotlinx.android.synthetic.main.fragment_add_session.*
 import kotlinx.android.synthetic.main.fragment_player_details.*
@@ -55,6 +57,21 @@ class PlayerDetailsFragment : Fragment() {
         view.playerName.text = player!!.name
         view.attributes.text = player!!.attrs
         view.description.text = player!!.description
+
+        // at first, he cannot see the messages
+        view.messages_button.visibility = View.INVISIBLE
+
+        // get the current adventure and check if this user should be able to see the messages or not
+        Adventure.Get(adventureId!!).addOnSuccessListener {
+            if (it != null) {
+                val adventure = it.toObject(Adventure::class.java)
+                val currentUser = User.GetInstance()!!
+                if(adventure!!.master.userId == currentUser.id ||
+                        player!!.userId == currentUser.id){
+                    view.messages_button.visibility = View.VISIBLE
+                }
+            }
+        }
 
         return view
     }

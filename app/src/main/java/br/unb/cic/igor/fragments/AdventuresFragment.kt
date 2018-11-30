@@ -18,6 +18,7 @@ import br.unb.cic.igor.MainActivity
 import br.unb.cic.igor.R
 import br.unb.cic.igor.adapters.AdventuresAdapter
 import br.unb.cic.igor.classes.Adventure
+import br.unb.cic.igor.classes.User
 import br.unb.cic.igor.extensions.toList
 
 
@@ -30,13 +31,19 @@ class AdventuresFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         var adventures : List<Adventure> = ArrayList()
         Adventure.List().addOnSuccessListener {
             if (it != null) {
-                adventures = it.toList(Adventure::class.java)
+                var allAdv = it.toList(Adventure::class.java)
+                var userId = User.GetInstance()!!.id
+                var userAdvs = User.GetInstance()!!.adventureRefs
+                for(adv in allAdv){
+                    if(adv.master.userId == userId || userAdvs.any { a -> a == adv.id }){
+                        adventures = adventures.plus(adv)
+                    }
+                }
                 runAnimation(rv, adventures)
             }
         }
         runAnimation(rv, adventures)
         mSwipeRefreshLayout.setRefreshing(false)
-
     }
 
     fun refresh(){
@@ -54,10 +61,17 @@ class AdventuresFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         recyclerView = view.findViewById(R.id.adventures_recycler_view)
         rv = recyclerView
         recyclerView.layoutManager = LinearLayoutManager(activity)
-        var adventures : List<Adventure>
+        var adventures : List<Adventure> = ArrayList()
         Adventure.List().addOnSuccessListener {
             if (it != null) {
-                adventures = it.toList(Adventure::class.java)
+                var allAdv = it.toList(Adventure::class.java)
+                var userId = User.GetInstance()!!.id
+                var userAdvs = User.GetInstance()!!.adventureRefs
+                for(adv in allAdv){
+                    if(adv.master.userId == userId || userAdvs.any { a -> a == adv.id }){
+                        adventures = adventures.plus(adv)
+                    }
+                }
                 runAnimation(recyclerView, adventures)
             }
         }
@@ -81,7 +95,7 @@ class AdventuresFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private fun runAnimation(recyclerView: RecyclerView, adventures: List<Adventure>) {
         var animationController : LayoutAnimationController = AnimationUtils.loadLayoutAnimation(recyclerView.context, R.anim.layout_fall)
 
-        recyclerView.adapter = AdventuresAdapter(adventures, context, activity as MainActivity)
+        recyclerView.adapter = AdventuresAdapter(adventures, context, activity as OnAdventureSelected)
 
         recyclerView.layoutAnimation = animationController
         (recyclerView.adapter as AdventuresAdapter).notifyDataSetChanged()

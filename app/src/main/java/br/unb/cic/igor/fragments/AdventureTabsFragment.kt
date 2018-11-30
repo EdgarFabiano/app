@@ -7,6 +7,7 @@ import android.view.*
 import android.widget.Toast
 import br.unb.cic.igor.MainActivity
 import br.unb.cic.igor.R
+import br.unb.cic.igor.classes.*
 import br.unb.cic.igor.adapters.AdventuresAdapter
 import br.unb.cic.igor.classes.Adventure
 import br.unb.cic.igor.classes.Player
@@ -51,6 +52,7 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
     private var adventure : Adventure? = null
     private var sessions: List<Session> = ArrayList()
     private var players: List<Player> = ArrayList()
+    private var combatListener: OnCombatStarted? = null
     private var lastSelectedPlayer: Player?  = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,9 +80,14 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
         Adventure.Get(adventureId).addOnSuccessListener {adv ->
             if (adv != null) {
                 adventure = adv.toObject(Adventure::class.java)
-                (adventureFragment as AdventureFragment).updateAdventure(adventure!!)
-                adventureBg.setBackgroundResource(AdventuresAdapter.images[adventure!!.bg])
-                adventureTitle.text = adventure!!.name
+                if (adventure!!.combatInfo.inCombat) {
+                    combatListener!!.onCombatStarted(adventure!!)
+                } else {
+
+                    (adventureFragment as AdventureFragment).updateAdventure(adventure!!)
+                    adventureBg.setBackgroundResource(AdventuresAdapter.images[adventure!!.bg])
+                    adventureTitle.text = adventure!!.name
+                }
             }
         }
     }
@@ -98,6 +105,11 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
         inflater.inflate(R.menu.menu, menu)
     }
 
+    override fun onDetach() {
+        super.onDetach()
+        combatListener = null
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handles action bar item clicks here.
         when (item.itemId) {
@@ -108,7 +120,12 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
                     State.ADVENTURE ->
                         stateTransition(State.ADV_EDIT, AdventureEditFragment.newInstance(adventure!!))
                     State.PLAYER_DETAILS ->
-                        stateTransition(State.PLAYER_EDIT, PlayerEditFragment.newInstance(lastSelectedPlayer, adventureId))
+                        if(adventure!!.master.userId == User.GetInstance()!!.id ||
+                                lastSelectedPlayer!!.userId == User.GetInstance()!!.id){
+                            stateTransition(State.PLAYER_EDIT, PlayerEditFragment.newInstance(lastSelectedPlayer, adventureId))
+                        } else{
+                            toast("You cannot edit this player, since you are not the master nor the clicked player.")
+                        }
                     else ->
                         toast("invalid state")
                 }
@@ -161,6 +178,10 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
+        if (context is OnCombatStarted) {
+            combatListener = context
+        }
+
         if (activity is OnAdventureTabsFragmentInteractionListener) {
             listener = activity as MainActivity
         } else {
@@ -178,6 +199,15 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
             }
             State.COMBATS -> {
                 toast("Create combat")
+            }
+            State.SESSION -> {
+                var newCombat = Combat()
+                Combat.Insert(adventureId, selectedSession!!.id, newCombat).addOnSuccessListener {
+                    adventure!!.combatInfo = CombatInfo(true, selectedSession!!.id, newCombat.id)
+                    Adventure.Update(adventure!!).addOnSuccessListener {
+                        combatListener!!.onCombatStarted(adventure!!)
+                    }
+                }
             }
             else -> toast("wrong state")
         }
@@ -203,9 +233,17 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
                 contentView.setImageResource(R.drawable.players_tab)
                 addButton.visibility = View.VISIBLE
                 setHasOptionsMenu(true)
-                addButton.setImageResource(R.drawable.add_player)
+                if(adventure!!.master.userId == User.GetInstance()!!.id){
+                    addButton.setImageResource(R.drawable.add_player)
+                } else{
+                    addButton.visibility = View.INVISIBLE
+                }
             }
-            State.SESSION, State.PLAYER_DETAILS -> {
+            State.SESSION -> {
+                addButton.visibility = View.VISIBLE
+                addButton.setImageResource(R.drawable.start_combat)
+            }
+            State.PLAYER_DETAILS -> {
                 addButton.visibility = View.INVISIBLE
                 setHasOptionsMenu(true)
             }
@@ -213,7 +251,7 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
                 addButton.visibility = View.INVISIBLE
                 setHasOptionsMenu(false)
             }
-            State.COMBATS -> {
+            State.COMBATS, State.COMBAT_VIEW -> {
                 addButton.visibility = View.VISIBLE
                 setHasOptionsMenu(false)
             }
@@ -246,17 +284,13 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
             State.ADVENTURE -> {
                 listener?.adventureTabsFragmentWantsToGoBack()
             }
-            State.COMBATS -> {
+            State.COMBATS, State.COMBAT_VIEW -> {
                 stateTransition(State.ADVENTURE, adventureFragment)
             }
             else -> {
                 stateTransition(State.ADVENTURE, adventureFragment)
             }
         }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
     }
 
     /**
@@ -330,6 +364,10 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
         stateTransition(State.SESSION, SessionFragment.newInstance(session))
     }
 
+    interface OnCombatStarted {
+        fun onCombatStarted(adventure: Adventure)
+    }
+
     override fun onCombatsClick(session: Session) {
         stateTransition(State.COMBATS, CombatsFragment.newInstance(session))
     }
@@ -345,6 +383,7 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
         SESSION,
         SESSION_CREATE,
         SESSION_EDIT,
-        COMBATS
+        COMBATS,
+        COMBAT_VIEW
     }
 }

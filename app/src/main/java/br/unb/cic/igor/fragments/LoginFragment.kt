@@ -1,4 +1,4 @@
-package br.unb.cic.igor.Fragments
+package br.unb.cic.igor.fragments
 
 import android.app.Activity
 import android.content.Intent
@@ -242,7 +242,7 @@ class LoginFragment : Fragment() {
 
     companion object{
 
-        fun newInstance(): LoginFragment{
+        fun newInstance(): LoginFragment {
             return LoginFragment()
         }
     }

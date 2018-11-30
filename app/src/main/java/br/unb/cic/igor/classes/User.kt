@@ -10,11 +10,12 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
+import java.io.Serializable
 import java.util.*
 import kotlin.collections.ArrayList
 
 
-data class User(var id: String = "id", var email: String = "email", var username: String? = null, var birthdate: Date? = null, var gender: String? = null, var adventureRefs: ArrayList<String> = ArrayList()){
+data class User(var id: String = "id", var email: String = "email", var username: String? = null, var birthdate: Date? = null, var gender: String? = null, var adventureRefs: ArrayList<String> = ArrayList()) : Serializable{
 
     companion object {
         private var instance: User? = null
@@ -33,7 +34,7 @@ data class User(var id: String = "id", var email: String = "email", var username
         }
 
         fun Get(id: String): Task<DocumentSnapshot> {
-            var docRef = FirebaseFirestore.getInstance().collection("users").document(id)
+            val docRef = FirebaseFirestore.getInstance().collection("users").document(id)
             return docRef.get()
         }
 
@@ -43,8 +44,8 @@ data class User(var id: String = "id", var email: String = "email", var username
         }
 
         fun Adventures(): Task<QuerySnapshot>{
-            var adRefs = this.GetInstance()!!.adventureRefs
-            var docRef = FirebaseFirestore.getInstance().collection("adventure").takeIf {
+            val adRefs = this.GetInstance()!!.adventureRefs
+            val docRef = FirebaseFirestore.getInstance().collection("adventure").takeIf {
                 adRefs.contains(it.id)
             }
             return docRef?.get()!!

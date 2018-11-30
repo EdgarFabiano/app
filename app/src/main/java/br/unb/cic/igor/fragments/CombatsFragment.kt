@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import br.unb.cic.igor.MainActivity
 import br.unb.cic.igor.R
 import br.unb.cic.igor.classes.Combat
 import br.unb.cic.igor.classes.Session
@@ -36,11 +37,10 @@ class CombatsFragment : Fragment() {
         Combat.List(sessionId = session!!.id, adventureId = session!!.adventureId).addOnSuccessListener {
             if (it != null) {
                 var combats = it.toList(Combat::class.java)
-                var collect = combats.stream().map(Combat::id).collect(Collectors.toList())
-                combatsList.adapter  = ArrayAdapter(context!!, android.R.layout.simple_list_item_1, collect)
+                combatsList.adapter  = ArrayAdapter(context!!, android.R.layout.simple_list_item_1, combats.map { it.id })
                 combatsList.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-                    // TODO chamar Fragment de combate
-                    Toast.makeText(context, combats[position].id, Toast.LENGTH_SHORT).show()
+                    val parentFragment = (activity as MainActivity).currentFragment as AdventureTabsFragment
+                    parentFragment.stateTransition(AdventureTabsFragment.State.COMBAT_VIEW, CombatViewFragment.newInstance(combats[position]))
                 }
             }
         }
