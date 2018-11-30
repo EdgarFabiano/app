@@ -120,7 +120,12 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
                     State.ADVENTURE ->
                         stateTransition(State.ADV_EDIT, AdventureEditFragment.newInstance(adventure!!))
                     State.PLAYER_DETAILS ->
-                        stateTransition(State.PLAYER_EDIT, PlayerEditFragment.newInstance(lastSelectedPlayer, adventureId))
+                        if(adventure!!.master.userId == User.GetInstance()!!.id ||
+                                lastSelectedPlayer!!.userId == User.GetInstance()!!.id){
+                            stateTransition(State.PLAYER_EDIT, PlayerEditFragment.newInstance(lastSelectedPlayer, adventureId))
+                        } else{
+                            toast("You cannot edit this player, since you are not the master nor the clicked player.")
+                        }
                     else ->
                         toast("invalid state")
                 }
@@ -175,7 +180,9 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
 
         if (context is OnCombatStarted) {
             combatListener = context
-        } else if (activity is OnAdventureTabsFragmentInteractionListener) {
+        }
+
+        if (activity is OnAdventureTabsFragmentInteractionListener) {
             listener = activity as MainActivity
         } else {
             throw RuntimeException(activity.toString() + " must implement OnAdventureTabsFragmentInteractionListener")
@@ -226,7 +233,11 @@ class AdventureTabsFragment : Fragment(), AdventureFragment.OnSessionSelectedLis
                 contentView.setImageResource(R.drawable.players_tab)
                 addButton.visibility = View.VISIBLE
                 setHasOptionsMenu(true)
-                addButton.setImageResource(R.drawable.add_player)
+                if(adventure!!.master.userId == User.GetInstance()!!.id){
+                    addButton.setImageResource(R.drawable.add_player)
+                } else{
+                    addButton.visibility = View.INVISIBLE
+                }
             }
             State.SESSION, State.PLAYER_DETAILS -> {
                 addButton.visibility = View.INVISIBLE
