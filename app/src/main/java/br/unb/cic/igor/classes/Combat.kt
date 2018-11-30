@@ -40,6 +40,7 @@ data class Combat(var id: String = "", var currentTurn: Turn = Turn(), var turns
 }
 
 enum class TurnState {
+    NOT_STARTED,
     STARTING,
     WAITING_ACTIONS,
     REVIEWING_ACTIONS,

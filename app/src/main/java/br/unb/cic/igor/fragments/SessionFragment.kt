@@ -5,11 +5,18 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 
 import br.unb.cic.igor.R
+import br.unb.cic.igor.classes.Adventure
+import br.unb.cic.igor.classes.Combat
 import br.unb.cic.igor.classes.Session
+import br.unb.cic.igor.extensions.toList
 import kotlinx.android.synthetic.main.fragment_session.*
 import java.text.SimpleDateFormat
+
+
 
 /**
  * A simple [Fragment] subclass.
@@ -36,11 +43,20 @@ class SessionFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
         val summary = session!!.summary
         sessionInfoText.text = if (summary != "") summary else "Sua sessão ainda não posssui um resumo!"
         sessionNameEdit.text = session!!.name
         sessionDateText.text = SimpleDateFormat("dd/MM").format(session!!.date)
+
+        Combat.List(sessionId = session!!.id, adventureId = session!!.adventureId).addOnSuccessListener {
+            if (it != null) {
+                var combats = it.toList(Combat::class.java)
+                combatsList.adapter  = ArrayAdapter(context!!, android.R.layout.simple_list_item_1, combats)
+                combatsList.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+
+                }
+            }
+        }
     }
 
     override fun onDetach() {
